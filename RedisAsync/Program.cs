@@ -33,6 +33,9 @@ namespace RedisAsync
                 await client.SendAppend("myKey", "Some data");
                 await client.SendExists("myKey");
 
+                await client.SendSet("aKey", 1000);
+                await client.SendGet("aKey");
+
                 using (var reader = await client.GetReader())
                 {
                     object response;

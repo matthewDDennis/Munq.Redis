@@ -44,6 +44,7 @@ namespace Munq.Redis
                 sb.Append(':');
                 sb.AppendLine((bool)obj ? "1" : "0");
             }
+            // TODO: might need to send float, single, double, decimal as string
             else if (objType.IsPrimitive)
             {
                 sb.Append(':');
