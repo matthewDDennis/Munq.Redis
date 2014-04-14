@@ -17,6 +17,8 @@ namespace Munq.Redis
         private readonly string    _host;
         private readonly int       _port;
         private NetworkStream      _stream;
+        private CommandBuilder _commandBuilder;
+        private ResponseReader     _reader;
 
         public RedisClient(string host = DefaultHost, int port = DefaultPort)
         {
@@ -28,6 +30,12 @@ namespace Munq.Redis
                 SendTimeout    = 2000,
                 NoDelay        = true 
             };
+            _commandBuilder = new CommandBuilder();
+       }
+
+        public RedisString GetString(string key)
+        {
+            return new RedisString(this, key);
         }
 
         /// <summary>
@@ -39,8 +47,7 @@ namespace Munq.Redis
         public async Task SendCommand(string command, params object[] parameters)
         {
             await ConnectAsync();
-            var commandBuilder = new CommandBuilder();
-            byte[] commandData = commandBuilder.CreateCommandData(command, parameters);
+            byte[] commandData = _commandBuilder.CreateCommandData(command, parameters);
             await _stream.WriteAsync(commandData, 0, commandData.Length).ConfigureAwait(false);
         }
 
@@ -48,21 +55,21 @@ namespace Munq.Redis
         /// Gets the response reader.
         /// </summary>
         /// <returns>The response reade.</returns>
-        public async Task<ResponseReader> GetReader()
+        public async Task<object> ReadResponse()
         {
-            StringBuilder sb        = new StringBuilder();
-            byte[]        buffer    = new byte[_client.ReceiveBufferSize];
-            while (_stream.DataAvailable)
-            {
-                int bytesRead = await _stream.ReadAsync(buffer, 0, _client.ReceiveBufferSize)
-                                                       .ConfigureAwait(false);
-                if (bytesRead == 0)
-                    break;
-                string dataString = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                sb.Append(dataString);
-            }
-
-            return new ResponseReader(sb.ToString());
+            //StringBuilder sb        = new StringBuilder();
+            //byte[]        buffer    = new byte[_client.ReceiveBufferSize];
+            //while (_stream.DataAvailable)
+            //{
+            //    int bytesRead = await _stream.ReadAsync(buffer, 0, _client.ReceiveBufferSize)
+            //                                           .ConfigureAwait(false);
+            //    if (bytesRead == 0)
+            //        break;
+            //    string dataString = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+            //    sb.Append(dataString);
+            //}
+            await ConnectAsync();
+            return await _reader.Read();
         }
 
         /// <summary>
@@ -76,8 +83,12 @@ namespace Munq.Redis
                 if (_stream != null)
                     _stream.Dispose();
 
+                if (_reader != null)
+                    _reader.Dispose();
+
                 await _client.ConnectAsync(_host, _port).ConfigureAwait(false);
                 _stream = _client.GetStream();
+                _reader = new ResponseReader(_stream);
             }
         }
 

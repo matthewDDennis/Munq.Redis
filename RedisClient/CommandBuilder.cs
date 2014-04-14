@@ -40,18 +40,9 @@ namespace Munq.Redis
         {
             var objType = obj.GetType();
             if (objType == typeof(Boolean))
-            {
-                sb.Append(':');
-                sb.AppendLine((bool)obj ? "1" : "0");
-            }
-            // TODO: might need to send float, single, double, decimal as string
-            else if (objType.IsPrimitive)
-            {
-                sb.Append(':');
-                sb.AppendLine(obj.ToString());
-            }
-            else
-                AddStringToCommand(sb, obj.ToString());
+                obj = (bool)obj ? "1" : "0";
+
+            AddStringToCommand(sb, obj.ToString());
         }
     }
 }

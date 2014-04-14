@@ -10,15 +10,20 @@ namespace Munq.Redis
 {
     public class ResponseReader : IDisposable
     {
-        private readonly StringReader _reader;
+        private readonly TextReader _reader;
         public ResponseReader(string data)
         {
             _reader = new StringReader(data);
         }
 
+        public ResponseReader(Stream stream)
+        {
+            _reader = new StreamReader(stream);
+        }
+
         public bool HasDataAvailable { get { return _reader.Peek() != -1; } }
 
-        public object Read()
+        public async Task<object> Read()
         {
             int c = _reader.Read();
             if (c == -1)
@@ -27,19 +32,19 @@ namespace Munq.Redis
             switch (c)
             {
                 case '+':
-                    return ReadSimpleString();
+                    return await ReadSimpleString().ConfigureAwait(false);
 
                 case '-':
-                    return ReadErrorString();
+                    return await ReadErrorString().ConfigureAwait(false);
 
                 case ':':
-                    return ReadLong();
+                    return await ReadLong().ConfigureAwait(false);
 
                 case '$':
-                    return ReadBulkString();
+                    return await ReadBulkString().ConfigureAwait(false);
 
                 case '*':
-                    return ReadArray();
+                    return await ReadArray().ConfigureAwait(false);
 
                 default:
                     return new RedisErrorString("Invalid character " + (char)c);
@@ -51,27 +56,27 @@ namespace Munq.Redis
                 _reader.Dispose();
         }
 
-        private object ReadSimpleString()
+        private async Task<string> ReadSimpleString()
         {
-            return _reader.ReadLine();
+            return await _reader.ReadLineAsync().ConfigureAwait(false);
         }
-        private object ReadErrorString()
+        private async Task<object> ReadErrorString()
         {
-            string message = _reader.ReadLine();
+            string message = await _reader.ReadLineAsync().ConfigureAwait(false);
             return new RedisErrorString(message);
         }
-        private object ReadLong()
+        private async Task<object> ReadLong()
         {
-            string intStr = _reader.ReadLine();
+            string intStr = await _reader.ReadLineAsync().ConfigureAwait(false);
             long value;
             if (long.TryParse(intStr, out value))
                 return value;
             else
                 return new RedisErrorString("Invalid Integer " + intStr);
         }
-        private object ReadBulkString()
+        private async Task<object> ReadBulkString()
         {
-            object strLenObj = ReadLong();
+            object strLenObj = await ReadLong().ConfigureAwait(false);
             if (strLenObj is long)
             {
                 long strSize = (long)strLenObj;
@@ -80,7 +85,7 @@ namespace Munq.Redis
                 else
                 {
                     char[] chars = new char[strSize];
-                    int charsRead = _reader.Read(chars, 0, (int)strSize);
+                    int charsRead = await _reader.ReadAsync(chars, 0, (int)strSize).ConfigureAwait(false);
                     _reader.ReadLine();
                     if (strSize != charsRead)
                         return new RedisErrorString("String length is incorrect.");
@@ -91,9 +96,9 @@ namespace Munq.Redis
             else
                 return strLenObj;
         }
-        private object ReadArray()
+        private async Task<object> ReadArray()
         {
-            object strLenObj = ReadLong();
+            object strLenObj = await ReadLong().ConfigureAwait(false);
             if (strLenObj is long)
             {
                 long arraySize = (long)strLenObj;
@@ -102,7 +107,7 @@ namespace Munq.Redis
 
                 object[] results = new object[arraySize];
                 for (long i = 0; i < arraySize; i++)
-                    results[i] = Read();
+                    results[i] = await Read().ConfigureAwait(false);
                 return results;
             }
             else
