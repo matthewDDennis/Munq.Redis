@@ -44,7 +44,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RedisClient.cs" />
     <Compile Include="RedisErrorString.cs" />
-    <Compile Include="RedisString.cs" />
     <Compile Include="ResponseReader.cs" />
     <Compile Include="StringCommands.cs" />
   </ItemGroup>

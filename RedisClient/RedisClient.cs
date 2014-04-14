@@ -33,11 +33,6 @@ namespace Munq.Redis
             _commandBuilder = new CommandBuilder();
        }
 
-        public RedisString GetString(string key)
-        {
-            return new RedisString(this, key);
-        }
-
         /// <summary>
         /// Sends a command and returns the response string.
         /// </summary>
