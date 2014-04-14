@@ -26,8 +26,8 @@ namespace RedisAsync
                 stopwatch.Start();
                 for (int i = 0; i < NumIterations; i++)
                 {
-                    await client.SendSet("String" + i, data);
-                    object obj = await client.ReadResponse();
+                    await client.SendSetCommandAsync("String" + i, data);
+                    object obj = await client.ReadResponseAsync();
                     result.Add(obj);
                 }
                 stopwatch.Stop();
@@ -35,14 +35,14 @@ namespace RedisAsync
                 stopwatch.Start();
                 for (int i = 0; i < NumIterations; i++)
                 {
-                    await client.SendGet("String" + i);
-                    object obj = await client.ReadResponse();
+                    await client.SendGetCommandAsync("String" + i);
+                    object obj = await client.ReadResponseAsync();
                 }
                 stopwatch.Stop();
                 Console.WriteLine("{0} Gets of 10,000 chars took {1}.", NumIterations, stopwatch.Elapsed);
 
-                await client.SendCommand("DBSIZE");
-                WriteResult(await client.ReadResponse());
+                await client.SendCommandAsync("DBSIZE");
+                WriteResult(await client.ReadResponseAsync());
 
                 //Console.WriteLine("--- Sending Client List:");
                 //await client.SendCommand("Client", "List");

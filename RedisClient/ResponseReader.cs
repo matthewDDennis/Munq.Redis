@@ -23,7 +23,7 @@ namespace Munq.Redis
 
         public bool HasDataAvailable { get { return _reader.Peek() != -1; } }
 
-        public async Task<object> Read()
+        public async Task<object> ReadAsync()
         {
             int c = _reader.Read();
             if (c == -1)
@@ -32,19 +32,19 @@ namespace Munq.Redis
             switch (c)
             {
                 case '+':
-                    return await ReadSimpleString().ConfigureAwait(false);
+                    return await ReadSimpleStringAsync().ConfigureAwait(false);
 
                 case '-':
-                    return await ReadErrorString().ConfigureAwait(false);
+                    return await ReadErrorStringAsync().ConfigureAwait(false);
 
                 case ':':
-                    return await ReadLong().ConfigureAwait(false);
+                    return await ReadLongAsync().ConfigureAwait(false);
 
                 case '$':
-                    return await ReadBulkString().ConfigureAwait(false);
+                    return await ReadBulkStringAsync().ConfigureAwait(false);
 
                 case '*':
-                    return await ReadArray().ConfigureAwait(false);
+                    return await ReadArrayAsync().ConfigureAwait(false);
 
                 default:
                     return new RedisErrorString("Invalid character " + (char)c);
@@ -56,16 +56,16 @@ namespace Munq.Redis
                 _reader.Dispose();
         }
 
-        private async Task<string> ReadSimpleString()
+        private async Task<string> ReadSimpleStringAsync()
         {
             return await _reader.ReadLineAsync().ConfigureAwait(false);
         }
-        private async Task<object> ReadErrorString()
+        private async Task<object> ReadErrorStringAsync()
         {
             string message = await _reader.ReadLineAsync().ConfigureAwait(false);
             return new RedisErrorString(message);
         }
-        private async Task<object> ReadLong()
+        private async Task<object> ReadLongAsync()
         {
             string intStr = await _reader.ReadLineAsync().ConfigureAwait(false);
             long value;
@@ -74,9 +74,9 @@ namespace Munq.Redis
             else
                 return new RedisErrorString("Invalid Integer " + intStr);
         }
-        private async Task<object> ReadBulkString()
+        private async Task<object> ReadBulkStringAsync()
         {
-            object strLenObj = await ReadLong().ConfigureAwait(false);
+            object strLenObj = await ReadLongAsync().ConfigureAwait(false);
             if (strLenObj is long)
             {
                 long strSize = (long)strLenObj;
@@ -96,9 +96,9 @@ namespace Munq.Redis
             else
                 return strLenObj;
         }
-        private async Task<object> ReadArray()
+        private async Task<object> ReadArrayAsync()
         {
-            object strLenObj = await ReadLong().ConfigureAwait(false);
+            object strLenObj = await ReadLongAsync().ConfigureAwait(false);
             if (strLenObj is long)
             {
                 long arraySize = (long)strLenObj;
@@ -107,7 +107,7 @@ namespace Munq.Redis
 
                 object[] results = new object[arraySize];
                 for (long i = 0; i < arraySize; i++)
-                    results[i] = await Read().ConfigureAwait(false);
+                    results[i] = await ReadAsync().ConfigureAwait(false);
                 return results;
             }
             else

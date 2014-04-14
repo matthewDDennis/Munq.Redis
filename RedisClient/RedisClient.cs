@@ -39,7 +39,7 @@ namespace Munq.Redis
         /// <param name="command">The Command.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>The response.</returns>
-        public async Task SendCommand(string command, params object[] parameters)
+        public async Task SendCommandAsync(string command, params object[] parameters)
         {
             await ConnectAsync();
             byte[] commandData = _commandBuilder.CreateCommandData(command, parameters);
@@ -50,7 +50,7 @@ namespace Munq.Redis
         /// Gets the response reader.
         /// </summary>
         /// <returns>The response reade.</returns>
-        public async Task<object> ReadResponse()
+        public async Task<object> ReadResponseAsync()
         {
             //StringBuilder sb        = new StringBuilder();
             //byte[]        buffer    = new byte[_client.ReceiveBufferSize];
@@ -64,7 +64,7 @@ namespace Munq.Redis
             //    sb.Append(dataString);
             //}
             await ConnectAsync();
-            return await _reader.Read();
+            return await _reader.ReadAsync();
         }
 
         /// <summary>
