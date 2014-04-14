@@ -63,8 +63,15 @@ namespace Munq.Redis
             //    string dataString = Encoding.UTF8.GetString(buffer, 0, bytesRead);
             //    sb.Append(dataString);
             //}
-            await ConnectAsync();
-            return await _reader.ReadAsync();
+            try
+            {
+                await ConnectAsync();
+                return await _reader.ReadAsync();
+            }
+            catch (Exception ex)
+            {
+                return new RedisErrorString("ERR - " + ex.Message);   
+            }
         }
 
         /// <summary>

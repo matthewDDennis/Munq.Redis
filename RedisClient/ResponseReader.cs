@@ -85,10 +85,11 @@ namespace Munq.Redis
                 else
                 {
                     char[] chars = new char[strSize];
-                    int charsRead = await _reader.ReadAsync(chars, 0, (int)strSize).ConfigureAwait(false);
+                    int charsRead = await _reader.ReadBlockAsync(chars, 0, (int)strSize).ConfigureAwait(false);
+
                     _reader.ReadLine();
                     if (strSize != charsRead)
-                        return new RedisErrorString("String length is incorrect.");
+                        return new RedisErrorString("String length is incorrect. Expecting " + strSize + " received "+ charsRead);
                     else
                         return new string(chars, 0, charsRead);
                 }

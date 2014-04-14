@@ -11,79 +11,65 @@ namespace RedisAsync
     class Program
     {
         private const int NumIterations = 10000;
+        private const int NumChars = 10000;
         static void Main(string[] args)
         {
-            DoIt();
+            DoIt().Wait();
             Console.ReadLine();
         }
         private static async Task DoIt()
         {
-            using (var client = new RedisClient())
+            using (var client = new RedisClient("cp-dev1.office.codeproject.com"))
             {
+                Console.Write("Selecting Database 4 - ");
+                await client.SendCommandAsync("Select", 4);
+                var response = await client.ReadResponseAsync();
+                Console.WriteLine(response);
+
                 string data = new string('A', 10000);
-                List<object> result = new List<object>(NumIterations);
+                List<object> results = new List<object>(NumIterations);
                 Stopwatch stopwatch = new Stopwatch();
+                Console.Write("Writing {0:N} RedisStrings of {1:N} chars - ", NumChars, NumIterations);
                 stopwatch.Start();
                 for (int i = 0; i < NumIterations; i++)
                 {
                     await client.SendSetCommandAsync("String" + i, data);
                     object obj = await client.ReadResponseAsync();
-                    result.Add(obj);
+                    results.Add(obj);
                 }
                 stopwatch.Stop();
-                Console.WriteLine("{0} Sets of 10,000 chars took {1}.", NumIterations, stopwatch.Elapsed);
+                Console.WriteLine("with {0} errors", results.Count(rs => (string)rs != "OK"));
+                Console.WriteLine("{0} Sets of {1} chars took {2}.", NumIterations, NumChars, stopwatch.Elapsed);
+                results.Clear();
+                Console.WriteLine("Reading {0:N} RedisStrings of {1:N} chars - ", NumChars, NumIterations);
+
                 stopwatch.Start();
                 for (int i = 0; i < NumIterations; i++)
                 {
                     await client.SendGetCommandAsync("String" + i);
                     object obj = await client.ReadResponseAsync();
+
+                    string resultString = "OK";
+                    if(obj == null || !(obj is string) || ((string)obj).Length != NumChars)
+                                resultString = obj.ToString();
+                    Console.Write("\r{0} - {1}", i + 1, resultString);
+                    results.Add(resultString);
                 }
                 stopwatch.Stop();
-                Console.WriteLine("{0} Gets of 10,000 chars took {1}.", NumIterations, stopwatch.Elapsed);
+                Console.WriteLine("with {0} errors", results.Count(rs => (string)rs != "OK"));
+                Console.WriteLine("{0} Gets of {1} chars took {2}.", NumIterations, NumChars, stopwatch.Elapsed);
 
                 await client.SendCommandAsync("DBSIZE");
                 WriteResult(await client.ReadResponseAsync());
 
-                //Console.WriteLine("--- Sending Client List:");
-                //await client.SendCommand("Client", "List");
+                await client.SendCommandAsync("FlushDb");
+                WriteResult(await client.ReadResponseAsync());
 
-                //Console.WriteLine("--- Time:");
-                //await client.SendCommand("Time");
+                await client.SendCommandAsync("DBSIZE");
+                WriteResult(await client.ReadResponseAsync());
 
-                //Console.WriteLine("--- Keys *");
-                //await client.SendKeys("*");
-
-                //Console.WriteLine("--- Del, Exists, Append, Exists");
-                //await client.SendDelete("myKey");
-                //await client.SendExists("myKey");
-                //await client.SendAppend("myKey", "Some data");
-                //await client.SendExists("myKey");
-
-                //await client.SendSet("aKey", 1000);
-                //await client.SendGet("aKey");
-                //await client.SendIncr("aKey");
-                //await client.SendIncrBy("aKey", 42);
-                //await client.SendDecr("aKey");
-                //await client.SendDecrBy("aKey", 42);
-                //await client.SendSet("aKey", "ABCDEFG");
-                //await client.SendDelete("aKey");
-
-                //await client.SendSetBit("aKey", 1, true);
-                //await client.SendSetBit("aKey", 1, false);
-
-
-                //await client.SendSet("aKey", 123.456d);
-                //await client.SendGet("aKey");
-                //await client.SendIncrByFloat("aKey", 1.23);
-                //await client.SendGet("aKey");
-
-
-                //using (var reader = await client.GetReader())
-                //{
-                //    object response;
-                //    while ((response = reader.Read()) != null)
-                //        WriteResult(response);
-                //}
+                await client.SendCommandAsync("Quit");
+                WriteResult(await client.ReadResponseAsync());
             }
         }
         private static void WriteResult(object result)
