@@ -46,6 +46,7 @@
     <Compile Include="Commands\ServerCommands.cs" />
     <Compile Include="Commands\SetCommandOptions.cs" />
     <Compile Include="Commands\ShutDownOptions.cs" />
+    <Compile Include="Commands\TransactionCommands.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RedisClient.cs" />
     <Compile Include="RedisErrorString.cs" />

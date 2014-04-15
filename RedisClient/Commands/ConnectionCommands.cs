@@ -10,27 +10,27 @@ namespace Munq.Redis
     {
         public static async Task SendAuthCommandAsync(this RedisClient client, string password)
         {
-            await client.SendCommandAsync("Auth", password);
+            await client.SendCommandAsync("Auth", password).ConfigureAwait(false);
         }
 
         public static async Task SendEchoCommandAsync(this RedisClient client, string message)
         {
-            await client.SendCommandAsync("Echo", message);
+            await client.SendCommandAsync("Echo", message).ConfigureAwait(false);
         }
 
         public static async Task SendPingCommandAsync(this RedisClient client)
         {
-            await client.SendCommandAsync("Ping");
+            await client.SendCommandAsync("Ping").ConfigureAwait(false);
         }
 
         public static async Task SendQuitCommandAsync(this RedisClient client)
         {
-            await client.SendCommandAsync("Quit");
+            await client.SendCommandAsync("Quit").ConfigureAwait(false);
         }
 
         public static async Task SendSelectCommandAsync(this RedisClient client, int db)
         {
-            await client.SendCommandAsync("Select", db);
+            await client.SendCommandAsync("Select", db).ConfigureAwait(false);
         }
     }
 }
