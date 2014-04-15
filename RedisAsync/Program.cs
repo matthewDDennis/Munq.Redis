@@ -24,6 +24,9 @@ namespace RedisAsync
             {
                 try
                 {
+                    await client.SendPingCommandAsync();
+                    Console.WriteLine(await client.ReadResponseAsync());
+
                     Console.Write("Selecting Database 4 - ");
                     await client.SendSelectCommandAsync(4);
                     Console.WriteLine(await client.ReadResponseAsync());
