@@ -40,7 +40,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandBuilder.cs" />
+    <Compile Include="Commands\ConnectionCommands.cs" />
+    <Compile Include="Commands\InfoSections.cs" />
     <Compile Include="Commands\KeyCommands.cs" />
+    <Compile Include="Commands\ServerCommands.cs" />
+    <Compile Include="Commands\SetCommandOptions.cs" />
+    <Compile Include="Commands\ShutDownOptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RedisClient.cs" />
     <Compile Include="RedisErrorString.cs" />

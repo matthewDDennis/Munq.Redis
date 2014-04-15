@@ -17,18 +17,18 @@ namespace Munq.Redis
         private readonly string    _host;
         private readonly int       _port;
         private NetworkStream      _stream;
-        private CommandBuilder _commandBuilder;
+        private CommandBuilder     _commandBuilder;
         private ResponseReader     _reader;
 
         public RedisClient(string host = DefaultHost, int port = DefaultPort)
         {
-            _host                  = host;
-            _port                  = port;
+            _host   = host;
+            _port   = port;
             _client = new TcpClient() 
             { 
-                ReceiveTimeout = 2000,
-                SendTimeout    = 2000,
-                NoDelay        = true 
+                ReceiveTimeout = 1000,
+                SendTimeout    = 1000,
+                NoDelay        = true
             };
             _commandBuilder = new CommandBuilder();
        }
@@ -52,17 +52,6 @@ namespace Munq.Redis
         /// <returns>The response reade.</returns>
         public async Task<object> ReadResponseAsync()
         {
-            //StringBuilder sb        = new StringBuilder();
-            //byte[]        buffer    = new byte[_client.ReceiveBufferSize];
-            //while (_stream.DataAvailable)
-            //{
-            //    int bytesRead = await _stream.ReadAsync(buffer, 0, _client.ReceiveBufferSize)
-            //                                           .ConfigureAwait(false);
-            //    if (bytesRead == 0)
-            //        break;
-            //    string dataString = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-            //    sb.Append(dataString);
-            //}
             try
             {
                 await ConnectAsync();
@@ -78,7 +67,7 @@ namespace Munq.Redis
         /// Ensures that the socket is connected.
         /// </summary>
         /// <returns>A task to wait for the connection to be made.</returns>
-        private async Task ConnectAsync()
+        public async Task ConnectAsync()
         {
             if (!_client.Connected)
             {
@@ -94,6 +83,11 @@ namespace Munq.Redis
             }
         }
 
+        public void Close()
+        {
+            _client.Close();
+        }
+
         public void Dispose()
         {
             if (_stream != null)
@@ -102,7 +96,7 @@ namespace Munq.Redis
                 _stream = null;
             }
 
-            _client.Close();
+           Close();
         }
     }
 }

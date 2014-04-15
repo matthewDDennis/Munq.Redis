@@ -6,13 +6,6 @@ using System.Threading.Tasks;
 
 namespace Munq.Redis
 {
-    public enum SetOptions
-    {
-        Always,
-        IfExists,
-        IfNotExists
-    }
-
     public static class StringCommands
     {
         public async static Task SendAppendCommandAsync(this RedisClient client, string key, string value)
@@ -156,7 +149,7 @@ namespace Munq.Redis
 
         public async static Task SendSetCommandAsync(this RedisClient client, string key, object value, 
                                                      long? seconds, long? milliseconds, 
-                                                     SetOptions setOption = SetOptions.Always)
+                                                     SetCommandOptions setOption = SetCommandOptions.Always)
         {
             List<object> parameters = new List<object>();
             parameters.Add(key);
@@ -174,9 +167,9 @@ namespace Munq.Redis
                 parameters.Add(milliseconds.Value);
             }
 
-            if (setOption == SetOptions.IfExists)
+            if (setOption == SetCommandOptions.IfExists)
                 parameters.Add("XX");
-            else if (setOption == SetOptions.IfNotExists)
+            else if (setOption == SetCommandOptions.IfNotExists)
                 parameters.Add("NX");
 
             await client.SendCommandAsync("Set", parameters.ToArray()).ConfigureAwait(false);

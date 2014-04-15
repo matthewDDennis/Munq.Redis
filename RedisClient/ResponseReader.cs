@@ -47,7 +47,7 @@ namespace Munq.Redis
                     return await ReadArrayAsync().ConfigureAwait(false);
 
                 default:
-                    return new RedisErrorString("Invalid character " + (char)c);
+                    return new RedisErrorString("Invalid response initial character " + (char)c);
             }
         }
         public void Dispose()
