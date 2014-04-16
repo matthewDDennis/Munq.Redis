@@ -19,8 +19,8 @@ namespace RedisAsync
         }
         private static async Task DoIt()
         {
-            //using (var client = new RedisClient("cp-dev1.office.codeproject.com"))
-            using (var client = new RedisClient())
+            using (var client = new RedisClient("cp-dev1.office.codeproject.com"))
+            //using (var client = new RedisClient())
             {
                 try
                 {

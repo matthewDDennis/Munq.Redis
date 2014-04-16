@@ -41,7 +41,7 @@ namespace Munq.Redis
         /// <returns>The response.</returns>
         public async Task SendCommandAsync(string command, params object[] parameters)
         {
-            await ConnectAsync();
+            await ConnectAsync().ConfigureAwait(false);
             byte[] commandData = _commandBuilder.CreateCommandData(command, parameters);
             await _stream.WriteAsync(commandData, 0, commandData.Length).ConfigureAwait(false);
         }
