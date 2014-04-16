@@ -35,10 +35,7 @@ namespace Munq.Redis.Commands
 
         public static async Task SendWatchKeysCommandAsync(this RedisClient client, IEnumerable<string> keys)
         {
-            if (keys == null)
-                return;
-
-            await client.SendCommandAsync("Watch", keys.ToArray()).ConfigureAwait(false);
+            await client.SendCommandAsync("Watch", (keys ?? new string[]{}).ToArray()).ConfigureAwait(false);
         }
 
     }

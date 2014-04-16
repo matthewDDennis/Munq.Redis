@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="CommandBuilder.cs" />
     <Compile Include="Commands\ConnectionCommands.cs" />
+    <Compile Include="Commands\HashCommands.cs" />
     <Compile Include="Commands\InfoSections.cs" />
     <Compile Include="Commands\KeyCommands.cs" />
     <Compile Include="Commands\ServerCommands.cs" />

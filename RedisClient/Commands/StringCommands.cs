@@ -35,7 +35,7 @@ namespace Munq.Redis
             List<object> parameters = new List<object>();
             parameters.Add(operation);
             parameters.Add(destKey);
-            parameters.Add(keys);
+            parameters.Add(keys ?? new string[] {});
 
             await client.SendCommandAsync("BitOp", parameters.ToArray());
         }
@@ -106,10 +106,7 @@ namespace Munq.Redis
 
         public async static Task SendMGetCommandAsync(this RedisClient client, IEnumerable<string> keys)
         {
-            if (keys == null)
-                keys = new string[] { };
-
-            await client.SendCommandAsync("MGet", keys.ToArray()).ConfigureAwait(false);
+            await client.SendCommandAsync("MGet", (keys ?? new string[] {}).ToArray()).ConfigureAwait(false);
         }
 
         public async static Task SendMSetCommandAsync(this RedisClient client, 

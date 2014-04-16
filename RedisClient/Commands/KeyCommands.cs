@@ -110,16 +110,6 @@ namespace Munq.Redis
         //    await client.SendCommand("Sort", key, ...).ConfigureAwait(false);
         //}
 
-        public async static Task SendTTLCommandAsync(this RedisClient client, string key)
-        {
-            await client.SendCommandAsync("TTL", key).ConfigureAwait(false);
-        }
-
-        public async static Task SendTypeCommandAsync(this RedisClient client, string key)
-        {
-            await client.SendCommandAsync("Type", key).ConfigureAwait(false);
-        }
-
         public async static Task SendScanCommandAsync(this RedisClient client, long cursor, 
                                                       string pattern, long? count)
         {
@@ -140,6 +130,16 @@ namespace Munq.Redis
             }
 
             await client.SendCommandAsync("Scan", parameters).ConfigureAwait(false);
+        }
+
+        public async static Task SendTTLCommandAsync(this RedisClient client, string key)
+        {
+            await client.SendCommandAsync("TTL", key).ConfigureAwait(false);
+        }
+
+        public async static Task SendTypeCommandAsync(this RedisClient client, string key)
+        {
+            await client.SendCommandAsync("Type", key).ConfigureAwait(false);
         }
     }
 }
