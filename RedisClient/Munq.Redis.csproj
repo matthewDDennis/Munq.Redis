@@ -43,7 +43,9 @@
     <Compile Include="Commands\ConnectionCommands.cs" />
     <Compile Include="Commands\HashCommands.cs" />
     <Compile Include="Commands\InfoSections.cs" />
+    <Compile Include="Commands\InsertOptions.cs" />
     <Compile Include="Commands\KeyCommands.cs" />
+    <Compile Include="Commands\ListCommands.cs" />
     <Compile Include="Commands\ServerCommands.cs" />
     <Compile Include="Commands\SetCommandOptions.cs" />
     <Compile Include="Commands\ShutDownOptions.cs" />

@@ -13,9 +13,11 @@ namespace Munq.Redis
             await client.SendCommandAsync("Del", key).ConfigureAwait(false);
         }
 
-        public async static Task SendDeleteCommandAsync(this RedisClient client, IEnumerable<string> keys)
+        public async static Task SendDeleteCommandAsync(this RedisClient client, 
+                                                        IEnumerable<string> keys)
         {
-            await client.SendCommandAsync("Del", keys.ToArray()).ConfigureAwait(false);
+            await client.SendCommandAsync("Del", (keys ?? new string[]{}).ToArray())
+                        .ConfigureAwait(false);
         }
 
         public async static Task SendDumpCommandAsync(this RedisClient client, string key)
@@ -28,7 +30,8 @@ namespace Munq.Redis
             await client.SendCommandAsync("Exists", key).ConfigureAwait(false);
         }
 
-        public async static Task SendExpireCommandAsync(this RedisClient client, string key, int seconds)
+        public async static Task SendExpireCommandAsync(this RedisClient client, string key, 
+                                                        int seconds)
         {
             await client.SendCommandAsync("Expire", key, seconds).ConfigureAwait(false);
         }
@@ -44,13 +47,16 @@ namespace Munq.Redis
             await client.SendCommandAsync("Keys", pattern).ConfigureAwait(false);
         }
 
-        public async static Task SendMigrateCommandAsync(this RedisClient client, string host, int port, 
-                                             string key, int destination_db, long timeoutMs)
+        public async static Task SendMigrateCommandAsync(this RedisClient client, string host, 
+                                                         int port, string key, int destination_db, 
+                                                         long timeoutMs)
         {
-            await client.SendCommandAsync("Migrate", host, port, key, destination_db, timeoutMs).ConfigureAwait(false);
+            await client.SendCommandAsync("Migrate", host, port, key, destination_db, timeoutMs)
+                        .ConfigureAwait(false);
         }
 
-        public async static Task SendMoveCommandAsync(this RedisClient client, string key, int database)
+        public async static Task SendMoveCommandAsync(this RedisClient client, string key, 
+                                                      int database)
         {
             await client.SendCommandAsync("Move", key, database).ConfigureAwait(false);
         }
@@ -75,7 +81,8 @@ namespace Munq.Redis
         public async static Task SendPExpireAtCommandAsync(this RedisClient client, string key, 
                                                            long millisecondsTimestamp)
         {
-            await client.SendCommandAsync("PExpireAt", key, millisecondsTimestamp).ConfigureAwait(false);
+            await client.SendCommandAsync("PExpireAt", key, millisecondsTimestamp)
+                        .ConfigureAwait(false);
         }
 
         public async static Task SendPTTLCommandAsync(this RedisClient client, string key)
@@ -88,12 +95,14 @@ namespace Munq.Redis
             await client.SendCommandAsync("RandomKey").ConfigureAwait(false);
         }
 
-        public async static Task SendRenameCommandAsync(this RedisClient client, string key, string newKey)
+        public async static Task SendRenameCommandAsync(this RedisClient client, string key, 
+                                                        string newKey)
         {
             await client.SendCommandAsync("Rename", key, newKey).ConfigureAwait(false);
         }
 
-        public async static Task SendRenameXCommandAsync(this RedisClient client, string key, string newKey)
+        public async static Task SendRenameXCommandAsync(this RedisClient client, string key, 
+                                                         string newKey)
         {
             await client.SendCommandAsync("RenameX", key, newKey).ConfigureAwait(false);
         }
@@ -101,7 +110,8 @@ namespace Munq.Redis
         public async static Task SendRestoreCommandAsync(this RedisClient client, string key, 
                                                          long ttl, string serializeValue)
         {
-            await client.SendCommandAsync("Restore", key, ttl, serializeValue);
+            await client.SendCommandAsync("Restore", key, ttl, serializeValue)
+                        .ConfigureAwait(false);
         }
 
         // TODO: finish this one.  Its a little more complicated than most.
