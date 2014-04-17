@@ -1,4 +1,10 @@
-﻿using System;
+﻿/* ***************************************************************************************
+ * Redis List Commands see http://redis.io/commands#list for details
+ * Author: Matthew Dennis
+ * License: CodeProject Open License (CPOL) http://www.codeproject.com/info/cpol10.aspx
+ * © Copyright 2014
+ * ***************************************************************************************/ 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,14 +12,23 @@ using System.Threading.Tasks;
 
 namespace Munq.Redis
 {
+    /// <summary>
+    /// This class is responsible for sending the Redis commands that are related to 
+    /// the Redis List objects.  The commands are implemented as extension method to
+    /// the RedisClient class.  Methods are in the form of SendAAAAACommandAsync.
+    /// </summary>
     public static class ListCommands
     {
+        // BLPOP key timeout (See: http://redis.io/commands/blpop)
+        // Remove and get the first element in a list, or block until one is available.
         public static async Task SendBLPopCommandAsync(this RedisClient client, string key, 
                                                        long timeout)
         {
             await client.SendCommandAsync("BLPop", key, timeout).ConfigureAwait(false);
         }
 
+        // BLPOP key [key, ...] timeout (See: http://redis.io/commands/blpop)
+        // Remove and get the first element in one or more lists, or block until one is available.
         public static async Task SendBLPopCommandAsync(this RedisClient client, 
                                                        IEnumerable<string> keys, long timeout)
         {
