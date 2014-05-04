@@ -8,15 +8,14 @@ namespace Munq.Redis.Commands
 {
     public static class KeyCommands
     {
-        public async static Task SendDeleteAsync(this RedisClient client, IEnumerable<string> keys)
-        {
-            await client.SendAsync("Del", (keys ?? new string[]{}).ToArray())
-                        .ConfigureAwait(false);
-        }
-
         public async static Task SendDeleteAsync(this RedisClient client, params string[] keys)
         {
             await client.SendDeleteAsync((IEnumerable<string>)keys).ConfigureAwait(false);
+        }
+
+        public async static Task SendDeleteAsync(this RedisClient client, IEnumerable<string> keys)
+        {
+            await client.SendAsync("Del", (keys ?? new string[]{})).ConfigureAwait(false);
         }
 
         public async static Task SendDumpAsync(this RedisClient client, string key)
