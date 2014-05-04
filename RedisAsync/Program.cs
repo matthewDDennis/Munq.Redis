@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Munq.Redis;
 using System.Diagnostics;
+
+using Munq.Redis;
+using Munq.Redis.Commands;
 
 namespace RedisAsync
 {
@@ -19,16 +21,15 @@ namespace RedisAsync
         }
         private static async Task DoIt()
         {
-            using (var client = new RedisClient("cp-dev1.office.codeproject.com"))
-            //using (var client = new RedisClient())
+            using (var client = new RedisClient())
             {
                 try
                 {
-                    await client.SendPingCommandAsync();
+                    await client.SendPingAsync();
                     Console.WriteLine(await client.ReadResponseAsync());
 
                     Console.Write("Selecting Database 4 - ");
-                    await client.SendSelectCommandAsync(4);
+                    await client.SendSelectAsync(4);
                     Console.WriteLine(await client.ReadResponseAsync());
 
                     string data = new string('A', 10000);
@@ -38,7 +39,7 @@ namespace RedisAsync
                     stopwatch.Start();
                     for (int i = 0; i < NumIterations; i++)
                     {
-                        await client.SendSetCommandAsync("String" + i, data);
+                        await client.SendSetAsync("String" + i, data);
                         object obj = await client.ReadResponseAsync();
                         results.Add(obj);
                     }
@@ -51,7 +52,7 @@ namespace RedisAsync
                     stopwatch.Start();
                     for (int i = 0; i < NumIterations; i++)
                     {
-                        await client.SendGetCommandAsync("String" + i);
+                        await client.SendGetAsync("String" + i);
                         object obj = await client.ReadResponseAsync();
 
                         string resultString = "OK";
@@ -64,19 +65,25 @@ namespace RedisAsync
                     Console.WriteLine("with {0} errors", results.Count(rs => (string)rs != "OK"));
                     Console.WriteLine("{0:N0} Gets of {1:N0} chars took {2}.", NumIterations, NumChars, stopwatch.Elapsed);
 
-                    await client.SendDbSizeCommandAsync();
+                    await client.SendDbSizeAsync();
                     WriteResult(await client.ReadResponseAsync());
 
-                    await client.SendInfoCommandAsync(InfoSections.All);
+                    await client.SendInfoAsync(InfoSections.All);
                     WriteResult(await client.ReadResponseAsync());
 
-                    await client.SendFlushDbCommandAsync();
+                    await client.SendDeleteAsync("String0", "String1", "String2");
                     WriteResult(await client.ReadResponseAsync());
 
-                    await client.SendDbSizeCommandAsync();
+                    await client.SendDbSizeAsync();
                     WriteResult(await client.ReadResponseAsync());
 
-                    await client.SendCommandAsync("Quit");
+                    await client.SendFlushDbAsync();
+                    WriteResult(await client.ReadResponseAsync());
+
+                    await client.SendDbSizeAsync();
+                    WriteResult(await client.ReadResponseAsync());
+
+                    await client.SendAsync("Quit");
                     WriteResult(await client.ReadResponseAsync());
                 }
                 catch (Exception ex)

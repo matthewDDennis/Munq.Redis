@@ -4,18 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Munq.Redis
+namespace Munq.Redis.Commands
 {
     public static class StringCommands
     {
-        public async static Task SendAppendCommandAsync(this RedisClient client, string key, 
-                                                        string value)
+        public async static Task SendAppendAsync(this RedisClient client, 
+                                                 string key, string value)
         {
-            await client.SendCommandAsync("Append", key, value).ConfigureAwait(false);
+            await client.SendAsync("Append", key, value).ConfigureAwait(false);
         }
 
-        public async static Task SendBitCountCommandAsync(this RedisClient client, string key, 
-                                                          long? start, long? end)
+        public async static Task SendBitCountAsync(this RedisClient client, 
+                                                   string key, long? start, long? end)
         {
             if (end.HasValue && !start.HasValue)
                 start = 0;
@@ -27,22 +27,30 @@ namespace Munq.Redis
             if (end.HasValue)
                 parameters.Add(end.Value);
 
-            await client.SendCommandAsync("BitCount", parameters.ToArray()).ConfigureAwait(false);
+            await client.SendAsync("BitCount", parameters).ConfigureAwait(false);
         }
 
-        public async static Task SendBitOpCommandAsync(this RedisClient client, string operation, 
-                                                       string destKey, IEnumerable<string> keys)
+        public async static Task SendBitOpAsync(this RedisClient client, 
+                                                string operation, string destKey, 
+                                                params string[] keys)
+        {
+            await client.SendBitOpAsync(operation, destKey, (IEnumerable<string>) keys);
+        }
+
+        public async static Task SendBitOpAsync(this RedisClient client, 
+                                                string operation, string destKey, 
+                                                IEnumerable<string> keys)
         {
             List<object> parameters = new List<object>();
             parameters.Add(operation);
             parameters.Add(destKey);
-            parameters.Add(keys ?? new string[] {});
+            parameters.Add(keys ?? new string[]{});
 
-            await client.SendCommandAsync("BitOp", parameters.ToArray()).ConfigureAwait(false);
+            await client.SendAsync("BitOp", parameters).ConfigureAwait(false);
         }
 
-        public async static Task SendBitPosCommandAsync(this RedisClient client, string key, 
-                                                        bool bitState, long? start, long? end)
+        public async static Task SendBitPosAsync(this RedisClient client, 
+                                                 string key, bool bitState, long? start, long? end)
         {
             if (end.HasValue && !start.HasValue)
                 start = 0;
@@ -55,68 +63,70 @@ namespace Munq.Redis
             if (end.HasValue)
                 parameters.Add(end.Value);
 
-            await client.SendCommandAsync("BitPos", parameters.ToArray()).ConfigureAwait(false);
+            await client.SendAsync("BitPos", parameters).ConfigureAwait(false);
         }
 
-        public async static Task SendDecrCommandAsync(this RedisClient client, string key)
+        public async static Task SendDecrAsync(this RedisClient client, string key)
         {
-            await client.SendCommandAsync("Decr", key).ConfigureAwait(false);
+            await client.SendAsync("Decr", key).ConfigureAwait(false);
         }
 
-        public async static Task SendDecrByCommandAsync(this RedisClient client, string key, 
+        public async static Task SendDecrByAsync(this RedisClient client, 
+                                                 string key, long value)
+        {
+            await client.SendAsync("DecrBy", key, value).ConfigureAwait(false);
+        }
+
+        public async static Task SendGetAsync(this RedisClient client, string key)
+        {
+            await client.SendAsync("Get", key).ConfigureAwait(false);
+        }
+
+        public async static Task SendGetBitAsync(this RedisClient client, 
+                                                 string key, long offset)
+        {
+            await client.SendAsync("GetBit", key, offset).ConfigureAwait(false);
+        }
+
+        public async static Task SendGetRangeAsync(this RedisClient client, 
+                                                   string key, long start, long end)
+        {
+            await client.SendAsync("GetRange", key, start, end).ConfigureAwait(false);
+        }
+
+        public async static Task SendGetSetAsync(this RedisClient client, string key, string value)
+        {
+            await client.SendAsync("GetSet", key, value).ConfigureAwait(false);
+        }
+
+        public async static Task SendIncrAsync(this RedisClient client, string key)
+        {
+            await client.SendAsync("Incr", key).ConfigureAwait(false);
+        }
+
+        public async static Task SendIncrByAsync(this RedisClient client, string key, 
                                                         long value)
         {
-            await client.SendCommandAsync("DecrBy", key, value).ConfigureAwait(false);
+            await client.SendAsync("IncrBy", key, value).ConfigureAwait(false);
         }
 
-        public async static Task SendGetCommandAsync(this RedisClient client, string key)
+        public async static Task SendIncrByFloatAsync(this RedisClient client, 
+                                                      string key, double value)
         {
-            await client.SendCommandAsync("Get", key).ConfigureAwait(false);
+            await client.SendAsync("IncrByFloat", key, value).ConfigureAwait(false);
         }
 
-        public async static Task SendGetBitCommandAsync(this RedisClient client, string key, 
-                                                        long offset)
+        public async static Task SendMGetAsync(this RedisClient client, params string[] keys)
         {
-            await client.SendCommandAsync("GetBit", key, offset).ConfigureAwait(false);
+            await client.SendMGetAsync((IEnumerable<string>) keys).ConfigureAwait(false);
         }
 
-        public async static Task SendGetRangeCommandAsync(this RedisClient client, string key, 
-                                                          long start, long end)
+        public async static Task SendMGetAsync(this RedisClient client, IEnumerable<string> keys)
         {
-            await client.SendCommandAsync("GetRange", key, start, end).ConfigureAwait(false);
+            await client.SendAsync("MGet", (keys ?? new string[]{})).ConfigureAwait(false);
         }
 
-        public async static Task SendGetSetCommandAsync(this RedisClient client, string key, 
-                                                        string value)
-        {
-            await client.SendCommandAsync("GetSet", key, value).ConfigureAwait(false);
-        }
-
-        public async static Task SendIncrCommandAsync(this RedisClient client, string key)
-        {
-            await client.SendCommandAsync("Incr", key).ConfigureAwait(false);
-        }
-
-        public async static Task SendIncrByCommandAsync(this RedisClient client, string key, 
-                                                        long value)
-        {
-            await client.SendCommandAsync("IncrBy", key, value).ConfigureAwait(false);
-        }
-
-        public async static Task SendIncrByFloatCommandAsync(this RedisClient client, string key, 
-                                                             double value)
-        {
-            await client.SendCommandAsync("IncrByFloat", key, value).ConfigureAwait(false);
-        }
-
-        public async static Task SendMGetCommandAsync(this RedisClient client, 
-                                                      IEnumerable<string> keys)
-        {
-            await client.SendCommandAsync("MGet", (keys ?? new string[] {}).ToArray())
-                        .ConfigureAwait(false);
-        }
-
-        public async static Task SendMSetCommandAsync(this RedisClient client, 
+        public async static Task SendMSetAsync(this RedisClient client, 
                                            IEnumerable<KeyValuePair<string, object>> keyAndValues)
         {
             List<object> parameters = new List<object>();
@@ -127,11 +137,10 @@ namespace Munq.Redis
                     parameters.Add(keyAndValue.Value);
                 }
 
-            await client.SendCommandAsync("MSet", parameters.ToArray()).ConfigureAwait(false);
+            await client.SendAsync("MSet", parameters).ConfigureAwait(false);
         }
 
-
-        public async static Task SendMSetNXCommandAsync(this RedisClient client, 
+        public async static Task SendMSetNXAsync(this RedisClient client, 
                                             IEnumerable<KeyValuePair<string, object>> keyAndValues)
         {
             List<object> parameters = new List<object>();
@@ -142,20 +151,19 @@ namespace Munq.Redis
                     parameters.Add(keyAndValue.Value);
                 }
 
-            await client.SendCommandAsync("MSetNX", parameters.ToArray()).ConfigureAwait(false);
+            await client.SendAsync("MSetNX", parameters).ConfigureAwait(false);
         }
 
-        public async static Task SendPSetEXCommandAsync(this RedisClient client, string key, 
-                                                        long millisecondsTimeout, object value)
+        public async static Task SendPSetEXAsync(this RedisClient client, 
+                                                 string key, long msTimeout, object value)
         {
-            await client.SendCommandAsync("PSetEX", key, millisecondsTimeout, value)
-                        .ConfigureAwait(false);   
+            await client.SendAsync("PSetEX", key, msTimeout, value).ConfigureAwait(false);   
         }
 
-        public async static Task SendSetCommandAsync(this RedisClient client, string key, 
-                                                     object value, 
-                                                     long? seconds, long? milliseconds, 
-                                                     SetCommandOptions setOption = SetCommandOptions.Always)
+        public async static Task SendSetAsync(this RedisClient client, string key, 
+                                              object value, 
+                                              long? seconds, long? milliseconds, 
+                                              StringSetCommandOptions setOption = StringSetCommandOptions.Always)
         {
             List<object> parameters = new List<object>();
             parameters.Add(key);
@@ -173,48 +181,48 @@ namespace Munq.Redis
                 parameters.Add(milliseconds.Value);
             }
 
-            if (setOption == SetCommandOptions.IfExists)
+            if (setOption == StringSetCommandOptions.IfExists)
                 parameters.Add("XX");
-            else if (setOption == SetCommandOptions.IfNotExists)
+            else if (setOption == StringSetCommandOptions.IfNotExists)
                 parameters.Add("NX");
 
-            await client.SendCommandAsync("Set", parameters.ToArray()).ConfigureAwait(false);
+            await client.SendAsync("Set", parameters).ConfigureAwait(false);
         }
 
-        public async static Task SendSetCommandAsync(this RedisClient client, string key, 
-                                                     object value)
+        public async static Task SendSetAsync(this RedisClient client, 
+                                              string key, object value)
         {
-            await SendSetCommandAsync(client, key, value, null, null).ConfigureAwait(false);
+            await SendSetAsync(client, key, value, null, null).ConfigureAwait(false);
         }
 
-        public async static Task SendSetBitCommandAsync(this RedisClient client, string key, 
-                                                        int offset, bool value)
+        public async static Task SendSetBitAsync(this RedisClient client, 
+                                                 string key, int offset, bool value)
         {
-            await client.SendCommandAsync("SetBit", key, offset, value).ConfigureAwait(false);
+            await client.SendAsync("SetBit", key, offset, value).ConfigureAwait(false);
         }
 
-        public async static Task SendSetEXCommandAsync(this RedisClient client, string key, 
-                                                       object value, long seconds)
+        public async static Task SendSetEXAsync(this RedisClient client, 
+                                                string key, object value, long seconds)
         {
-            await client.SendCommandAsync("SetEX", key, seconds, value).ConfigureAwait(false);
+            await client.SendAsync("SetEX", key, seconds, value).ConfigureAwait(false);
         }
 
-        public async static Task SendSetNXCommandAsync(this RedisClient client, string key, 
-                                                       object value)
+        public async static Task SendSetNXAsync(this RedisClient client, 
+                                                string key, object value)
         {
-            await client.SendCommandAsync("SetNX", key, value).ConfigureAwait(false);
+            await client.SendAsync("SetNX", key, value).ConfigureAwait(false);
         }
 
         // TODO: value may have to be string
-        public async static Task SendSetRangeCommandAsync(this RedisClient client, string key, 
-                                                          long offset, object value)
+        public async static Task SendSetRangeAsync(this RedisClient client, 
+                                                   string key, long offset, object value)
         {
-            await client.SendCommandAsync("SetRange", key, offset, value).ConfigureAwait(false);
+            await client.SendAsync("SetRange", key, offset, value).ConfigureAwait(false);
         }
 
-        public async static Task SendStrLenCommandAsync(this RedisClient client, string key)
+        public async static Task SendStrLenAsync(this RedisClient client, string key)
         {
-            await client.SendCommandAsync("StrLen", key).ConfigureAwait(false);
+            await client.SendAsync("StrLen", key).ConfigureAwait(false);
         }
     }
 }

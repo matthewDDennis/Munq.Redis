@@ -4,39 +4,38 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Munq.Redis
+namespace Munq.Redis.Commands
 {
     public static class TransactionCommands
     {
-        public static async Task SendDiscardCommandAsync(this RedisClient client)
+        public static async Task SendDiscardAsync(this RedisClient client)
         {
-            await client.SendCommandAsync("Discard").ConfigureAwait(false);
+            await client.SendAsync("Discard").ConfigureAwait(false);
         }
 
-        public static async Task SendExecCommandAsync(this RedisClient client)
+        public static async Task SendExecAsync(this RedisClient client)
         {
-            await client.SendCommandAsync("Exec").ConfigureAwait(false);
+            await client.SendAsync("Exec").ConfigureAwait(false);
         }
 
-        public static async Task SendMultiCommandAsync(this RedisClient client)
+        public static async Task SendMultiAsync(this RedisClient client)
         {
-            await client.SendCommandAsync("Multi").ConfigureAwait(false);
+            await client.SendAsync("Multi").ConfigureAwait(false);
         }
 
-        public static async Task SendUnWatchCommandAsync(this RedisClient client)
+        public static async Task SendUnWatchAsync(this RedisClient client)
         {
-            await client.SendCommandAsync("Unwatch").ConfigureAwait(false);
+            await client.SendAsync("Unwatch").ConfigureAwait(false);
         }
 
-        public static async Task SendWatchKeyCommandAsync(this RedisClient client, string key)
+        public static async Task SendWatchKeysAsync(this RedisClient client, params string[] keys)
         {
-            await client.SendCommandAsync("Watch", key).ConfigureAwait(false);
+            await client.SendWatchKeysAsync((IEnumerable<string>) keys).ConfigureAwait(false);
         }
 
-        public static async Task SendWatchKeysCommandAsync(this RedisClient client, IEnumerable<string> keys)
+        public static async Task SendWatchKeysAsync(this RedisClient client, IEnumerable<string> keys)
         {
-            await client.SendCommandAsync("Watch", (keys ?? new string[]{}).ToArray()).ConfigureAwait(false);
+            await client.SendAsync("Watch", (keys ?? new string[]{})).ConfigureAwait(false);
         }
-
     }
 }

@@ -39,7 +39,18 @@ namespace Munq.Redis
         /// <param name="command">The Command.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>The response.</returns>
-        public async Task SendCommandAsync(string command, params object[] parameters)
+        public async Task SendAsync(string command, params object[] parameters)
+        {
+            await SendAsync(command, (IEnumerable<object>)parameters);
+        }
+
+        /// <summary>
+        /// Sends a command and returns the response string.
+        /// </summary>
+        /// <param name="command">The Command.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>The response.</returns>
+        public async Task SendAsync(string command, IEnumerable<object> parameters)
         {
             await ConnectAsync().ConfigureAwait(false);
             byte[] commandData = _commandBuilder.CreateCommandData(command, parameters);
@@ -71,12 +82,7 @@ namespace Munq.Redis
         {
             if (!_client.Connected)
             {
-                if (_stream != null)
-                    _stream.Dispose();
-
-                if (_reader != null)
-                    _reader.Dispose();
-
+                DisposeOfConnectionResources();
                 await _client.ConnectAsync(_host, _port).ConfigureAwait(false);
                 _stream = _client.GetStream();
                 _reader = new ResponseReader(_stream);
@@ -86,9 +92,15 @@ namespace Munq.Redis
         public void Close()
         {
             _client.Close();
+            DisposeOfConnectionResources();
+
+        }
+        public void Dispose()
+        {
+            Close();
         }
 
-        public void Dispose()
+        private void DisposeOfConnectionResources()
         {
             if (_stream != null)
             {
@@ -96,7 +108,11 @@ namespace Munq.Redis
                 _stream = null;
             }
 
-           Close();
+            if (_reader != null)
+            {
+                _reader.Dispose();
+                _reader = null;
+            }
         }
     }
 }

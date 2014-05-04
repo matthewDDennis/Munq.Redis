@@ -10,11 +10,11 @@ namespace Munq.Redis
 {
     public class CommandBuilder
     {
-        public byte[] CreateCommandData(string command, object[] parameters)
+        public byte[] CreateCommandData(string command, IEnumerable<object> parameters)
         {
             StringBuilder sb = new StringBuilder();
 
-            int sizeOfCommandArray = 1 + (parameters != null ? parameters.Length : 0);
+            int sizeOfCommandArray = 1 + (parameters != null ? parameters.Count() : 0);
             sb.Append("*");
             sb.Append(sizeOfCommandArray);
             sb.AppendLine();
@@ -29,6 +29,7 @@ namespace Munq.Redis
             string commandString = sb.ToString();
             return Encoding.UTF8.GetBytes(commandString);
         }
+
         private void AddStringToCommand(StringBuilder sb, string value)
         {
             sb.Append('$');
@@ -36,6 +37,7 @@ namespace Munq.Redis
             sb.AppendLine();
             sb.AppendLine(value);
         }
+
         private void AddObjectToCommand(StringBuilder sb, object obj)
         {
             var objType = obj.GetType();

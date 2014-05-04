@@ -25,10 +25,12 @@ namespace Munq.Redis
 
         public async Task<object> ReadAsync()
         {
-            int c = _reader.Read();
-            if (c == -1)
+            char[] buffer = new char[1];
+            int count = await _reader.ReadAsync(buffer, 0, 1).ConfigureAwait(false);
+            if (count == 0)
                 return null;
 
+            char c = buffer[0];
             switch (c)
             {
                 case '+':
@@ -47,19 +49,23 @@ namespace Munq.Redis
                     return await ReadArrayAsync().ConfigureAwait(false);
 
                 default:
-                    return new RedisErrorString("Invalid response initial character " + (char)c);
+                    return new RedisErrorString("Invalid response initial character " + c);
             }
         }
+
         public void Dispose()
         {
             if (_reader != null)
+            {
                 _reader.Dispose();
+            }
         }
 
         private async Task<string> ReadSimpleStringAsync()
         {
             return await _reader.ReadLineAsync().ConfigureAwait(false);
         }
+
         private async Task<object> ReadErrorStringAsync()
         {
             string message = await _reader.ReadLineAsync().ConfigureAwait(false);

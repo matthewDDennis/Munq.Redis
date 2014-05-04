@@ -4,33 +4,33 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Munq.Redis
+namespace Munq.Redis.Commands
 {
     public static class ConnectionCommands
     {
-        public static async Task SendAuthCommandAsync(this RedisClient client, string password)
+        public static async Task SendAuthAsync(this RedisClient client, string password)
         {
-            await client.SendCommandAsync("Auth", password).ConfigureAwait(false);
+            await client.SendAsync("Auth", password).ConfigureAwait(false);
         }
 
-        public static async Task SendEchoCommandAsync(this RedisClient client, string message)
+        public static async Task SendEchoAsync(this RedisClient client, string message)
         {
-            await client.SendCommandAsync("Echo", message).ConfigureAwait(false);
+            await client.SendAsync("Echo", message).ConfigureAwait(false);
         }
 
-        public static async Task SendPingCommandAsync(this RedisClient client)
+        public static async Task SendPingAsync(this RedisClient client)
         {
-            await client.SendCommandAsync("Ping").ConfigureAwait(false);
+            await client.SendAsync("Ping").ConfigureAwait(false);
         }
 
-        public static async Task SendQuitCommandAsync(this RedisClient client)
+        public static async Task SendQuitAsync(this RedisClient client)
         {
-            await client.SendCommandAsync("Quit").ConfigureAwait(false);
+            await client.SendAsync("Quit").ConfigureAwait(false);
         }
 
-        public static async Task SendSelectCommandAsync(this RedisClient client, int db)
+        public static async Task SendSelectAsync(this RedisClient client, int db)
         {
-            await client.SendCommandAsync("Select", db).ConfigureAwait(false);
+            await client.SendAsync("Select", db).ConfigureAwait(false);
         }
     }
 }

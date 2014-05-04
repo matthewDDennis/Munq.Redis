@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Munq.Redis
 {
-    public enum SetCommandOptions
+    public enum StringSetCommandOptions
     {
         Always,
         IfExists,

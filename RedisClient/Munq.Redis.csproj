@@ -47,7 +47,8 @@
     <Compile Include="Commands\KeyCommands.cs" />
     <Compile Include="Commands\ListCommands.cs" />
     <Compile Include="Commands\ServerCommands.cs" />
-    <Compile Include="Commands\SetCommandOptions.cs" />
+    <Compile Include="Commands\SetCommands.cs" />
+    <Compile Include="Commands\StringSetCommandOptions.cs" />
     <Compile Include="Commands\ShutDownOptions.cs" />
     <Compile Include="Commands\TransactionCommands.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
