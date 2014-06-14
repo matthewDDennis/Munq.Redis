@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-
 namespace Munq.Redis.Commands
 {
     public static class StringCommands
@@ -30,7 +29,7 @@ namespace Munq.Redis.Commands
             {
                 parameters.Add(end.Value);
             }
-                        await client.SendAsync("BitCount", parameters).ConfigureAwait(false);
+            await client.SendAsync("BitCount", parameters).ConfigureAwait(false);
         }
         public async static Task SendBitOpAsync(this RedisClient client,
                                                 string operation, string destKey,
@@ -67,7 +66,7 @@ namespace Munq.Redis.Commands
             {
                 parameters.Add(end.Value);
             }
-                        await client.SendAsync("BitPos", parameters).ConfigureAwait(false);
+            await client.SendAsync("BitPos", parameters).ConfigureAwait(false);
         }
         public async static Task SendDecrAsync(this RedisClient client, string key)
         {
@@ -130,7 +129,7 @@ namespace Munq.Redis.Commands
                     parameters.Add(keyAndValue.Value);
                 }
             }
-                        await client.SendAsync("MSet", parameters).ConfigureAwait(false);
+            await client.SendAsync("MSet", parameters).ConfigureAwait(false);
         }
         public async static Task SendMSetNXAsync(this RedisClient client,
                                             IEnumerable<KeyValuePair<string, object>> keyAndValues)
@@ -144,7 +143,7 @@ namespace Munq.Redis.Commands
                     parameters.Add(keyAndValue.Value);
                 }
             }
-                        await client.SendAsync("MSetNX", parameters).ConfigureAwait(false);
+            await client.SendAsync("MSetNX", parameters).ConfigureAwait(false);
         }
         public async static Task SendPSetEXAsync(this RedisClient client,
                                                  string key, long msTimeout, object value)

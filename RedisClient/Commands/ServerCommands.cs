@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-
 namespace Munq.Redis.Commands
 {
     public static class ServerCommands
@@ -65,8 +64,11 @@ namespace Munq.Redis.Commands
         {
             await client.SendAsync("FlushDb").ConfigureAwait(false);
         }
-        public static async Task SendInfoAsync(this RedisClient client,
-                                                      InfoSections section = InfoSections.Default)
+        public static async Task SendInfoAsync(this RedisClient client)
+        {
+            await client.SendAsync("Info").ConfigureAwait(false);
+        }
+        public static async Task SendInfoAsync(this RedisClient client, InfoSections section)
         {
             await client.SendAsync("Info", section).ConfigureAwait(false);
         }
@@ -82,32 +84,25 @@ namespace Munq.Redis.Commands
         {
             await client.SendAsync("Save").ConfigureAwait(false);
         }
-        public static async Task SendShutdownAsync(this RedisClient client,
-                                                  ShutDownOptions option = ShutDownOptions.Default)
+        public static async Task SendShutdownAsync(this RedisClient client)
         {
-            if (option == ShutDownOptions.Default)
-            {
-                await client.SendAsync("Shutdown").ConfigureAwait(false);
-            }
-            else
-            {
-                await client.SendAsync("ShutDown", option).ConfigureAwait(false);
-            }
+            await client.SendAsync("Shutdown").ConfigureAwait(false);
+        }
+        public static async Task SendShutdownAsync(this RedisClient client, ShutDownOptions option)
+        {
+            await client.SendAsync("ShutDown", option).ConfigureAwait(false);
         }
         public static async Task SendSlaveOfAsync(this RedisClient client, string host, int port)
         {
             await client.SendAsync("SlaveOf", host, port).ConfigureAwait(false);
         }
-        public static async Task SendSlowLogGetAsync(this RedisClient client, long? numToGet)
+        public static async Task SendSlowLogGetAsync(this RedisClient client, long numToGet)
         {
-            if (numToGet.HasValue)
-            {
-                await client.SendAsync("SlowLog", "Get", numToGet.Value).ConfigureAwait(false);
-            }
-            else
-            {
-                await client.SendAsync("SlowLog", "Get").ConfigureAwait(false);
-            }
+            await client.SendAsync("SlowLog", "Get", numToGet).ConfigureAwait(false);
+        }
+        public static async Task SendSlowLogGetAsync(this RedisClient client)
+        {
+            await client.SendAsync("SlowLog", "Get").ConfigureAwait(false);
         }
         public static async Task SendSlowLogLenAsync(this RedisClient client)
         {

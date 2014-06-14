@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-
 namespace Munq.Redis.Commands
 {
     public static class SetCommands
@@ -18,7 +17,8 @@ namespace Munq.Redis.Commands
         {
             var parameters = new List<object>();
             parameters.Add(key);
-            parameters.AddRange(values);
+            if (values != null)
+                parameters.AddRange(values);
 
             await client.SendAsync("SAdd", parameters).ConfigureAwait(false);
         }
@@ -45,10 +45,8 @@ namespace Munq.Redis.Commands
             var parameters = new List<object>();
             parameters.Add(destKey);
             if (keys != null)
-            {
                 parameters.AddRange(keys);
-            }
-                        await client.SendAsync("SDiffStore", parameters).ConfigureAwait(false);
+            await client.SendAsync("SDiffStore", parameters).ConfigureAwait(false);
         }
         public static async Task SendSInterAsync(this RedisClient client, params string[] keys)
         {
@@ -69,10 +67,8 @@ namespace Munq.Redis.Commands
             var parameters = new List<object>();
             parameters.Add(destKey);
             if (keys != null)
-            {
                 parameters.AddRange(keys);
-            }
-                        await client.SendAsync("SInterStore", parameters).ConfigureAwait(false);
+            await client.SendAsync("SInterStore", parameters).ConfigureAwait(false);
         }
         public static async Task SendSIsMemberAsync(this RedisClient client, string key, object member)
         {
@@ -91,20 +87,16 @@ namespace Munq.Redis.Commands
         {
             await client.SendAsync("SPop", key).ConfigureAwait(false);
         }
-        public static async Task SendSRandMemberAsync(this RedisClient client,
-                                                       string key, long? count = null)
+        public static async Task SendSRandMemberAsync(this RedisClient client, string key, long count)
         {
-            if (count.HasValue)
-            {
-                await client.SendAsync("SRandMember", key, count).ConfigureAwait(false);
-            }
-            else
-            {
-                await client.SendAsync("SRandMember", key).ConfigureAwait(false);
-            }
+            await client.SendAsync("SRandMember", key, count).ConfigureAwait(false);
+        }
+        public static async Task SendSRandMemberAsync(this RedisClient client, string key)
+        {
+            await client.SendAsync("SRandMember", key).ConfigureAwait(false);
         }
         public static async Task SendSRemAsync(this RedisClient client,
-                                                string key, params object[] members)
+                                               string key, params object[] members)
         {
             await client.SendSRemAsync(key, (IEnumerable<object>) members).ConfigureAwait(false);
         }
@@ -160,10 +152,8 @@ namespace Munq.Redis.Commands
             var parameters = new List<object>();
             parameters.Add(destKey);
             if (keys != null)
-            {
                 parameters.AddRange(keys);
-            }
-                        await client.SendAsync("SUnionStore", parameters).ConfigureAwait(false);
+            await client.SendAsync("SUnionStore", parameters).ConfigureAwait(false);
         }
     }
 }

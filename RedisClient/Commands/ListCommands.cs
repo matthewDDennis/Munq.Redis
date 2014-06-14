@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-
 namespace Munq.Redis.Commands
 {
     /// <summary>
@@ -39,9 +38,7 @@ namespace Munq.Redis.Commands
         {
             var parameters = new List<object>();
             if (keys != null)
-            {
                 parameters.AddRange(keys);
-            }
             parameters.Add(timeout);
             await client.SendAsync("BRPop", parameters).ConfigureAwait(false);
         }
@@ -80,10 +77,8 @@ namespace Munq.Redis.Commands
             var parameters = new List<object>();
             parameters.Add(key);
             if (values != null)
-            {
                 parameters.AddRange(values);
-            }
-                        await client.SendAsync("LPush", parameters).ConfigureAwait(false);
+            await client.SendAsync("LPush", parameters).ConfigureAwait(false);
         }
         public static async Task SendLPushXAsync(this RedisClient client,
                                                  string key, object value)
@@ -130,10 +125,8 @@ namespace Munq.Redis.Commands
             var parameters = new List<object>();
             parameters.Add(key);
             if (values != null)
-            {
                 parameters.AddRange(values);
-            }
-                        await client.SendAsync("RPush", parameters).ConfigureAwait(false);
+            await client.SendAsync("RPush", parameters).ConfigureAwait(false);
         }
         public static async Task SendRPushXAsync(this RedisClient client,
                                                  string key, object value)
