@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Munq.Redis
 {
@@ -11,6 +10,7 @@ namespace Munq.Redis
         {
             Message = message;
         }
+
         public string Message { get; private set; }
 
         public override string ToString()

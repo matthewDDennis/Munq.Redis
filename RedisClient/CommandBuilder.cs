@@ -1,35 +1,21 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Munq.Redis
 {
     public class CommandBuilder
     {
-        public byte[] CreateCommandData(string command, IEnumerable<object> parameters)
+        private void AddObjectToCommand(StringBuilder sb, object obj)
         {
-            StringBuilder sb = new StringBuilder();
-
-            int sizeOfCommandArray = 1 + (parameters != null ? parameters.Count() : 0);
-            sb.Append("*");
-            sb.Append(sizeOfCommandArray);
-            sb.AppendLine();
-            AddStringToCommand(sb, command);
-
-            if (sizeOfCommandArray > 1)
+            var objType = obj.GetType();
+            if (objType == typeof(Boolean))
             {
-                foreach (object obj in parameters)
-                    AddObjectToCommand(sb, obj);
+                obj = (bool)obj ? "1" : "0";
             }
-
-            string commandString = sb.ToString();
-            return Encoding.UTF8.GetBytes(commandString);
+            AddStringToCommand(sb, obj.ToString());
         }
-
         private void AddStringToCommand(StringBuilder sb, string value)
         {
             sb.Append('$');
@@ -38,13 +24,26 @@ namespace Munq.Redis
             sb.AppendLine(value);
         }
 
-        private void AddObjectToCommand(StringBuilder sb, object obj)
+        public byte[] CreateCommandData(string command, IEnumerable<object> parameters)
         {
-            var objType = obj.GetType();
-            if (objType == typeof(Boolean))
-                obj = (bool)obj ? "1" : "0";
+            var sb = new StringBuilder();
 
-            AddStringToCommand(sb, obj.ToString());
+            var sizeOfCommandArray = 1 + (parameters != null ? parameters.Count() : 0);
+            sb.Append("*");
+            sb.Append(sizeOfCommandArray);
+            sb.AppendLine();
+            AddStringToCommand(sb, command);
+
+            if (sizeOfCommandArray > 1)
+            {
+                foreach (object obj in parameters)
+                {
+                    AddObjectToCommand(sb, obj);
+                }
+            }
+
+            var commandString = sb.ToString();
+            return Encoding.UTF8.GetBytes(commandString);
         }
     }
 }

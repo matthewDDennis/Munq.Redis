@@ -1,24 +1,22 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Munq.Redis
 {
     public enum InfoSections
     {
-        Default,
         All,
-        Server,
         Clients,
+        Cluster,
+        CommandStats,
+        CPU,
+        Default,
+        Keyspace,
         Memory,
         Persistence,
-        Stats,
         Replication,
-        CPU,
-        CommandStats,
-        Cluster,
-        Keyspace
+        Server,
+        Stats
     }
 }
