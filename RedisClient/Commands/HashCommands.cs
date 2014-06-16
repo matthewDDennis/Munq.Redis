@@ -66,7 +66,8 @@ namespace Munq.Redis.Commands
                     parameters.Add(keyAndValue.Value);
                 }
             }
-                        await client.SendAsync("HMSet", parameters).ConfigureAwait(false);
+
+            await client.SendAsync("HMSet", parameters).ConfigureAwait(false);
         }
         public async static Task SendHScanAsync(this RedisClient client,
                                                 string key, long cursor, string pattern, long? count)
