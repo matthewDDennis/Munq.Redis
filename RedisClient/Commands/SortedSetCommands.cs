@@ -44,10 +44,27 @@ namespace Munq.Redis.Commands
             await client.SendAsync("ZAdd", key, increment, member).ConfigureAwait(false);
         }
 
-        public static async Task SendZInterStoreAsync(this RedisClient client, string destination, 
+        public static async Task SendZInterStoreAsync(this RedisClient client, string destination,
                                                      long numKeys, IEnumerable<string> keys,
-                                                     IEnumerable<long> weights, 
+                                                     IEnumerable<long> weights,
                                                      SetAggregate aggregate = SetAggregate.Default)
+        {
+            string cmdStr = "ZInterStore";
+            await SendSetOpAsync(client, destination, numKeys, keys, weights, aggregate, cmdStr);
+        }
+
+        public static async Task SendZUnionStoreAsync(this RedisClient client, string destination,
+                                                     long numKeys, IEnumerable<string> keys,
+                                                     IEnumerable<long> weights,
+                                                     SetAggregate aggregate = SetAggregate.Default)
+        {
+            string cmdStr = "ZUnionStore";
+            await SendSetOpAsync(client, destination, numKeys, keys, weights, aggregate, cmdStr);
+        }
+        private static async Task SendSetOpAsync(RedisClient client, string destination, 
+                                                 long numKeys, IEnumerable<string> keys, 
+                                                 IEnumerable<long> weights, SetAggregate aggregate, 
+                                                 string cmdStr)
         {
             List<object> parameters = new List<object>();
             parameters.Add(destination);
@@ -63,31 +80,7 @@ namespace Munq.Redis.Commands
                 parameters.Add("Aggregate");
                 parameters.Add(aggregate.ToString());
             }
-            await client.SendAsync("ZInterStore", parameters).ConfigureAwait(false);
+            await client.SendAsync(cmdStr, parameters).ConfigureAwait(false);
         }
-
-
-        public static async Task SendZUnionStoreAsync(this RedisClient client, string destination, 
-                                                     long numKeys, IEnumerable<string> keys,
-                                                     IEnumerable<long> weights, 
-                                                     SetAggregate aggregate = SetAggregate.Default)
-        {
-            List<object> parameters = new List<object>();
-            parameters.Add(destination);
-            parameters.Add(numKeys);
-            parameters.AddRange(keys);
-            if (weights != null)
-            {
-                parameters.Add("Weights");
-                parameters.AddRange(weights.Select(w => (object)w));
-            }
-            if (aggregate != SetAggregate.Default)
-            {
-                parameters.Add("Aggregate");
-                parameters.Add(aggregate.ToString());
-            }
-            await client.SendAsync("ZUnionStore", parameters).ConfigureAwait(false);
-        }
-
    }
 }
