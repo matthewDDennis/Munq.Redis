@@ -7,12 +7,12 @@ namespace Munq.Redis.Commands
 {
     public static class SetCommands
     {
-        public async static Task SendSAddAsync(this RedisClient client,
+        public static Task SendSAddAsync(this RedisClient client,
                                                 string key, params object[] values)
         {
-            await client.SendSAddAsync(key, (IEnumerable<object>)values).ConfigureAwait(false);
+            return client.SendSAddAsync(key, (IEnumerable<object>)values);
         }
-        public async static Task SendSAddAsync(this RedisClient client,
+        public static Task SendSAddAsync(this RedisClient client,
                                                string key, IEnumerable<object> values)
         {
             var parameters = new List<object>();
@@ -20,87 +20,87 @@ namespace Munq.Redis.Commands
             if (values != null)
                 parameters.AddRange(values);
 
-            await client.SendAsync("SAdd", parameters).ConfigureAwait(false);
+            return client.SendAsync("SAdd", parameters);
         }
-        public static async Task SendSCardAsync(this RedisClient client, string key)
+        public static Task SendSCardAsync(this RedisClient client, string key)
         {
-            await client.SendAsync("SCard", key).ConfigureAwait(false);
+            return client.SendAsync("SCard", key);
         }
-        public static async Task SendSDiffAsync(this RedisClient client, params string[] keys)
+        public static Task SendSDiffAsync(this RedisClient client, params string[] keys)
         {
-            await client.SendSDiffAsync((IEnumerable<string>) keys).ConfigureAwait(false);
+            return client.SendSDiffAsync((IEnumerable<string>) keys);
         }
-        public static async Task SendSDiffAsync(this RedisClient client, IEnumerable<string> keys)
+        public static Task SendSDiffAsync(this RedisClient client, IEnumerable<string> keys)
         {
-            await client.SendAsync("SDiff", keys).ConfigureAwait(false);
+            return client.SendAsync("SDiff", keys);
         }
-        public static async Task SendSDiffStoreAsync(this RedisClient client,
+        public static Task SendSDiffStoreAsync(this RedisClient client,
                                                      string destKey, params string[] keys)
         {
-            await client.SendSDiffStoreAsync(destKey, (IEnumerable<string>) keys).ConfigureAwait(false);
+            return client.SendSDiffStoreAsync(destKey, (IEnumerable<string>) keys);
         }
-        public static async Task SendSDiffStoreAsync(this RedisClient client,
+        public static Task SendSDiffStoreAsync(this RedisClient client,
                                                      string destKey, IEnumerable<string> keys)
         {
             var parameters = new List<object>();
             parameters.Add(destKey);
             if (keys != null)
                 parameters.AddRange(keys);
-            await client.SendAsync("SDiffStore", parameters).ConfigureAwait(false);
+            return client.SendAsync("SDiffStore", parameters);
         }
-        public static async Task SendSInterAsync(this RedisClient client, params string[] keys)
+        public static Task SendSInterAsync(this RedisClient client, params string[] keys)
         {
-            await client.SendSInterAsync((IEnumerable<string>) keys).ConfigureAwait(false);
+            return client.SendSInterAsync((IEnumerable<string>) keys);
         }
-        public static async Task SendSInterAsync(this RedisClient client, IEnumerable<string> keys)
+        public static Task SendSInterAsync(this RedisClient client, IEnumerable<string> keys)
         {
-            await client.SendAsync("SInter", keys).ConfigureAwait(false);
+            return client.SendAsync("SInter", keys);
         }
-        public static async Task SendSInterStoreAsync(this RedisClient client,
+        public static Task SendSInterStoreAsync(this RedisClient client,
                                                      string destKey, params string[] keys)
         {
-            await client.SendSInterStoreAsync(destKey, (IEnumerable<string>) keys).ConfigureAwait(false);
+            return client.SendSInterStoreAsync(destKey, (IEnumerable<string>) keys);
         }
-        public static async Task SendSInterStoreAsync(this RedisClient client,
+        public static Task SendSInterStoreAsync(this RedisClient client,
                                                      string destKey, IEnumerable<string> keys)
         {
             var parameters = new List<object>();
             parameters.Add(destKey);
             if (keys != null)
                 parameters.AddRange(keys);
-            await client.SendAsync("SInterStore", parameters).ConfigureAwait(false);
+            return client.SendAsync("SInterStore", parameters);
         }
-        public static async Task SendSIsMemberAsync(this RedisClient client, string key, object member)
+        public static Task SendSIsMemberAsync(this RedisClient client, string key, object member)
         {
-            await client.SendAsync("SIsMember", key, member).ConfigureAwait(false);
+            return client.SendAsync("SIsMember", key, member);
         }
-        public static async Task SendSMembersAsync(this RedisClient client, string key)
+        public static Task SendSMembersAsync(this RedisClient client, string key)
         {
-            await client.SendAsync("SMembers", key).ConfigureAwait(false);
+            return client.SendAsync("SMembers", key);
         }
-        public static async Task SendSMovesAsync(this RedisClient client,
+        public static Task SendSMovesAsync(this RedisClient client,
                                                  string source, string destination, object member)
         {
-            await client.SendAsync("SMove", source, destination, member).ConfigureAwait(false);
+            return client.SendAsync("SMove", source, destination, member);
         }
-        public static async Task SendSPopAsync(this RedisClient client, string key)
+        public static Task SendSPopAsync(this RedisClient client, string key)
         {
-            await client.SendAsync("SPop", key).ConfigureAwait(false);
+            return client.SendAsync("SPop", key);
         }
-        public static async Task SendSRandMemberAsync(this RedisClient client, string key, long count)
+        public static Task SendSRandMemberAsync(this RedisClient client, string key, long count)
         {
-            await client.SendAsync("SRandMember", key, count).ConfigureAwait(false);
+            return client.SendAsync("SRandMember", key, count);
         }
-        public static async Task SendSRandMemberAsync(this RedisClient client, string key)
+        public static Task SendSRandMemberAsync(this RedisClient client, string key)
         {
-            await client.SendAsync("SRandMember", key).ConfigureAwait(false);
+            return client.SendAsync("SRandMember", key);
         }
-        public static async Task SendSRemAsync(this RedisClient client,
+        public static Task SendSRemAsync(this RedisClient client,
                                                string key, params object[] members)
         {
-            await client.SendSRemAsync(key, (IEnumerable<object>) members).ConfigureAwait(false);
+            return client.SendSRemAsync(key, (IEnumerable<object>) members);
         }
-        public static async Task SendSRemAsync(this RedisClient client,
+        public static Task SendSRemAsync(this RedisClient client,
                                                string key, IEnumerable<object> members)
         {
             var parameters = new List<object>();
@@ -109,9 +109,9 @@ namespace Munq.Redis.Commands
             {
                 parameters.AddRange(members);
             }
-                        await client.SendAsync("SRem", parameters).ConfigureAwait(false);
+                        return client.SendAsync("SRem", parameters);
         }
-        public async static Task SendSScanAsync(this RedisClient client,
+        public static Task SendSScanAsync(this RedisClient client,
                                                 string key, long cursor, string pattern, long? count)
         {
             var parameters = new List<object>();
@@ -131,29 +131,29 @@ namespace Munq.Redis.Commands
                 parameters.Add(count.Value);
             }
 
-            await client.SendAsync("SScan", parameters).ConfigureAwait(false);
+            return client.SendAsync("SScan", parameters);
         }
-        public static async Task SendSUnionAsync(this RedisClient client, params string[] keys)
+        public static Task SendSUnionAsync(this RedisClient client, params string[] keys)
         {
-            await client.SendSUnionAsync((IEnumerable<string>) keys).ConfigureAwait(false);
+            return client.SendSUnionAsync((IEnumerable<string>) keys);
         }
-        public static async Task SendSUnionAsync(this RedisClient client, IEnumerable<string> keys)
+        public static Task SendSUnionAsync(this RedisClient client, IEnumerable<string> keys)
         {
-            await client.SendAsync("SUnion", keys).ConfigureAwait(false);
+            return client.SendAsync("SUnion", keys);
         }
-        public static async Task SendSUnionStoreAsync(this RedisClient client,
+        public static Task SendSUnionStoreAsync(this RedisClient client,
                                                      string destKey, params string[] keys)
         {
-            await client.SendSUnionStoreAsync(destKey, (IEnumerable<string>) keys).ConfigureAwait(false);
+            return client.SendSUnionStoreAsync(destKey, (IEnumerable<string>) keys);
         }
-        public static async Task SendSUnionStoreAsync(this RedisClient client,
+        public static Task SendSUnionStoreAsync(this RedisClient client,
                                                      string destKey, IEnumerable<string> keys)
         {
             var parameters = new List<object>();
             parameters.Add(destKey);
             if (keys != null)
                 parameters.AddRange(keys);
-            await client.SendAsync("SUnionStore", parameters).ConfigureAwait(false);
+            return client.SendAsync("SUnionStore", parameters);
         }
     }
 }

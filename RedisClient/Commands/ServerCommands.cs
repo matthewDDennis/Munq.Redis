@@ -7,118 +7,118 @@ namespace Munq.Redis.Commands
 {
     public static class ServerCommands
     {
-        public static async Task SendBackgroundRewriteAOFAsync(this RedisClient client)
+        public static Task SendBackgroundRewriteAOFAsync(this RedisClient client)
         {
-            await client.SendAsync("BGREWRITEAOF").ConfigureAwait(false);
+            return client.SendAsync("BGREWRITEAOF");
         }
-        public static async Task SendBackgroundSaveAsync(this RedisClient client)
+        public static Task SendBackgroundSaveAsync(this RedisClient client)
         {
-            await client.SendAsync("BGSAVE").ConfigureAwait(false);
+            return client.SendAsync("BGSAVE");
         }
-        public static async Task SendClientKillAsync(this RedisClient client, string IpAndPort)
+        public static Task SendClientKillAsync(this RedisClient client, string IpAndPort)
         {
-            await client.SendAsync("Client", "Kill", IpAndPort).ConfigureAwait(false);
+            return client.SendAsync("Client", "Kill", IpAndPort);
         }
-        public static async Task SendClientListAsync(this RedisClient client)
+        public static Task SendClientListAsync(this RedisClient client)
         {
-            await client.SendAsync("Client", "List").ConfigureAwait(false);
+            return client.SendAsync("Client", "List");
         }
-        public static async Task SendClientNameAsync(this RedisClient client)
+        public static Task SendClientNameAsync(this RedisClient client)
         {
-            await client.SendAsync("Client", "GetName").ConfigureAwait(false);
+            return client.SendAsync("Client", "GetName");
         }
-        public static async Task SendClientPauseAsync(this RedisClient client, long milliseconds)
+        public static Task SendClientPauseAsync(this RedisClient client, long milliseconds)
         {
-            await client.SendAsync("Client", "Pause", milliseconds).ConfigureAwait(false);
+            return client.SendAsync("Client", "Pause", milliseconds);
         }
-        public static async Task SendClientSetNameAsync(this RedisClient client, string name)
+        public static Task SendClientSetNameAsync(this RedisClient client, string name)
         {
-            await client.SendAsync("Client", "SetName", name).ConfigureAwait(false);
+            return client.SendAsync("Client", "SetName", name);
         }
-        public static async Task SendConfigGetAsync(this RedisClient client, string parameter)
+        public static Task SendConfigGetAsync(this RedisClient client, string parameter)
         {
-            await client.SendAsync("Config", "Get", parameter).ConfigureAwait(false);
+            return client.SendAsync("Config", "Get", parameter);
         }
-        public static async Task SendConfigResetStatAsync(this RedisClient client)
+        public static Task SendConfigResetStatAsync(this RedisClient client)
         {
-            await client.SendAsync("Config", "ResetStat").ConfigureAwait(false);
+            return client.SendAsync("Config", "ResetStat");
         }
-        public static async Task SendConfigRewriteAsync(this RedisClient client)
+        public static Task SendConfigRewriteAsync(this RedisClient client)
         {
-            await client.SendAsync("Config", "Rewrite").ConfigureAwait(false);
+            return client.SendAsync("Config", "Rewrite");
         }
-        public static async Task SendConfigSetAsync(this RedisClient client,
+        public static Task SendConfigSetAsync(this RedisClient client,
                                                     string parameter, object value)
         {
-            await client.SendAsync("Config", "Set", parameter, value).ConfigureAwait(false);
+            return client.SendAsync("Config", "Set", parameter, value);
         }
-        public static async Task SendDbSizeAsync(this RedisClient client)
+        public static Task SendDbSizeAsync(this RedisClient client)
         {
-            await client.SendAsync("DbSize").ConfigureAwait(false);
+            return client.SendAsync("DbSize");
         }
-        public static async Task SendFlushAllAsync(this RedisClient client)
+        public static Task SendFlushAllAsync(this RedisClient client)
         {
-            await client.SendAsync("FlushAll").ConfigureAwait(false);
+            return client.SendAsync("FlushAll");
         }
-        public static async Task SendFlushDbAsync(this RedisClient client)
+        public static Task SendFlushDbAsync(this RedisClient client)
         {
-            await client.SendAsync("FlushDb").ConfigureAwait(false);
+            return client.SendAsync("FlushDb");
         }
-        public static async Task SendInfoAsync(this RedisClient client)
+        public static Task SendInfoAsync(this RedisClient client)
         {
-            await client.SendAsync("Info").ConfigureAwait(false);
+            return client.SendAsync("Info");
         }
-        public static async Task SendInfoAsync(this RedisClient client, InfoSections section)
+        public static Task SendInfoAsync(this RedisClient client, InfoSections section)
         {
-            await client.SendAsync("Info", section).ConfigureAwait(false);
+            return client.SendAsync("Info", section);
         }
-        public static async Task SendLastSaveAsync(this RedisClient client)
+        public static Task SendLastSaveAsync(this RedisClient client)
         {
-            await client.SendAsync("LastSave").ConfigureAwait(false);
+            return client.SendAsync("LastSave");
         }
-        public static async Task SendMonitorAsync(this RedisClient client)
+        public static Task SendMonitorAsync(this RedisClient client)
         {
-            await client.SendAsync("Monitor").ConfigureAwait(false);
+            return client.SendAsync("Monitor");
         }
-        public static async Task SendSaveAsync(this RedisClient client)
+        public static Task SendSaveAsync(this RedisClient client)
         {
-            await client.SendAsync("Save").ConfigureAwait(false);
+            return client.SendAsync("Save");
         }
-        public static async Task SendShutdownAsync(this RedisClient client)
+        public static Task SendShutdownAsync(this RedisClient client)
         {
-            await client.SendAsync("Shutdown").ConfigureAwait(false);
+            return client.SendAsync("Shutdown");
         }
-        public static async Task SendShutdownAsync(this RedisClient client, ShutDownOptions option)
+        public static Task SendShutdownAsync(this RedisClient client, ShutDownOptions option)
         {
-            await client.SendAsync("ShutDown", option).ConfigureAwait(false);
+            return client.SendAsync("ShutDown", option);
         }
-        public static async Task SendSlaveOfAsync(this RedisClient client, string host, int port)
+        public static Task SendSlaveOfAsync(this RedisClient client, string host, int port)
         {
-            await client.SendAsync("SlaveOf", host, port).ConfigureAwait(false);
+            return client.SendAsync("SlaveOf", host, port);
         }
-        public static async Task SendSlowLogGetAsync(this RedisClient client, long numToGet)
+        public static Task SendSlowLogGetAsync(this RedisClient client, long numToGet)
         {
-            await client.SendAsync("SlowLog", "Get", numToGet).ConfigureAwait(false);
+            return client.SendAsync("SlowLog", "Get", numToGet);
         }
-        public static async Task SendSlowLogGetAsync(this RedisClient client)
+        public static Task SendSlowLogGetAsync(this RedisClient client)
         {
-            await client.SendAsync("SlowLog", "Get").ConfigureAwait(false);
+            return client.SendAsync("SlowLog", "Get");
         }
-        public static async Task SendSlowLogLenAsync(this RedisClient client)
+        public static Task SendSlowLogLenAsync(this RedisClient client)
         {
-            await client.SendAsync("SlowLog", "Len").ConfigureAwait(false);
+            return client.SendAsync("SlowLog", "Len");
         }
-        public static async Task SendSlowLogResetAsync(this RedisClient client)
+        public static Task SendSlowLogResetAsync(this RedisClient client)
         {
-            await client.SendAsync("SlowLog", "Reset").ConfigureAwait(false);
+            return client.SendAsync("SlowLog", "Reset");
         }
-        public static async Task SendSyncAsync(this RedisClient client)
+        public static Task SendSyncAsync(this RedisClient client)
         {
-            await client.SendAsync("Sync").ConfigureAwait(false);
+            return client.SendAsync("Sync");
         }
-        public static async Task SendTimeAsync(this RedisClient client)
+        public static Task SendTimeAsync(this RedisClient client)
         {
-            await client.SendAsync("Time").ConfigureAwait(false);
+            return client.SendAsync("Time");
         }
     }
 }

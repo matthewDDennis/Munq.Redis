@@ -7,13 +7,13 @@ namespace Munq.Redis.Commands
 {
     public static class SortedSetCommands
     {
-        public static async Task SendZAddSync(this RedisClient client, string key,
+        public static Task SendZAddSync(this RedisClient client, string key,
                                               long score, object value)
         {
-            await client.SendAsync("ZAdd", key, score, value).ConfigureAwait(false);
+            return client.SendAsync("ZAdd", key, score, value);
         }
 
-        public static async Task SendZAddSync(this RedisClient client, string key,
+        public static Task SendZAddSync(this RedisClient client, string key,
                                               IEnumerable<KeyValuePair<long, object>> scoreAndValues)
         {
             var parameters = new List<object>();
@@ -27,41 +27,41 @@ namespace Munq.Redis.Commands
                 }
             }
 
-            await client.SendAsync("ZAdd", parameters).ConfigureAwait(false);
+            return client.SendAsync("ZAdd", parameters);
         }
-        public static async Task SendZCardAsync(this RedisClient client, string key)
+        public static Task SendZCardAsync(this RedisClient client, string key)
         {
-            await client.SendAsync("ZCard", key).ConfigureAwait(false);
+            return client.SendAsync("ZCard", key);
         }
 
-        public static async Task SendZCountAsync(this RedisClient client, string key, string min, string max)
+        public static Task SendZCountAsync(this RedisClient client, string key, string min, string max)
         {
-            await client.SendAsync("ZAdd", key, min, max).ConfigureAwait(false);
+            return client.SendAsync("ZAdd", key, min, max);
         }
 
-        public static async Task SendZIncrByAsync(this RedisClient client, string key, long increment, object member)
+        public static Task SendZIncrByAsync(this RedisClient client, string key, long increment, object member)
         {
-            await client.SendAsync("ZAdd", key, increment, member).ConfigureAwait(false);
+            return client.SendAsync("ZAdd", key, increment, member);
         }
 
-        public static async Task SendZInterStoreAsync(this RedisClient client, string destination,
+        public static Task SendZInterStoreAsync(this RedisClient client, string destination,
                                                      long numKeys, IEnumerable<string> keys,
                                                      IEnumerable<long> weights,
                                                      SetAggregate aggregate = SetAggregate.Default)
         {
             string cmdStr = "ZInterStore";
-            await SendSetOpAsync(client, destination, numKeys, keys, weights, aggregate, cmdStr);
+            return SendSetOpAsync(client, destination, numKeys, keys, weights, aggregate, cmdStr);
         }
 
-        public static async Task SendZUnionStoreAsync(this RedisClient client, string destination,
+        public static Task SendZUnionStoreAsync(this RedisClient client, string destination,
                                                      long numKeys, IEnumerable<string> keys,
                                                      IEnumerable<long> weights,
                                                      SetAggregate aggregate = SetAggregate.Default)
         {
             string cmdStr = "ZUnionStore";
-            await SendSetOpAsync(client, destination, numKeys, keys, weights, aggregate, cmdStr);
+            return SendSetOpAsync(client, destination, numKeys, keys, weights, aggregate, cmdStr);
         }
-        private static async Task SendSetOpAsync(RedisClient client, string destination, 
+        private static Task SendSetOpAsync(RedisClient client, string destination, 
                                                  long numKeys, IEnumerable<string> keys, 
                                                  IEnumerable<long> weights, SetAggregate aggregate, 
                                                  string cmdStr)
@@ -80,7 +80,7 @@ namespace Munq.Redis.Commands
                 parameters.Add("Aggregate");
                 parameters.Add(aggregate.ToString());
             }
-            await client.SendAsync(cmdStr, parameters).ConfigureAwait(false);
+            return client.SendAsync(cmdStr, parameters);
         }
    }
 }

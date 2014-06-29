@@ -7,53 +7,53 @@ namespace Munq.Redis.Commands
 {
     public static class HashCommands
     {
-        public static async Task SendHDelAsync(this RedisClient client, params string[] keys)
+        public static Task SendHDelAsync(this RedisClient client, params string[] keys)
         {
-            await client.SendHDelAsync((IEnumerable<string>)keys).ConfigureAwait(false);
+            return client.SendHDelAsync((IEnumerable<string>)keys);
         }
-        public static async Task SendHDelAsync(this RedisClient client, IEnumerable<string> keys)
+        public static Task SendHDelAsync(this RedisClient client, IEnumerable<string> keys)
         {
-            await client.SendAsync("HDel", (keys ?? new string[] { })).ConfigureAwait(false);
+            return client.SendAsync("HDel", (keys ?? new string[] { }));
         }
-        public static async Task SendHExistsAsync(this RedisClient client, string key, string field)
+        public static Task SendHExistsAsync(this RedisClient client, string key, string field)
         {
-            await client.SendAsync("HExists", key, field).ConfigureAwait(false);
+            return client.SendAsync("HExists", key, field);
         }
-        public static async Task SendHGetAllAsync(this RedisClient client, string key)
+        public static Task SendHGetAllAsync(this RedisClient client, string key)
         {
-            await client.SendAsync("HGetAll", key).ConfigureAwait(false);
+            return client.SendAsync("HGetAll", key);
         }
-        public static async Task SendHGetAsync(this RedisClient client, string key, string field)
+        public static Task SendHGetAsync(this RedisClient client, string key, string field)
         {
-            await client.SendAsync("HGet", key, field).ConfigureAwait(false);
+            return client.SendAsync("HGet", key, field);
         }
-        public static async Task SendHIncrByAsync(this RedisClient client,
+        public static Task SendHIncrByAsync(this RedisClient client,
                                                   string key, string field, long increment)
         {
-            await client.SendAsync("HIncrBy", key, field, increment).ConfigureAwait(false);
+            return client.SendAsync("HIncrBy", key, field, increment);
         }
-        public static async Task SendHIncrByFloatAsync(this RedisClient client,
+        public static Task SendHIncrByFloatAsync(this RedisClient client,
                                                        string key, string field, double increment)
         {
-            await client.SendAsync("HIncrByFloat", key, field, increment).ConfigureAwait(false);
+            return client.SendAsync("HIncrByFloat", key, field, increment);
         }
-        public static async Task SendHKeysAsync(this RedisClient client, string key)
+        public static Task SendHKeysAsync(this RedisClient client, string key)
         {
-            await client.SendAsync("HKeys", key).ConfigureAwait(false);
+            return client.SendAsync("HKeys", key);
         }
-        public static async Task SendHLenAsync(this RedisClient client, string key)
+        public static Task SendHLenAsync(this RedisClient client, string key)
         {
-            await client.SendAsync("HLen", key).ConfigureAwait(false);
+            return client.SendAsync("HLen", key);
         }
-        public static async Task SendHMGetAsync(this RedisClient client, params string[] keys)
+        public static Task SendHMGetAsync(this RedisClient client, params string[] keys)
         {
-            await client.SendHMGetAsync((IEnumerable<string>)keys).ConfigureAwait(false);
+            return client.SendHMGetAsync((IEnumerable<string>)keys);
         }
-        public static async Task SendHMGetAsync(this RedisClient client, IEnumerable<string> keys)
+        public static Task SendHMGetAsync(this RedisClient client, IEnumerable<string> keys)
         {
-            await client.SendAsync("HMGet", (keys ?? new string[] { })).ConfigureAwait(false);
+            return client.SendAsync("HMGet", (keys ?? new string[] { }));
         }
-        public async static Task SendHMSetAsync(this RedisClient client, string key,
+        public static Task SendHMSetAsync(this RedisClient client, string key,
                                            IEnumerable<KeyValuePair<string, object>> fieldAndValues)
         {
             var parameters = new List<object>();
@@ -67,9 +67,9 @@ namespace Munq.Redis.Commands
                 }
             }
 
-            await client.SendAsync("HMSet", parameters).ConfigureAwait(false);
+            return client.SendAsync("HMSet", parameters);
         }
-        public async static Task SendHScanAsync(this RedisClient client,
+        public static Task SendHScanAsync(this RedisClient client,
                                                 string key, long cursor, string pattern, long? count)
         {
             var parameters = new List<object>();
@@ -89,21 +89,21 @@ namespace Munq.Redis.Commands
                 parameters.Add(count.Value);
             }
 
-            await client.SendAsync("Scan", parameters).ConfigureAwait(false);
+            return client.SendAsync("Scan", parameters);
         }
-        public async static Task SendHSetAsync(this RedisClient client,
+        public static Task SendHSetAsync(this RedisClient client,
                                                string key, string field, object value)
         {
-            await client.SendAsync("HSet", key, field, value).ConfigureAwait(false);
+            return client.SendAsync("HSet", key, field, value);
         }
-        public async static Task SendHSetNXAsync(this RedisClient client,
+        public static Task SendHSetNXAsync(this RedisClient client,
                                                  string key, string field, object value)
         {
-            await client.SendAsync("HSetNX", key, field, value).ConfigureAwait(false);
+            return client.SendAsync("HSetNX", key, field, value);
         }
-        public static async Task SendHValsAsync(this RedisClient client, string key)
+        public static Task SendHValsAsync(this RedisClient client, string key)
         {
-            await client.SendAsync("HVals", key).ConfigureAwait(false);
+            return client.SendAsync("HVals", key);
         }
     }
 }

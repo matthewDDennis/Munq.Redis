@@ -7,99 +7,99 @@ namespace Munq.Redis.Commands
 {
     public static class KeyCommands
     {
-        public async static Task SendDeleteAsync(this RedisClient client, params string[] keys)
+        public static Task SendDeleteAsync(this RedisClient client, params string[] keys)
         {
-            await client.SendDeleteAsync((IEnumerable<string>)keys).ConfigureAwait(false);
+            return client.SendDeleteAsync((IEnumerable<string>)keys);
         }
-        public async static Task SendDeleteAsync(this RedisClient client, IEnumerable<string> keys)
+        public static Task SendDeleteAsync(this RedisClient client, IEnumerable<string> keys)
         {
-            await client.SendAsync("Del", (keys ?? new string[] { })).ConfigureAwait(false);
+            return client.SendAsync("Del", (keys ?? new string[] { }));
         }
-        public async static Task SendDumpAsync(this RedisClient client, string key)
+        public static Task SendDumpAsync(this RedisClient client, string key)
         {
-            await client.SendAsync("Dump", key).ConfigureAwait(false);
+            return client.SendAsync("Dump", key);
         }
-        public async static Task SendEpireAtAsync(this RedisClient client,
+        public static Task SendEpireAtAsync(this RedisClient client,
                                                   string key, long unixTimeStamp)
         {
-            await client.SendAsync("ExpireAt", key, unixTimeStamp).ConfigureAwait(false);
+            return client.SendAsync("ExpireAt", key, unixTimeStamp);
         }
-        public async static Task SendExistsAsync(this RedisClient client, string key)
+        public static Task SendExistsAsync(this RedisClient client, string key)
         {
-            await client.SendAsync("Exists", key).ConfigureAwait(false);
+            return client.SendAsync("Exists", key);
         }
-        public async static Task SendExpireAsync(this RedisClient client,
+        public static Task SendExpireAsync(this RedisClient client,
                                                  string key, int seconds)
         {
-            await client.SendAsync("Expire", key, seconds).ConfigureAwait(false);
+            return client.SendAsync("Expire", key, seconds);
         }
-        public async static Task SendKeysAsync(this RedisClient client, string pattern)
+        public static Task SendKeysAsync(this RedisClient client, string pattern)
         {
-            await client.SendAsync("Keys", pattern).ConfigureAwait(false);
+            return client.SendAsync("Keys", pattern);
         }
-        public async static Task SendMigrateAsync(this RedisClient client, string host,
+        public static Task SendMigrateAsync(this RedisClient client, string host,
                                                   int port, string key, int destination_db,
                                                   long timeoutMs)
         {
-            await client.SendAsync("Migrate", host, port, key, destination_db, timeoutMs)
-                        .ConfigureAwait(false);
+            return client.SendAsync("Migrate", host, port, key, destination_db, timeoutMs)
+                        ;
         }
-        public async static Task SendMoveAsync(this RedisClient client, string key, int database)
+        public static Task SendMoveAsync(this RedisClient client, string key, int database)
         {
-            await client.SendAsync("Move", key, database).ConfigureAwait(false);
+            return client.SendAsync("Move", key, database);
         }
-        public async static Task SendObjectEncodingAsync(this RedisClient client, string key)
+        public static Task SendObjectEncodingAsync(this RedisClient client, string key)
         {
-            await client.SendAsync("Object", "Encoding", key).ConfigureAwait(false);
+            return client.SendAsync("Object", "Encoding", key);
         }
-        public async static Task SendObjectIdelTimeAsync(this RedisClient client, string key)
+        public static Task SendObjectIdelTimeAsync(this RedisClient client, string key)
         {
-            await client.SendAsync("Object", "IdeTime", key).ConfigureAwait(false);
+            return client.SendAsync("Object", "IdeTime", key);
         }
-        public async static Task SendObjectRefCountAsync(this RedisClient client, string key)
+        public static Task SendObjectRefCountAsync(this RedisClient client, string key)
         {
-            await client.SendAsync("Object", "RefCount", key).ConfigureAwait(false);
+            return client.SendAsync("Object", "RefCount", key);
         }
-        public async static Task SendPersistAsync(this RedisClient client, string key)
+        public static Task SendPersistAsync(this RedisClient client, string key)
         {
-            await client.SendAsync("Persist", key).ConfigureAwait(false);
+            return client.SendAsync("Persist", key);
         }
-        public async static Task SendPExpireAsync(this RedisClient client,
+        public static Task SendPExpireAsync(this RedisClient client,
                                                   string key, long milliseconds)
         {
-            await client.SendAsync("PExpire", key, milliseconds).ConfigureAwait(false);
+            return client.SendAsync("PExpire", key, milliseconds);
         }
-        public async static Task SendPExpireAtAsync(this RedisClient client,
+        public static Task SendPExpireAtAsync(this RedisClient client,
                                                     string key, long millisecondsTimestamp)
         {
-            await client.SendAsync("PExpireAt", key, millisecondsTimestamp)
-                        .ConfigureAwait(false);
+            return client.SendAsync("PExpireAt", key, millisecondsTimestamp)
+                        ;
         }
-        public async static Task SendPTTLAsync(this RedisClient client, string key)
+        public static Task SendPTTLAsync(this RedisClient client, string key)
         {
-            await client.SendAsync("PTTL", key).ConfigureAwait(false);
+            return client.SendAsync("PTTL", key);
         }
-        public async static Task SendRandomKeyAsync(this RedisClient client)
+        public static Task SendRandomKeyAsync(this RedisClient client)
         {
-            await client.SendAsync("RandomKey").ConfigureAwait(false);
+            return client.SendAsync("RandomKey");
         }
-        public async static Task SendRenameAsync(this RedisClient client,
+        public static Task SendRenameAsync(this RedisClient client,
                                                  string key, string newKey)
         {
-            await client.SendAsync("Rename", key, newKey).ConfigureAwait(false);
+            return client.SendAsync("Rename", key, newKey);
         }
-        public async static Task SendRenameXAsync(this RedisClient client,
+        public static Task SendRenameXAsync(this RedisClient client,
                                                   string key, string newKey)
         {
-            await client.SendAsync("RenameX", key, newKey).ConfigureAwait(false);
+            return client.SendAsync("RenameX", key, newKey);
         }
-        public async static Task SendRestoreAsync(this RedisClient client,
+        public static Task SendRestoreAsync(this RedisClient client,
                                                   string key, long ttl, string serializeValue)
         {
-            await client.SendAsync("Restore", key, ttl, serializeValue)
-                        .ConfigureAwait(false);
+            return client.SendAsync("Restore", key, ttl, serializeValue)
+                        ;
         }
-        public async static Task SendScanAsync(this RedisClient client,
+        public static Task SendScanAsync(this RedisClient client,
                                                long cursor, string pattern, long? count)
         {
             var parameters = new List<object>();
@@ -118,15 +118,15 @@ namespace Munq.Redis.Commands
                 parameters.Add(count.Value);
             }
 
-            await client.SendAsync("Scan", parameters).ConfigureAwait(false);
+            return client.SendAsync("Scan", parameters);
         }
-        public async static Task SendTTLAsync(this RedisClient client, string key)
+        public static Task SendTTLAsync(this RedisClient client, string key)
         {
-            await client.SendAsync("TTL", key).ConfigureAwait(false);
+            return client.SendAsync("TTL", key);
         }
-        public async static Task SendTypeAsync(this RedisClient client, string key)
+        public static Task SendTypeAsync(this RedisClient client, string key)
         {
-            await client.SendAsync("Type", key).ConfigureAwait(false);
+            return client.SendAsync("Type", key);
         }
     }
 }

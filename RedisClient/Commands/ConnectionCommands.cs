@@ -7,25 +7,25 @@ namespace Munq.Redis.Commands
 {
     public static class ConnectionCommands
     {
-        public static async Task SendAuthAsync(this RedisClient client, string password)
+        public static Task SendAuthAsync(this RedisClient client, string password)
         {
-            await client.SendAsync("Auth", password).ConfigureAwait(false);
+            return client.SendAsync("Auth", password);
         }
-        public static async Task SendEchoAsync(this RedisClient client, string message)
+        public static Task SendEchoAsync(this RedisClient client, string message)
         {
-            await client.SendAsync("Echo", message).ConfigureAwait(false);
+            return client.SendAsync("Echo", message);
         }
-        public static async Task SendPingAsync(this RedisClient client)
+        public static Task SendPingAsync(this RedisClient client)
         {
-            await client.SendAsync("Ping").ConfigureAwait(false);
+            return client.SendAsync("Ping");
         }
-        public static async Task SendQuitAsync(this RedisClient client)
+        public static Task SendQuitAsync(this RedisClient client)
         {
-            await client.SendAsync("Quit").ConfigureAwait(false);
+            return client.SendAsync("Quit");
         }
-        public static async Task SendSelectAsync(this RedisClient client, int db)
+        public static Task SendSelectAsync(this RedisClient client, int db)
         {
-            await client.SendAsync("Select", db).ConfigureAwait(false);
+           return client.SendAsync("Select", db);
         }
     }
 }

@@ -12,6 +12,7 @@ namespace Munq.Redis.Commands
         {
             await client.SendAsync("Append", key, value).ConfigureAwait(false);
         }
+
         public async static Task SendBitCountAsync(this RedisClient client,
                                                    string key, long? start, long? end)
         {

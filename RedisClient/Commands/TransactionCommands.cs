@@ -7,29 +7,29 @@ namespace Munq.Redis.Commands
 {
     public static class TransactionCommands
     {
-        public static async Task SendDiscardAsync(this RedisClient client)
+        public static Task SendDiscardAsync(this RedisClient client)
         {
-            await client.SendAsync("Discard").ConfigureAwait(false);
+            return client.SendAsync("Discard");
         }
-        public static async Task SendExecAsync(this RedisClient client)
+        public static Task SendExecAsync(this RedisClient client)
         {
-            await client.SendAsync("Exec").ConfigureAwait(false);
+            return client.SendAsync("Exec");
         }
-        public static async Task SendMultiAsync(this RedisClient client)
+        public static Task SendMultiAsync(this RedisClient client)
         {
-            await client.SendAsync("Multi").ConfigureAwait(false);
+            return client.SendAsync("Multi");
         }
-        public static async Task SendUnWatchAsync(this RedisClient client)
+        public static Task SendUnWatchAsync(this RedisClient client)
         {
-            await client.SendAsync("Unwatch").ConfigureAwait(false);
+            return client.SendAsync("Unwatch");
         }
-        public static async Task SendWatchKeysAsync(this RedisClient client, params string[] keys)
+        public static Task SendWatchKeysAsync(this RedisClient client, params string[] keys)
         {
-            await client.SendWatchKeysAsync((IEnumerable<string>) keys).ConfigureAwait(false);
+            return client.SendWatchKeysAsync((IEnumerable<string>) keys);
         }
-        public static async Task SendWatchKeysAsync(this RedisClient client, IEnumerable<string> keys)
+        public static Task SendWatchKeysAsync(this RedisClient client, IEnumerable<string> keys)
         {
-            await client.SendAsync("Watch", (keys ?? new string[] { })).ConfigureAwait(false);
+            return client.SendAsync("Watch", (keys ?? new string[] { }));
         }
     }
 }
