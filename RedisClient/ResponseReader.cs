@@ -22,9 +22,45 @@ namespace Munq.Redis
 
         public bool HasDataAvailable
         {
-            get
+            get { return _reader.Peek() != -1; }
+        }
+
+        public async Task<object> ReadAsync()
+        {
+            var buffer = new char[1];
+            var count = await _reader.ReadAsync(buffer, 0, 1).ConfigureAwait(false);
+            if (count == 0)
             {
-                return _reader.Peek() != -1;
+                return null;
+            }
+            var c = buffer[0];
+            switch (c)
+            {
+                case '+':
+                    return await ReadSimpleStringAsync().ConfigureAwait(false);
+
+                case '-':
+                    return await ReadErrorStringAsync().ConfigureAwait(false);
+
+                case ':':
+                    return await ReadLongAsync().ConfigureAwait(false);
+
+                case '$':
+                    return await ReadBulkStringAsync().ConfigureAwait(false);
+
+                case '*':
+                    return await ReadArrayAsync().ConfigureAwait(false);
+
+                default:
+                    return new RedisErrorString("Invalid response initial character " + c);
+            }
+        }
+
+        public void Dispose()
+        {
+            if (_reader != null)
+            {
+                _reader.Dispose();
             }
         }
 
@@ -57,18 +93,22 @@ namespace Munq.Redis
             {
                 var strSize = (long)strLenObj;
                 if (strSize == -1)
-                {
+                {;
                     return new RedisNull();
                 }
                 else
                 {
                     var chars = new char[strSize];
-                    var charsRead = await _reader.ReadBlockAsync(chars, 0, (int)strSize).ConfigureAwait(false);
+                    int charsRead = 0;
+                    if (strSize > 0)
+                        charsRead = await _reader.ReadBlockAsync(chars, 0, (int)strSize).ConfigureAwait(false);
 
-                    _reader.ReadLine();
-                    if (strSize != charsRead)
+                    string remainingCharacters = _reader.ReadLine();
+                    if (strSize != charsRead || remainingCharacters.Length != 0)
                     {
-                        return new RedisErrorString("String length is incorrect. Expecting " + strSize + " received " + charsRead);
+                        return new RedisErrorString(String.Format(
+                            "String length is incorrect. Expecting {0} received {1} and {2} extra characters.", 
+                            strSize, charsRead, remainingCharacters.Length));
                     }
                     else
                     {
@@ -86,6 +126,11 @@ namespace Munq.Redis
             var message = await _reader.ReadLineAsync().ConfigureAwait(false);
             return new RedisErrorString(message);
         }
+
+        /// <summary>
+        /// Read line from the stream and converts it to a long.
+        /// </summary>
+        /// <returns>A task which returns a long.</returns>
         private async Task<object> ReadLongAsync()
         {
             var intStr = await _reader.ReadLineAsync().ConfigureAwait(false);
@@ -96,50 +141,18 @@ namespace Munq.Redis
             }
             else
             {
+                // should this be an exception?
                 return new RedisErrorString("Invalid Integer " + intStr);
             }
         }
+
+        /// <summary>
+        /// Reads a crlf terminated string from the response stream.
+        /// </summary>
+        /// <returns>A task which returns a string result.</returns>
         private async Task<string> ReadSimpleStringAsync()
         {
             return await _reader.ReadLineAsync().ConfigureAwait(false);
-        }
-
-        public void Dispose()
-        {
-            if (_reader != null)
-            {
-                _reader.Dispose();
-            }
-        }
-        public async Task<object> ReadAsync()
-        {
-            var buffer = new char[1];
-            var count = await _reader.ReadAsync(buffer, 0, 1).ConfigureAwait(false);
-            if (count == 0)
-            {
-                return null;
-            }
-            var c = buffer[0];
-            switch (c)
-            {
-                case '+':
-                    return await ReadSimpleStringAsync().ConfigureAwait(false);
-
-                case '-':
-                    return await ReadErrorStringAsync().ConfigureAwait(false);
-
-                case ':':
-                    return await ReadLongAsync().ConfigureAwait(false);
-
-                case '$':
-                    return await ReadBulkStringAsync().ConfigureAwait(false);
-
-                case '*':
-                    return await ReadArrayAsync().ConfigureAwait(false);
-
-                default:
-                    return new RedisErrorString("Invalid response initial character " + c);
-            }
         }
     }
 }

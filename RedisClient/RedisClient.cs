@@ -91,9 +91,9 @@ namespace Munq.Redis
         /// <param name="command">The Command.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>The response.</returns>
-        public async Task SendAsync(string command, params object[] parameters)
+        public Task SendAsync(string command, params object[] parameters)
         {
-            await SendAsync(command, (IEnumerable<object>)parameters);
+            return SendAsync(command, (IEnumerable<object>)parameters);
         }
 
         /// <summary>
