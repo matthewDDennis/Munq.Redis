@@ -7,6 +7,7 @@ using System.Diagnostics;
 
 using Munq.Redis;
 using Munq.Redis.Commands;
+using Munq.Redis.Responses;
 
 namespace RedisAsync
 {
@@ -25,26 +26,31 @@ namespace RedisAsync
             {
                 try
                 {
+                    Console.Write("Sending Ping - ");
                     await client.SendPingAsync();
-                    Console.WriteLine(await client.ReadResponseAsync());
+                    if (await client.ExpectConstStringAsync("PONG"))
+                        Console.WriteLine("Pong response received.");
+                    else
+                        Console.WriteLine("Unexpected string returned.");
 
                     Console.Write("Selecting Database 4 - ");
                     await client.SendSelectAsync(4);
-                    Console.WriteLine(await client.ReadResponseAsync());
+                    Console.WriteLine((await client.ExpectOkAsync()) ? "Success" : "Failed");
 
                     string data = new string('A', 10000);
                     List<object> results = new List<object>(NumIterations);
                     Stopwatch stopwatch = new Stopwatch();
                     Console.Write("Writing {0:N0} RedisStrings of {1:N0} chars - ", NumChars, NumIterations);
                     stopwatch.Start();
+                    int errorCount = 0;
                     for (int i = 0; i < NumIterations; i++)
                     {
                         await client.SendSetAsync("String" + i, data);
-                        object obj = await client.ReadResponseAsync();
-                        results.Add(obj);
+                        if ( !await client.ExpectOkAsync())
+                            errorCount++;
                     }
                     stopwatch.Stop();
-                    Console.WriteLine("with {0} errors", results.Count(rs => (string)rs != "OK"));
+                    Console.WriteLine("with {0} errors", errorCount);
                     Console.WriteLine("{0:N0} Sets of {1:N0} chars took {2}.", NumIterations, NumChars, stopwatch.Elapsed);
                     results.Clear();
                     Console.WriteLine("Reading {0:N0} RedisStrings of {1:N0} chars - ", NumChars, NumIterations);
@@ -53,11 +59,11 @@ namespace RedisAsync
                     for (int i = 0; i < NumIterations; i++)
                     {
                         await client.SendGetAsync("String" + i);
-                        object obj = await client.ReadResponseAsync();
+                        string obj = await client.ExpectBulkString();
 
                         string resultString = "OK";
                         if (obj == null || !(obj is string) || ((string)obj).Length != NumChars)
-                            resultString = obj.ToString();
+                            resultString = obj;
                         Console.Write("\r{0} - {1}", i + 1, resultString);
                         results.Add(resultString);
                     }

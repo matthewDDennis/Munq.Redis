@@ -56,13 +56,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RedisClient.cs" />
     <Compile Include="RedisClientConfig.cs" />
+    <Compile Include="RedisErrorException.cs" />
     <Compile Include="RedisErrorString.cs" />
     <Compile Include="ResponseReader.cs" />
     <Compile Include="Commands\StringCommands.cs" />
+    <Compile Include="Responses\BulkStringResponse.cs" />
+    <Compile Include="Responses\StringReponses.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Responses\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

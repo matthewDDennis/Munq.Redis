@@ -112,7 +112,7 @@ namespace Munq.Redis
                     }
                     else
                     {
-                        return new string(chars, 0, charsRead);
+                        return new RedisBulkString(chars, charsRead);
                     }
                 }
             }

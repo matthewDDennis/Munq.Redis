@@ -26,4 +26,18 @@ namespace Munq.Redis
             return "<null>";
         }
     }
+
+    public class RedisBulkString
+    {
+        public RedisBulkString(char[] data, int numChars)
+        {
+            Value = new String(data, 0, numChars);
+        }
+        public string Value { get; private set; }
+
+        public override string ToString()
+        {
+            return Value;
+        }
+    }
 }
