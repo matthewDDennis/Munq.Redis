@@ -17,9 +17,9 @@ namespace Munq.Redis
             : base(string.Format("Expected {0} but response was {1}", expected.Name, actual.Name))
         { }
     }
-        public class RedisUnexpectedResponseString : ApplicationException
+        public class RedisUnexpectedResponse : ApplicationException
     {
-        public RedisUnexpectedResponseString(string expected, string actual)
+        public RedisUnexpectedResponse(string expected, string actual)
             : base(string.Format("Expected {0} but response was {1}", expected, actual))
         { }
 

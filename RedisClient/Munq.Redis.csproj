@@ -61,6 +61,7 @@
     <Compile Include="ResponseReader.cs" />
     <Compile Include="Commands\StringCommands.cs" />
     <Compile Include="Responses\BulkStringResponse.cs" />
+    <Compile Include="Responses\IntegerResponse.cs" />
     <Compile Include="Responses\StringReponses.cs" />
   </ItemGroup>
   <ItemGroup />

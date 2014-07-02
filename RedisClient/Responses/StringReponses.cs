@@ -27,7 +27,7 @@ namespace Munq.Redis.Responses
         {
             string response = await client.ExpectStringAsync().ConfigureAwait(false);
             if (string.Compare(response, expected) != 0)
-                throw new RedisUnexpectedResponseString(expected, response);
+                throw new RedisUnexpectedResponse(expected, response);
             else
                 return true;
         }

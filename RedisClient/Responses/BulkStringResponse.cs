@@ -8,7 +8,7 @@ namespace Munq.Redis.Responses
 {
     public static class BulkStringResponse
     {
-        public static async Task<string> ExpectBulkString(this RedisClient client)
+        public static async Task<string> ExpectBulkStringAsync(this RedisClient client)
         {
             object response = await client.ReadResponseAsync().ConfigureAwait(false);
             if (response is RedisBulkString)

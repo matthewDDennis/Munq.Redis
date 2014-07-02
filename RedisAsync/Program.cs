@@ -59,7 +59,7 @@ namespace RedisAsync
                     for (int i = 0; i < NumIterations; i++)
                     {
                         await client.SendGetAsync("String" + i);
-                        string obj = await client.ExpectBulkString();
+                        string obj = await client.ExpectBulkStringAsync();
 
                         string resultString = "OK";
                         if (obj == null || !(obj is string) || ((string)obj).Length != NumChars)
