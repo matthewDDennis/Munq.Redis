@@ -8,11 +8,10 @@ namespace Munq.Redis
 {
     public class RedisClient : IDisposable
     {
-        private readonly RedisClientConfig _config;
-        private readonly TcpClient         _tcpClient;
-        private readonly CommandBuilder    _commandBuilder;
-        private          ResponseReader    _reader;
-        private          NetworkStream     _stream;
+        readonly RedisClientConfig _config;
+        readonly TcpClient         _tcpClient;
+        ResponseReader             _reader;
+        NetworkStream              _stream;
 
         public RedisClient() : this(new RedisClientConfig())
         {
@@ -21,28 +20,12 @@ namespace Munq.Redis
         public RedisClient(RedisClientConfig config)
         {
             _config         = config;
-            _commandBuilder = new CommandBuilder();
             _tcpClient      = new TcpClient() 
             { 
                 ReceiveTimeout = _config.ReceiveTimeout,
                 SendTimeout    = _config.SendTimeout,
                 NoDelay        = true
             };
-        }
-
-        private void DisposeOfConnectionResources()
-        {
-            if (_stream != null)
-            {
-                _stream.Dispose();
-                _stream = null;
-            }
-
-            if (_reader != null)
-            {
-                _reader.Dispose();
-                _reader = null;
-            }
         }
 
         public void Close()
@@ -64,6 +47,7 @@ namespace Munq.Redis
                 _reader = new ResponseReader(_stream);
             }
         }
+
         public void Dispose()
         {
             Close();
@@ -85,6 +69,7 @@ namespace Munq.Redis
                 return new RedisErrorString("ERR - " + ex.Message);
             }
         }
+
         /// <summary>
         /// Sends a command and returns the response string.
         /// </summary>
@@ -105,8 +90,30 @@ namespace Munq.Redis
         public async Task SendAsync(string command, IEnumerable<object> parameters)
         {
             await ConnectAsync().ConfigureAwait(false);
-            var commandData = _commandBuilder.CreateCommandData(command, parameters);
+            byte[] commandData;
+            using (CommandBuilder commandBuilder = new CommandBuilder())
+            {
+                commandData = commandBuilder.CreateCommandData(command, parameters);
+            }
             await _stream.WriteAsync(commandData, 0, commandData.Length).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Disposes of resources associated with the connection.
+        /// </summary>
+        void DisposeOfConnectionResources()
+        {
+            if (_stream != null)
+            {
+                _stream.Dispose();
+                _stream = null;
+            }
+
+            if (_reader != null)
+            {
+                _reader.Dispose();
+                _reader = null;
+            }
         }
     }
 }

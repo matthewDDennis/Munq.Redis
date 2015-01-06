@@ -2,38 +2,43 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
+using System.Text;
 using System.Threading.Tasks;
 
 
 namespace Munq.Redis
 {
+    /// <summary>
+    /// The ResponseParser class parses a string or Stream and converts the Redis response
+    /// into a object with the response data either as a single value or an array of values.
+    /// </summary>
     public class ResponseReader : IDisposable
     {
-        private readonly TextReader _reader;
+        NetworkStream _reader;
 
-        public ResponseReader(string data)
+        /// <summary>
+        /// Initializes a new instance of the ResponseReader class from a Stream.
+        /// </summary>
+        /// <param name="stream">The Stream.</param>
+        public ResponseReader(NetworkStream stream)
         {
-            _reader = new StringReader(data);
-        }
-        public ResponseReader(Stream stream)
-        {
-            _reader = new StreamReader(stream);
-        }
-
-        public bool HasDataAvailable
-        {
-            get { return _reader.Peek() != -1; }
+            _reader = stream;
         }
 
+        /// <summary>
+        /// Reads and parses the response from the ResponseReader's string or stream.
+        /// </summary>
+        /// <returns>A task which returns an object created from the response data.</returns>
         public async Task<object> ReadAsync()
         {
-            var buffer = new char[1];
+            var buffer = new byte[1];
             var count = await _reader.ReadAsync(buffer, 0, 1).ConfigureAwait(false);
             if (count == 0)
             {
                 return null;
             }
-            var c = buffer[0];
+            var c = (char)buffer[0];
             switch (c)
             {
                 case '+':
@@ -56,15 +61,23 @@ namespace Munq.Redis
             }
         }
 
+        /// <summary>
+        /// Disposes of the internal TextReader.
+        /// </summary>
         public void Dispose()
         {
             if (_reader != null)
             {
                 _reader.Dispose();
+                _reader = null;
             }
         }
 
-        private async Task<object> ReadArrayAsync()
+        /// <summary>
+        /// Reads an array of values from the response data.
+        /// </summary>
+        /// <returns></returns>
+        async Task<object> ReadArrayAsync()
         {
             var strLenObj = await ReadLongAsync().ConfigureAwait(false);
             if (strLenObj is long)
@@ -86,33 +99,39 @@ namespace Munq.Redis
                 return strLenObj;
             }
         }
-        private async Task<object> ReadBulkStringAsync()
+
+        /// <summary>
+        /// Reads a BulkString from the response data.
+        /// </summary>
+        /// <returns>Returns the BulkString, a RedisNull for the BulkString of length -1, or and RedisErrorString.</returns>
+        async Task<object> ReadBulkStringAsync()
         {
             var strLenObj = await ReadLongAsync().ConfigureAwait(false);
             if (strLenObj is long)
             {
                 var strSize = (long)strLenObj;
                 if (strSize == -1)
-                {;
+                {
                     return new RedisNull();
                 }
                 else
                 {
-                    var chars = new char[strSize];
+                    var data = new byte[strSize];
                     int charsRead = 0;
                     if (strSize > 0)
-                        charsRead = await _reader.ReadBlockAsync(chars, 0, (int)strSize).ConfigureAwait(false);
+                        charsRead = await _reader.ReadAsync(data, 0, (int)strSize).ConfigureAwait(false);
 
-                    string remainingCharacters = _reader.ReadLine();
+                    string remainingCharacters = await ReadLineAsync().ConfigureAwait(false);
                     if (strSize != charsRead || remainingCharacters.Length != 0)
                     {
+                        // TASK: Should be an exception.
                         return new RedisErrorString(String.Format(
-                            "String length is incorrect. Expecting {0} received {1} and {2} extra characters.", 
+                            "String length is incorrect. Expecting {0} received {1} and {2} extra characters.",
                             strSize, charsRead, remainingCharacters.Length));
                     }
                     else
                     {
-                        return new RedisBulkString(chars, charsRead);
+                        return new RedisBulkString(data);
                     }
                 }
             }
@@ -121,9 +140,14 @@ namespace Munq.Redis
                 return strLenObj;
             }
         }
-        private async Task<object> ReadErrorStringAsync()
+
+        /// <summary>
+        /// Reads a Redis Server Error from the Response data.
+        /// </summary>
+        /// <returns>The RedisErrorString containing the error message.</returns>
+        async Task<object> ReadErrorStringAsync()
         {
-            var message = await _reader.ReadLineAsync().ConfigureAwait(false);
+            var message = await ReadLineAsync().ConfigureAwait(false);
             return new RedisErrorString(message);
         }
 
@@ -131,9 +155,9 @@ namespace Munq.Redis
         /// Read line from the stream and converts it to a long.
         /// </summary>
         /// <returns>A task which returns a long.</returns>
-        private async Task<object> ReadLongAsync()
+        async Task<object> ReadLongAsync()
         {
-            var intStr = await _reader.ReadLineAsync().ConfigureAwait(false);
+            var intStr = await ReadLineAsync().ConfigureAwait(false);
             long value;
             if (long.TryParse(intStr, out value))
             {
@@ -150,9 +174,48 @@ namespace Munq.Redis
         /// Reads a crlf terminated string from the response stream.
         /// </summary>
         /// <returns>A task which returns a string result.</returns>
-        private async Task<string> ReadSimpleStringAsync()
+        async Task<string> ReadSimpleStringAsync()
         {
-            return await _reader.ReadLineAsync().ConfigureAwait(false);
+            return await ReadLineAsync().ConfigureAwait(false);
+        }
+
+        private async Task<string> ReadLineAsync()
+        {
+            const byte CR = (byte)'\r';
+            const byte LF = (byte)'\n';
+
+            var MS = new MemoryStream();
+
+            byte[] input = new byte[1];
+            byte prevInput = 0;
+
+            bool done = false;
+            while (!done)
+            {
+                int count = await _reader.ReadAsync(input, 0, 1);
+                byte c = input[0];
+               switch (c)
+                {
+                    case CR:
+                        break;
+
+                    case LF:
+                        if (prevInput == CR )
+                            done = true;
+                        else
+                            MS.WriteByte(c);
+                        break;
+
+                    default:
+                        if (prevInput == CR)
+                            MS.WriteByte(CR);
+                        MS.WriteByte(c);
+                        break;
+                }
+                prevInput = c;
+            }
+
+            return Encoding.UTF8.GetString(MS.ToArray());
         }
     }
 }

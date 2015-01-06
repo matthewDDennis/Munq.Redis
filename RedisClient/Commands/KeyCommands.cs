@@ -94,10 +94,9 @@ namespace Munq.Redis.Commands
             return client.SendAsync("RenameX", key, newKey);
         }
         public static Task SendRestoreAsync(this RedisClient client,
-                                                  string key, long ttl, string serializeValue)
+                                                  string key, long ttl, byte[] serializeValue)
         {
-            return client.SendAsync("Restore", key, ttl, serializeValue)
-                        ;
+            return client.SendAsync("Restore", key, ttl, serializeValue);
         }
         public static Task SendScanAsync(this RedisClient client,
                                                long cursor, string pattern, long? count)
@@ -127,6 +126,12 @@ namespace Munq.Redis.Commands
         public static Task SendTypeAsync(this RedisClient client, string key)
         {
             return client.SendAsync("Type", key);
+        }
+
+        // TODO: change options string to typed parameters or a options class.
+        public static Task SendSortAsync(this RedisClient client, string key, string options)
+        {
+            return client.SendAsync("Sort", key, options);
         }
     }
 }

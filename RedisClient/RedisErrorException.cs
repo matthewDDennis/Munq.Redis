@@ -11,13 +11,13 @@ namespace Munq.Redis
         { }
     }
 
-        public class RedisInvalidResponseType : ApplicationException
+    public class RedisInvalidResponseType : RedisErrorException
     {
         public RedisInvalidResponseType(Type expected, Type actual)
             : base(string.Format("Expected {0} but response was {1}", expected.Name, actual.Name))
         { }
     }
-        public class RedisUnexpectedResponse : ApplicationException
+        public class RedisUnexpectedResponse : RedisErrorException
     {
         public RedisUnexpectedResponse(string expected, string actual)
             : base(string.Format("Expected {0} but response was {1}", expected, actual))

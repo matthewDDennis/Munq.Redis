@@ -13,14 +13,14 @@ namespace RedisAsync
 {
     class Program
     {
-        private const int NumIterations = 10000;
-        private const int NumChars = 10000;
+        const int NumIterations = 10000;
+        const int NumChars = 10000;
         static void Main(string[] args)
         {
             DoIt().Wait();
             Console.ReadLine();
         }
-        private static async Task DoIt()
+        static async Task DoIt()
         {
             using (var client = new RedisClient())
             {
@@ -46,7 +46,7 @@ namespace RedisAsync
                     for (int i = 0; i < NumIterations; i++)
                     {
                         await client.SendSetAsync("String" + i, data);
-                        if ( !await client.ExpectOkAsync())
+                        if (!await client.ExpectOkAsync())
                             errorCount++;
                     }
                     stopwatch.Stop();
@@ -59,11 +59,11 @@ namespace RedisAsync
                     for (int i = 0; i < NumIterations; i++)
                     {
                         await client.SendGetAsync("String" + i);
-                        string obj = await client.ExpectBulkStringAsync();
+                        string bulkString = await client.ExpectBulkStringAsync();
 
                         string resultString = "OK";
-                        if (obj == null || !(obj is string) || ((string)obj).Length != NumChars)
-                            resultString = obj;
+                        if (bulkString == null || bulkString.Length != NumChars)
+                            resultString = bulkString;
                         Console.Write("\r{0} - {1}", i + 1, resultString);
                         results.Add(resultString);
                     }
@@ -99,7 +99,7 @@ namespace RedisAsync
                 }
             }
         }
-        private static void WriteResult(object result)
+        static void WriteResult(object result)
         {
             if (result is Array)
             {

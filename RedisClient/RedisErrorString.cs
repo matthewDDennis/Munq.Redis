@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Munq.Redis
 {
@@ -29,15 +30,21 @@ namespace Munq.Redis
 
     public class RedisBulkString
     {
-        public RedisBulkString(char[] data, int numChars)
+        public RedisBulkString(byte[] data)
         {
-            Value = new String(data, 0, numChars);
+            Value = data;
         }
-        public string Value { get; private set; }
+
+        public RedisBulkString(string data)
+        {
+            Value = Encoding.UTF8.GetBytes(data);
+        }
+
+        public byte[] Value { get; private set; }
 
         public override string ToString()
         {
-            return Value;
+            return Encoding.UTF8.GetString(Value);
         }
     }
 }
