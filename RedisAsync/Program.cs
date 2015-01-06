@@ -71,24 +71,31 @@ namespace RedisAsync
                     Console.WriteLine("with {0} errors", results.Count(rs => (string)rs != "OK"));
                     Console.WriteLine("{0:N0} Gets of {1:N0} chars took {2}.", NumIterations, NumChars, stopwatch.Elapsed);
 
+                    Console.WriteLine("Get Db Size");
                     await client.SendDbSizeAsync();
                     WriteResult(await client.ReadResponseAsync());
 
+                    Console.WriteLine("Get Server Info");
                     await client.SendInfoAsync(InfoSections.All);
                     WriteResult(await client.ReadResponseAsync());
 
+                    Console.WriteLine("Delete 3 keys");
                     await client.SendDeleteAsync("String0", "String1", "String2");
                     WriteResult(await client.ReadResponseAsync());
 
+                    Console.WriteLine("Get Db Size");
                     await client.SendDbSizeAsync();
                     WriteResult(await client.ReadResponseAsync());
 
+                    Console.WriteLine("Empty the database");
                     await client.SendFlushDbAsync();
                     WriteResult(await client.ReadResponseAsync());
 
+                    Console.WriteLine("Get Db Size");
                     await client.SendDbSizeAsync();
                     WriteResult(await client.ReadResponseAsync());
 
+                    Console.WriteLine("Quit");
                     await client.SendAsync("Quit");
                     WriteResult(await client.ReadResponseAsync());
                 }
