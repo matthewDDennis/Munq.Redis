@@ -90,12 +90,8 @@ namespace Munq.Redis
         public async Task SendAsync(string command, IEnumerable<object> parameters)
         {
             await ConnectAsync().ConfigureAwait(false);
-            byte[] commandData;
-            using (CommandBuilder commandBuilder = new CommandBuilder())
-            {
-                commandData = commandBuilder.CreateCommandData(command, parameters);
-            }
-            await _stream.WriteAsync(commandData, 0, commandData.Length).ConfigureAwait(false);
+
+            await _stream.WriteRedisCommandAsync(command, parameters).ConfigureAwait(false);
         }
 
         /// <summary>

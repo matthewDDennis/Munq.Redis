@@ -40,7 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommandBuilder.cs" />
+    <Compile Include="CommandWriter.cs" />
     <Compile Include="Commands\ConnectionCommands.cs" />
     <Compile Include="Commands\HashCommands.cs" />
     <Compile Include="Commands\InfoSections.cs" />
