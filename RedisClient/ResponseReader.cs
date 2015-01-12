@@ -13,27 +13,16 @@ namespace Munq.Redis
     /// The ResponseParser class parses a string or Stream and converts the Redis response
     /// into a object with the response data either as a single value or an array of values.
     /// </summary>
-    public class ResponseReader : IDisposable
+    public static class ResponseReader
     {
-        NetworkStream _reader;
-
-        /// <summary>
-        /// Initializes a new instance of the ResponseReader class from a Stream.
-        /// </summary>
-        /// <param name="stream">The Stream.</param>
-        public ResponseReader(NetworkStream stream)
-        {
-            _reader = stream;
-        }
-
         /// <summary>
         /// Reads and parses the response from the ResponseReader's string or stream.
         /// </summary>
         /// <returns>A task which returns an object created from the response data.</returns>
-        public async Task<object> ReadAsync()
+        public static async Task<object> ReadRedisResponseAsync(this Stream stream)
         {
             var buffer = new byte[1];
-            var count = await _reader.ReadAsync(buffer, 0, 1).ConfigureAwait(false);
+            var count = await stream.ReadAsync(buffer, 0, 1).ConfigureAwait(false);
             if (count == 0)
             {
                 return null;
@@ -42,19 +31,19 @@ namespace Munq.Redis
             switch (c)
             {
                 case '+':
-                    return await ReadSimpleStringAsync().ConfigureAwait(false);
+                    return await stream.ReadSimpleStringAsync().ConfigureAwait(false);
 
                 case '-':
-                    return await ReadErrorStringAsync().ConfigureAwait(false);
+                    return await stream.ReadErrorStringAsync().ConfigureAwait(false);
 
                 case ':':
-                    return await ReadLongAsync().ConfigureAwait(false);
+                    return await stream.ReadLongAsync().ConfigureAwait(false);
 
                 case '$':
-                    return await ReadBulkStringAsync().ConfigureAwait(false);
+                    return await stream.ReadBulkStringAsync().ConfigureAwait(false);
 
                 case '*':
-                    return await ReadArrayAsync().ConfigureAwait(false);
+                    return await stream.ReadArrayAsync().ConfigureAwait(false);
 
                 default:
                     return new RedisErrorString("Invalid response initial character " + c);
@@ -62,27 +51,15 @@ namespace Munq.Redis
         }
 
         /// <summary>
-        /// Disposes of the internal TextReader.
-        /// </summary>
-        public void Dispose()
-        {
-            if (_reader != null)
-            {
-                _reader.Dispose();
-                _reader = null;
-            }
-        }
-
-        /// <summary>
         /// Reads an array of values from the response data.
         /// </summary>
         /// <returns></returns>
-        async Task<object> ReadArrayAsync()
+        static async Task<object> ReadArrayAsync(this Stream stream)
         {
-            var strLenObj = await ReadLongAsync().ConfigureAwait(false);
-            if (strLenObj is long)
+            var arrayLength = await stream.ReadLongAsync().ConfigureAwait(false);
+            if (arrayLength is long)
             {
-                var arraySize = (long)strLenObj;
+                var arraySize = (long)arrayLength;
                 if (arraySize == -1)
                 {
                     return null;
@@ -90,13 +67,13 @@ namespace Munq.Redis
                 var results = new object[arraySize];
                 for (var i = 0L; i < arraySize; i++)
                 {
-                    results[i] = await ReadAsync().ConfigureAwait(false);
+                    results[i] = await stream.ReadRedisResponseAsync().ConfigureAwait(false);
                 }
                 return results;
             }
             else
             {
-                return strLenObj;
+                return arrayLength;
             }
         }
 
@@ -104,9 +81,9 @@ namespace Munq.Redis
         /// Reads a BulkString from the response data.
         /// </summary>
         /// <returns>Returns the BulkString, a RedisNull for the BulkString of length -1, or and RedisErrorString.</returns>
-        async Task<object> ReadBulkStringAsync()
+        static async Task<object> ReadBulkStringAsync(this Stream stream)
         {
-            var strLenObj = await ReadLongAsync().ConfigureAwait(false);
+            var strLenObj = await stream.ReadLongAsync().ConfigureAwait(false);
             if (strLenObj is long)
             {
                 var strSize = (long)strLenObj;
@@ -119,9 +96,9 @@ namespace Munq.Redis
                     var data = new byte[strSize];
                     int charsRead = 0;
                     if (strSize > 0)
-                        charsRead = await _reader.ReadAsync(data, 0, (int)strSize).ConfigureAwait(false);
+                        charsRead = await stream.ReadAsync(data, 0, (int)strSize).ConfigureAwait(false);
 
-                    string remainingCharacters = await ReadLineAsync().ConfigureAwait(false);
+                    string remainingCharacters = await stream.ReadLineAsync().ConfigureAwait(false);
                     if (strSize != charsRead || remainingCharacters.Length != 0)
                     {
                         // TASK: Should be an exception.
@@ -145,9 +122,9 @@ namespace Munq.Redis
         /// Reads a Redis Server Error from the Response data.
         /// </summary>
         /// <returns>The RedisErrorString containing the error message.</returns>
-        async Task<object> ReadErrorStringAsync()
+        static async Task<object> ReadErrorStringAsync(this Stream stream)
         {
-            var message = await ReadLineAsync().ConfigureAwait(false);
+            var message = await stream.ReadLineAsync().ConfigureAwait(false);
             return new RedisErrorString(message);
         }
 
@@ -155,9 +132,9 @@ namespace Munq.Redis
         /// Read line from the stream and converts it to a long.
         /// </summary>
         /// <returns>A task which returns a long.</returns>
-        async Task<object> ReadLongAsync()
+        static async Task<object> ReadLongAsync(this Stream stream)
         {
-            var intStr = await ReadLineAsync().ConfigureAwait(false);
+            var intStr = await stream.ReadLineAsync().ConfigureAwait(false);
             long value;
             if (long.TryParse(intStr, out value))
             {
@@ -174,12 +151,12 @@ namespace Munq.Redis
         /// Reads a crlf terminated string from the response stream.
         /// </summary>
         /// <returns>A task which returns a string result.</returns>
-        async Task<string> ReadSimpleStringAsync()
+        static Task<string> ReadSimpleStringAsync(this Stream stream)
         {
-            return await ReadLineAsync().ConfigureAwait(false);
+            return stream.ReadLineAsync();
         }
 
-        private async Task<string> ReadLineAsync()
+        private static async Task<string> ReadLineAsync(this Stream stream)
         {
             const byte CR = (byte)'\r';
             const byte LF = (byte)'\n';
@@ -192,7 +169,7 @@ namespace Munq.Redis
             bool done = false;
             while (!done)
             {
-                int count = await _reader.ReadAsync(input, 0, 1);
+                int count = await stream.ReadAsync(input, 0, 1);
                 byte c = input[0];
                switch (c)
                 {

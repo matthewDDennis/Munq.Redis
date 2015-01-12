@@ -10,7 +10,6 @@ namespace Munq.Redis
     {
         readonly RedisClientConfig _config;
         readonly TcpClient         _tcpClient;
-        ResponseReader             _reader;
         NetworkStream              _stream;
 
         public RedisClient() : this(new RedisClientConfig())
@@ -33,6 +32,7 @@ namespace Munq.Redis
             _tcpClient.Close();
             DisposeOfConnectionResources();
         }
+
         /// <summary>
         /// Ensures that the socket is connected.
         /// </summary>
@@ -44,7 +44,6 @@ namespace Munq.Redis
                 DisposeOfConnectionResources();
                 await _tcpClient.ConnectAsync(_config.Host, _config.Port).ConfigureAwait(false);
                 _stream = _tcpClient.GetStream();
-                _reader = new ResponseReader(_stream);
             }
         }
 
@@ -61,8 +60,7 @@ namespace Munq.Redis
         {
             try
             {
-                await ConnectAsync();
-                return await _reader.ReadAsync();
+                return await _stream.ReadRedisResponseAsync();
             }
             catch (Exception ex)
             {
@@ -90,7 +88,6 @@ namespace Munq.Redis
         public async Task SendAsync(string command, IEnumerable<object> parameters)
         {
             await ConnectAsync().ConfigureAwait(false);
-
             await _stream.WriteRedisCommandAsync(command, parameters).ConfigureAwait(false);
         }
 
@@ -103,12 +100,6 @@ namespace Munq.Redis
             {
                 _stream.Dispose();
                 _stream = null;
-            }
-
-            if (_reader != null)
-            {
-                _reader.Dispose();
-                _reader = null;
             }
         }
     }
