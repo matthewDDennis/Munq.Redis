@@ -8,7 +8,7 @@ namespace Munq.Redis.Responses
 {
     public static class StringReponses
     {
-        private const string OkResponse = "OK";
+        const string OkResponse = "OK";
         public static async Task<string> ExpectStringAsync(this RedisClient client)
         {
             var response = await client.ReadResponseAsync().ConfigureAwait(false);

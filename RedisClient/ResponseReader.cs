@@ -156,7 +156,7 @@ namespace Munq.Redis
             return stream.ReadLineAsync();
         }
 
-        private static async Task<string> ReadLineAsync(this Stream stream)
+        static async Task<string> ReadLineAsync(this Stream stream)
         {
             const byte CR = (byte)'\r';
             const byte LF = (byte)'\n';
@@ -171,13 +171,13 @@ namespace Munq.Redis
             {
                 int count = await stream.ReadAsync(input, 0, 1);
                 byte c = input[0];
-               switch (c)
+                switch (c)
                 {
                     case CR:
                         break;
 
                     case LF:
-                        if (prevInput == CR )
+                        if (prevInput == CR)
                             done = true;
                         else
                             MS.WriteByte(c);

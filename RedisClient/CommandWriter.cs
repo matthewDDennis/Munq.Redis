@@ -23,7 +23,7 @@ namespace Munq.Redis
         /// <param name="command">The command.</param>
         /// <param name="parameters">The paramaters for the command.</param>
         /// <returns>The bytes to send to the Redis Server.</returns>
-        public static async Task WriteRedisCommandAsync(this Stream stream, string command, IEnumerable<object> parameters)
+        public static async Task WriteRedisCommandAsync(this Stream stream, string command, IEnumerable<object> parameters = null)
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");

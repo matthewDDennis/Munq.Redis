@@ -48,7 +48,8 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="Keys.cs" />
+    <Compile Include="Client\CommandWriterShould.cs" />
+    <Compile Include="SendCommands\SendKeyCommands.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -4,10 +4,10 @@ using Munq.Redis.Commands;
 using Munq.Redis.Responses;
 using System.Threading.Tasks;
 
-namespace Munq.Redis.Tests
+namespace Munq.Redis.Tests.SendCommands
 {
     [TestClass]
-    public class Keys
+    public class SendKeyCommands
     {
         const string key = "AKey";
         const string keyData = "some date";

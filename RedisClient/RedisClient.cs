@@ -85,7 +85,7 @@ namespace Munq.Redis
         /// <param name="command">The Command.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>The response.</returns>
-        public async Task SendAsync(string command, IEnumerable<object> parameters)
+        public async Task SendAsync(string command, IEnumerable<object> parameters = null)
         {
             await ConnectAsync().ConfigureAwait(false);
             await _stream.WriteRedisCommandAsync(command, parameters).ConfigureAwait(false);
