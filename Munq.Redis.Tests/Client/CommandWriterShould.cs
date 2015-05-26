@@ -14,7 +14,7 @@ namespace Munq.Redis.Tests.Client
     [TestClass]
     public class CommandWriterShould
     {
-        static Encoding encoder = new UTF8Encoding();
+        static readonly Encoding encoder = new UTF8Encoding();
 
         [TestMethod]
         public async Task SendAnArrayWithOneElementForACommandWithoutParameters()

@@ -7,13 +7,13 @@ namespace Munq.Redis.Commands
 {
     public static class SortedSetCommands
     {
-        public static Task SendZAddSync(this RedisClient client, string key,
+        public static Task SendZAddAsync(this RedisClient client, string key,
                                               long score, object value)
         {
             return client.SendAsync("ZAdd", key, score, value);
         }
 
-        public static Task SendZAddSync(this RedisClient client, string key,
+        public static Task SendZAddAsync(this RedisClient client, string key,
                                               IEnumerable<KeyValuePair<long, object>> scoreAndValues)
         {
             var parameters = new List<object>();
@@ -61,7 +61,7 @@ namespace Munq.Redis.Commands
             string cmdStr = "ZUnionStore";
             return SendSetOpAsync(client, destination, numKeys, keys, weights, aggregate, cmdStr);
         }
-        private static Task SendSetOpAsync(RedisClient client, string destination, 
+        static Task SendSetOpAsync(RedisClient client, string destination, 
                                                  long numKeys, IEnumerable<string> keys, 
                                                  IEnumerable<long> weights, SetAggregate aggregate, 
                                                  string cmdStr)

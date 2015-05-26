@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -10,7 +11,8 @@ namespace Munq.Redis
     {
         readonly RedisClientConfig _config;
         readonly TcpClient         _tcpClient;
-        NetworkStream              _stream;
+        Stream                     _stream;
+        ResponseReader             _responseReader;
 
         public RedisClient() : this(new RedisClientConfig())
         {
@@ -43,7 +45,8 @@ namespace Munq.Redis
             {
                 DisposeOfConnectionResources();
                 await _tcpClient.ConnectAsync(_config.Host, _config.Port).ConfigureAwait(false);
-                _stream = _tcpClient.GetStream();
+                _stream         = _tcpClient.GetStream();
+                _responseReader = new ResponseReader(_stream);
             }
         }
 
@@ -60,7 +63,7 @@ namespace Munq.Redis
         {
             try
             {
-                return await _stream.ReadRedisResponseAsync();
+                return await _responseReader.ReadRedisResponseAsync();
             }
             catch (Exception ex)
             {
@@ -99,7 +102,8 @@ namespace Munq.Redis
             if (_stream != null)
             {
                 _stream.Dispose();
-                _stream = null;
+                _stream         = null;
+                _responseReader = null;
             }
         }
     }

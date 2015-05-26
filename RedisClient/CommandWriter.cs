@@ -14,8 +14,8 @@ namespace Munq.Redis
     /// <remarks>This class is safe for concurrent, multi-thread access.</remarks>
     public static class CommandWriter
     {
-        static Encoding encoder = new UTF8Encoding();
-        static byte[] crlf = { (byte)'\r', (byte)'\n' };
+        static readonly Encoding encoder = new UTF8Encoding();
+        static readonly byte[] crlf = { (byte)'\r', (byte)'\n' };
 
         /// <summary>
         /// Builds an array of bytes to send to the Redis Server for the command and it's parameters.
@@ -26,10 +26,10 @@ namespace Munq.Redis
         public static async Task WriteRedisCommandAsync(this Stream stream, string command, IEnumerable<object> parameters = null)
         {
             if (stream == null)
-                throw new ArgumentNullException("stream");
+                throw new ArgumentNullException(nameof(stream));
 
             if (string.IsNullOrWhiteSpace(command))
-                throw new ArgumentNullException("command");
+                throw new ArgumentNullException(nameof(command));
 
             var sizeOfCommandArray = 1 + (parameters != null ? parameters.Count() : 0);
             var redisString = string.Format("*{0}\r\n", sizeOfCommandArray);
@@ -74,13 +74,8 @@ namespace Munq.Redis
         /// <param name="str">The string to write.</param>
         static async Task WriteRedisBulkStringAsync(Stream stream, string str)
         {
-            string redisString;
             byte[] data;
-            if (str != null)
-                redisString = string.Format("${0}\r\n{1}\r\n", str.Length, str);
-            else
-                redisString = "$-1\r\n";
-
+            string redisString = str != null ? string.Format("${0}\r\n{1}\r\n", str.Length, str) : "$-1\r\n";
             data = encoder.GetBytes(redisString);
             await stream.WriteAsync(data, 0, data.Length);
         }
