@@ -8,14 +8,20 @@ using System.Threading.Tasks;
 namespace Munq.Redis
 {
     /// <summary>
-    /// The command builder is a static class which is used to build Redis Server commands from and command
+    /// The command builder is used to build Redis Server commands from and command
     /// name and a collection of parameters.
     /// </summary>
     /// <remarks>This class is safe for concurrent, multi-thread access.</remarks>
-    public static class CommandWriter
+    public class CommandWriter
     {
         static readonly Encoding encoder = new UTF8Encoding();
-        static readonly byte[] crlf = { (byte)'\r', (byte)'\n' };
+        static readonly byte[]   crlf = { (byte)'\r', (byte)'\n' };
+        Stream                   _stream;
+
+        public CommandWriter(Stream stream)
+        {
+            _stream = stream;
+        }
 
         /// <summary>
         /// Builds an array of bytes to send to the Redis Server for the command and it's parameters.
@@ -23,25 +29,22 @@ namespace Munq.Redis
         /// <param name="command">The command.</param>
         /// <param name="parameters">The paramaters for the command.</param>
         /// <returns>The bytes to send to the Redis Server.</returns>
-        public static async Task WriteRedisCommandAsync(this Stream stream, string command, IEnumerable<object> parameters = null)
+        public  async Task WriteRedisCommandAsync(string command, IEnumerable<object> parameters = null)
         {
-            if (stream == null)
-                throw new ArgumentNullException(nameof(stream));
-
             if (string.IsNullOrWhiteSpace(command))
                 throw new ArgumentNullException(nameof(command));
 
             var sizeOfCommandArray = 1 + (parameters != null ? parameters.Count() : 0);
             var redisString = string.Format("*{0}\r\n", sizeOfCommandArray);
             byte[] bytes = encoder.GetBytes(redisString);
-            await stream.WriteAsync(bytes, 0, bytes.Length);
+            await _stream.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
 
-            await WriteRedisBulkStringAsync(stream, command);
+            await WriteRedisBulkStringAsync(command);
 
             if (sizeOfCommandArray > 1)
             {
                 foreach (object obj in parameters)
-                    await WriteObjectAsync(stream, obj);
+                    await WriteObjectAsync(obj);
             }
         }
 
@@ -49,43 +52,41 @@ namespace Munq.Redis
         /// Adds an object to the command data.
         /// </summary>
         /// <param name="value">The object to add.</param>
-        static async Task WriteObjectAsync(Stream stream, object value)
+        async Task WriteObjectAsync(object value)
         {
             var objType = value.GetType();
 
             if (objType == typeof(string))
-                await WriteRedisBulkStringAsync(stream, value as string);
+                await WriteRedisBulkStringAsync(value as string);
             else if (objType == typeof(byte[]))
-                await WriteRedisBulkStringAsync(stream, value as byte[]);
+                await WriteRedisBulkStringAsync(value as byte[]);
             else
             {
                 if (objType == typeof(bool))
                 {
                     value = (bool)value ? "1" : "0";
                 }
-                await WriteRedisBulkStringAsync(stream, value.ToString());
+                await WriteRedisBulkStringAsync(value.ToString());
             }
         }
 
         /// <summary>
         /// Writes a string as a RedisBulkString to the Stream.
         /// </summary>
-        /// <param name="stream">The stream to write to.</param>
         /// <param name="str">The string to write.</param>
-        static async Task WriteRedisBulkStringAsync(Stream stream, string str)
+        async Task WriteRedisBulkStringAsync(string str)
         {
             byte[] data;
             string redisString = str != null ? string.Format("${0}\r\n{1}\r\n", str.Length, str) : "$-1\r\n";
             data = encoder.GetBytes(redisString);
-            await stream.WriteAsync(data, 0, data.Length);
+            await _stream.WriteAsync(data, 0, data.Length).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Writes an array of bytes as a RedisBulkString to the Stream.
         /// </summary>
-        /// <param name="stream">The stream to write to.</param>
         /// <param name="data">The bytes to write.</param>
-        static async Task WriteRedisBulkStringAsync(Stream stream, byte[] data)
+        async Task WriteRedisBulkStringAsync(byte[] data)
         {
             string redisString;
             byte[] bytes;
@@ -93,14 +94,14 @@ namespace Munq.Redis
             {
                 redisString = string.Format("${0}\r\n", data.Length);
                 bytes = encoder.GetBytes(redisString);
-                await stream.WriteAsync(bytes, 0, bytes.Length);
-                await stream.WriteAsync(data, 0, data.Length);
-                await stream.WriteAsync(crlf, 0, crlf.Length);
+                await _stream.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
+                await _stream.WriteAsync(data, 0, data.Length).ConfigureAwait(false);
+                await _stream.WriteAsync(crlf, 0, crlf.Length).ConfigureAwait(false);
             }
             else
             {
                 bytes = encoder.GetBytes("$-1\r\n");
-                await stream.WriteAsync(bytes, 0, bytes.Length);
+                await _stream.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
             }
         }
     }

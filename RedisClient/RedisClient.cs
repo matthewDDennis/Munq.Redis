@@ -13,6 +13,7 @@ namespace Munq.Redis
         readonly TcpClient         _tcpClient;
         Stream                     _stream;
         ResponseReader             _responseReader;
+        CommandWriter              _commandWriter;
 
         public RedisClient() : this(new RedisClientConfig())
         {
@@ -47,6 +48,7 @@ namespace Munq.Redis
                 await _tcpClient.ConnectAsync(_config.Host, _config.Port).ConfigureAwait(false);
                 _stream         = _tcpClient.GetStream();
                 _responseReader = new ResponseReader(_stream);
+                _commandWriter  = new CommandWriter(_stream);
             }
         }
 
@@ -91,7 +93,7 @@ namespace Munq.Redis
         public async Task SendAsync(string command, IEnumerable<object> parameters = null)
         {
             await ConnectAsync().ConfigureAwait(false);
-            await _stream.WriteRedisCommandAsync(command, parameters).ConfigureAwait(false);
+            await _commandWriter.WriteRedisCommandAsync(command, parameters).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -104,6 +106,7 @@ namespace Munq.Redis
                 _stream.Dispose();
                 _stream         = null;
                 _responseReader = null;
+                _commandWriter  = null;
             }
         }
     }

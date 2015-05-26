@@ -19,8 +19,11 @@ namespace Munq.Redis.Tests.Client
         [TestMethod]
         public async Task SendAnArrayWithOneElementForACommandWithoutParameters()
         {
-            var stream = new MemoryStream();
-            await stream.WriteRedisCommandAsync("DoIt");
+            var stream        = new MemoryStream();
+            var commandWriter = new CommandWriter(stream);
+
+            await commandWriter.WriteRedisCommandAsync("DoIt");
+
             var expectedCommandString = "*1\r\n$4\r\nDoIt\r\n";
             var expectedBytes = encoder.GetBytes(expectedCommandString);
 
