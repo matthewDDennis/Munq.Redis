@@ -131,38 +131,83 @@ namespace Munq.Redis.Commands
             return client.SendAsync("Move", key, database);
         }
 
+        /// <summary>
+        /// Sends the Object Encoding command. http://redis.io/commands/object
+        /// </summary>
+        /// <param name="client">The RedisClient.</param>
+        /// <param name="key">The key string.</param>
+        /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendObjectEncodingAsync(this RedisClient client, string key)
         {
             return client.SendAsync("Object", "Encoding", key);
         }
 
+        /// <summary>
+        /// Sends the Object IdleTime command. http://redis.io/commands/object
+        /// </summary>
+        /// <param name="client">The RedisClient.</param>
+        /// <param name="key">The key string.</param>
+        /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendObjectIdelTimeAsync(this RedisClient client, string key)
         {
             return client.SendAsync("Object", "IdeTime", key);
         }
 
+        /// <summary>
+        /// Sends the Object RefCount command. http://redis.io/commands/object
+        /// </summary>
+        /// <param name="client">The RedisClient.</param>
+        /// <param name="key">The key string.</param>
+        /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendObjectRefCountAsync(this RedisClient client, string key)
         {
             return client.SendAsync("Object", "RefCount", key);
         }
 
+        /// <summary>
+        /// Sends the Persist command. http://redis.io/commands/persist
+        /// </summary>
+        /// <param name="client">The RedisClient.</param>
+        /// <param name="key">The key string.</param>
+        /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendPersistAsync(this RedisClient client, string key)
         {
             return client.SendAsync("Persist", key);
         }
 
+        /// <summary>
+        /// Sends the PExpire command. http://redis.io/commands/pexpire
+        /// </summary>
+        /// <param name="client">The RedisClient.</param>
+        /// <param name="key">The key string.</param>
+        /// <param name="milliseconds">The time to live for the Key.</param>
+        /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendPExpireAsync(this RedisClient client,
                                                   string key, long milliseconds)
         {
             return client.SendAsync("PExpire", key, milliseconds);
         }
 
+        /// <summary>
+        /// Sends the PExpireAt command. http://redis.io/commands/pexpireat
+        /// </summary>
+        /// <param name="client">The RedisClient.</param>
+        /// <param name="key">The key string.</param>
+        /// <param name="millisecondsTimestamp">The unix timestamp of the date/time to expire the Key.</param>
+        /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendPExpireAtAsync(this RedisClient client,
                                                     string key, long millisecondsTimestamp)
         {
             return client.SendAsync("PExpireAt", key, millisecondsTimestamp);
         }
 
+        /// <summary>
+        /// Sends the PExpire command. http://redis.io/commands/pexpire
+        /// </summary>
+        /// <param name="client">The RedisClient.</param>
+        /// <param name="key">The key string.</param>
+        /// <param name="milliseconds">The time to live for the Key.</param>
+        /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendPTTLAsync(this RedisClient client, string key)
         {
             return client.SendAsync("PTTL", key);
@@ -178,11 +223,13 @@ namespace Munq.Redis.Commands
         {
             return client.SendAsync("Rename", key, newKey);
         }
+
         public static Task SendRenameXAsync(this RedisClient client,
                                                   string key, string newKey)
         {
             return client.SendAsync("RenameX", key, newKey);
         }
+
         public static Task SendRestoreAsync(this RedisClient client,
                                                   string key, long ttl, byte[] serializeValue)
         {
@@ -209,6 +256,7 @@ namespace Munq.Redis.Commands
 
             return client.SendAsync("Scan", parameters);
         }
+
         public static Task SendTTLAsync(this RedisClient client, string key)
         {
             return client.SendAsync("TTL", key);
