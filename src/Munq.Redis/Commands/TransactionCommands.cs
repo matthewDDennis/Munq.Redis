@@ -1,0 +1,35 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Munq.Redis.Commands
+{
+    public static class TransactionCommands
+    {
+        public static Task SendDiscardAsync(this RedisClient client)
+        {
+            return client.SendAsync("Discard");
+        }
+        public static Task SendExecAsync(this RedisClient client)
+        {
+            return client.SendAsync("Exec");
+        }
+        public static Task SendMultiAsync(this RedisClient client)
+        {
+            return client.SendAsync("Multi");
+        }
+        public static Task SendUnWatchAsync(this RedisClient client)
+        {
+            return client.SendAsync("Unwatch");
+        }
+        public static Task SendWatchKeysAsync(this RedisClient client, params string[] keys)
+        {
+            return client.SendWatchKeysAsync((IEnumerable<string>) keys);
+        }
+        public static Task SendWatchKeysAsync(this RedisClient client, IEnumerable<string> keys)
+        {
+            return client.SendAsync("Watch", (keys ?? new string[] { }));
+        }
+    }
+}

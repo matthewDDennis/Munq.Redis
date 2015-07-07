@@ -1,0 +1,26 @@
+﻿{
+    "version": "1.0.0-*",
+    "description": "Munq.Redis Class Library",
+    "authors": [ "matth_000" ],
+    "tags": [ "" ],
+    "projectUrl": "",
+    "licenseUrl": "",
+
+    "dependencies": {
+        
+    },
+
+    "frameworks": {
+        "dnx451": { },
+        "dnx46": { },
+        "dnxcore50": {
+            "dependencies": {
+                "System.Runtime": "4.0.20-beta-*",
+                "System.Linq": "4.0.0-beta-*",
+                "System.Net.Sockets": "4.0.10-beta-*",
+                "System.Net.Primitives": "4.0.10-beta-*",
+                "System.Threading.Tasks": "4.0.10-beta-*"
+            }
+        }
+    }
+}
