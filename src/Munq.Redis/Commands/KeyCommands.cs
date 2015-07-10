@@ -213,28 +213,64 @@ namespace Munq.Redis.Commands
             return client.SendAsync("PTTL", key);
         }
 
+        /// <summary>
+        /// Sends the RandomKey command. http://redis.io/commands/randomkey
+        /// </summary>
+        /// <param name="client">The RedisClient.</param>
+        /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendRandomKeyAsync(this RedisClient client)
         {
             return client.SendAsync("RandomKey");
         }
 
+        /// <summary>
+        /// Sends the Rename command. http://redis.io/commands/rename
+        /// </summary>
+        /// <param name="client">The RedisClient.</param>
+        /// <param name="key">The key string.</param>
+        /// <param name="newKey">The new Key name.</param>
+        /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendRenameAsync(this RedisClient client,
                                                  string key, string newKey)
         {
             return client.SendAsync("Rename", key, newKey);
         }
 
+        /// <summary>
+        /// Sends the RenameNX command. http://redis.io/commands/renamenx
+        /// </summary>
+        /// <param name="client">The RedisClient.</param>
+        /// <param name="key">The key string.</param>
+        /// <param name="newKey">The new Key name.</param>
+        /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendRenameXAsync(this RedisClient client,
                                                   string key, string newKey)
         {
             return client.SendAsync("RenameX", key, newKey);
         }
 
+        /// <summary>
+        /// Sends the Restore command. http://redis.io/commands/restore
+        /// </summary>
+        /// <param name="client">The RedisClient.</param>
+        /// <param name="key">The key string.</param>
+        /// <param name="ttl">The expiry time in milliseconds.</param>
+        /// <param name="serializeValue">The value to restore from a Dump command.</param>
+        /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendRestoreAsync(this RedisClient client,
                                                   string key, long ttl, byte[] serializeValue)
         {
             return client.SendAsync("Restore", key, ttl, serializeValue);
         }
+
+        /// <summary>
+        /// Sends the Scan command. http://redis.io/commands/scan
+        /// </summary>
+        /// <param name="client">The RedisClient.</param>
+        /// <param name="cursor">The current cursor.</param>
+        /// <param name="pattern">The pattern to match the keys against. Null for any key.</param>
+        /// <param name="count">The max number of keys to return. Null for the default (10).</param>
+        /// <returns></returns>
         public static Task SendScanAsync(this RedisClient client,
                                                long cursor, string pattern, long? count)
         {
@@ -257,17 +293,36 @@ namespace Munq.Redis.Commands
             return client.SendAsync("Scan", parameters);
         }
 
+        /// <summary>
+        /// Sends the TTL command. http://redis.io/commands/ttl
+        /// </summary>
+        /// <param name="client">The RedisClient.</param>
+        /// <param name="key">The key string.</param>
+        /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendTTLAsync(this RedisClient client, string key)
         {
             return client.SendAsync("TTL", key);
         }
 
+        /// <summary>
+        /// Sends the Type command. http://redis.io/commands/type
+        /// </summary>
+        /// <param name="client">The RedisClient.</param>
+        /// <param name="key">The key string.</param>
+        /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendTypeAsync(this RedisClient client, string key)
         {
             return client.SendAsync("Type", key);
         }
 
         // TODO: change options string to typed parameters or a options class.
+        /// <summary>
+        /// Sends the Type command. http://redis.io/commands/type
+        /// </summary>
+        /// <param name="client">The RedisClient.</param>
+        /// <param name="key">The key string.</param>
+        /// <param name="options">The optional part of the command.  To be removed.</param>
+        /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendSortAsync(this RedisClient client, string key, string options)
         {
             return client.SendAsync("Sort", key, options);
