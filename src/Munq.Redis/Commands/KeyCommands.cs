@@ -39,6 +39,9 @@ namespace Munq.Redis.Commands
         /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendDeleteAsync(this RedisClient client, IEnumerable<string> keys)
         {
+            if (keys == null)
+                throw new ArgumentNullException(nameof(keys));
+
             return client.SendAsync("Del", (keys ?? new string[] { }));
         }
 
@@ -50,6 +53,9 @@ namespace Munq.Redis.Commands
         /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendDumpAsync(this RedisClient client, string key)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
             return client.SendAsync("Dump", key);
         }
 
@@ -61,6 +67,9 @@ namespace Munq.Redis.Commands
         /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendExistsAsync(this RedisClient client, string key)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
             return client.SendAsync("Exists", key);
         }
 
@@ -74,6 +83,9 @@ namespace Munq.Redis.Commands
         public static Task SendExpireAsync(this RedisClient client,
                                                  string key, int seconds)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
             return client.SendAsync("Expire", key, seconds);
         }
 
@@ -87,6 +99,9 @@ namespace Munq.Redis.Commands
         public static Task SendEpireAtAsync(this RedisClient client,
                                                   string key, long unixTimeStamp)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
             return client.SendAsync("ExpireAt", key, unixTimeStamp);
         }
 
@@ -98,6 +113,9 @@ namespace Munq.Redis.Commands
         /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendKeysAsync(this RedisClient client, string pattern)
         {
+            if (string.IsNullOrWhiteSpace(pattern))
+                throw new ArgumentNullException(nameof(pattern));
+
             return client.SendAsync("Keys", pattern);
         }
 
@@ -116,6 +134,9 @@ namespace Munq.Redis.Commands
                                                   int port, string key, int destination_db,
                                                   long timeoutMs)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
             return client.SendAsync("Migrate", host, port, key, destination_db, timeoutMs);
         }
 
@@ -128,6 +149,9 @@ namespace Munq.Redis.Commands
         /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendMoveAsync(this RedisClient client, string key, int database)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
             return client.SendAsync("Move", key, database);
         }
 
@@ -139,6 +163,9 @@ namespace Munq.Redis.Commands
         /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendObjectEncodingAsync(this RedisClient client, string key)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
             return client.SendAsync("Object", "Encoding", key);
         }
 
@@ -150,6 +177,9 @@ namespace Munq.Redis.Commands
         /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendObjectIdelTimeAsync(this RedisClient client, string key)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
             return client.SendAsync("Object", "IdeTime", key);
         }
 
@@ -161,6 +191,9 @@ namespace Munq.Redis.Commands
         /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendObjectRefCountAsync(this RedisClient client, string key)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
             return client.SendAsync("Object", "RefCount", key);
         }
 
@@ -172,6 +205,9 @@ namespace Munq.Redis.Commands
         /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendPersistAsync(this RedisClient client, string key)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
             return client.SendAsync("Persist", key);
         }
 
@@ -185,6 +221,9 @@ namespace Munq.Redis.Commands
         public static Task SendPExpireAsync(this RedisClient client,
                                                   string key, long milliseconds)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
             return client.SendAsync("PExpire", key, milliseconds);
         }
 
@@ -198,6 +237,9 @@ namespace Munq.Redis.Commands
         public static Task SendPExpireAtAsync(this RedisClient client,
                                                     string key, long millisecondsTimestamp)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
             return client.SendAsync("PExpireAt", key, millisecondsTimestamp);
         }
 
@@ -210,6 +252,9 @@ namespace Munq.Redis.Commands
         /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendPTTLAsync(this RedisClient client, string key)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
             return client.SendAsync("PTTL", key);
         }
 
@@ -233,6 +278,12 @@ namespace Munq.Redis.Commands
         public static Task SendRenameAsync(this RedisClient client,
                                                  string key, string newKey)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
+            if (string.IsNullOrWhiteSpace(newKey))
+                throw new ArgumentNullException(nameof(newKey));
+
             return client.SendAsync("Rename", key, newKey);
         }
 
@@ -246,6 +297,12 @@ namespace Munq.Redis.Commands
         public static Task SendRenameXAsync(this RedisClient client,
                                                   string key, string newKey)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
+            if (string.IsNullOrWhiteSpace(newKey))
+                throw new ArgumentNullException(nameof(newKey));
+
             return client.SendAsync("RenameX", key, newKey);
         }
 
@@ -260,6 +317,12 @@ namespace Munq.Redis.Commands
         public static Task SendRestoreAsync(this RedisClient client,
                                                   string key, long ttl, byte[] serializeValue)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
+            if (serializeValue == null)
+                throw new ArgumentNullException(nameof(serializeValue));
+
             return client.SendAsync("Restore", key, ttl, serializeValue);
         }
 
@@ -271,8 +334,7 @@ namespace Munq.Redis.Commands
         /// <param name="pattern">The pattern to match the keys against. Null for any key.</param>
         /// <param name="count">The max number of keys to return. Null for the default (10).</param>
         /// <returns></returns>
-        public static Task SendScanAsync(this RedisClient client,
-                                               long cursor, string pattern, long? count)
+        public static Task SendScanAsync(this RedisClient client, long cursor, string pattern, long? count)
         {
             var parameters = new List<object>();
 
@@ -301,6 +363,9 @@ namespace Munq.Redis.Commands
         /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendTTLAsync(this RedisClient client, string key)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
             return client.SendAsync("TTL", key);
         }
 
@@ -312,6 +377,9 @@ namespace Munq.Redis.Commands
         /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendTypeAsync(this RedisClient client, string key)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
             return client.SendAsync("Type", key);
         }
 
@@ -325,6 +393,9 @@ namespace Munq.Redis.Commands
         /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendSortAsync(this RedisClient client, string key, string options)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
             return client.SendAsync("Sort", key, options);
         }
     }
