@@ -1,13 +1,13 @@
 ﻿{
     "version": "1.0.0-*",
-    "description": "Munq.Redis Class Library",
+    "description": "Munq.Redis.Tests Class Library",
     "authors": [ "Matthew Dennis" ],
     "tags": [ "" ],
     "projectUrl": "",
     "licenseUrl": "",
 
     "dependencies": {
-        
+        "xunit.runner.aspnet": "2.0.0-aspnet-beta6-*"
     },
 
     "frameworks": {
@@ -15,11 +15,11 @@
         "dnx46": { },
         "dnxcore50": {
             "dependencies": {
-                "System.Runtime": "4.0.20-beta-*",
+                "System.Collections": "4.0.10-beta-*",
                 "System.Linq": "4.0.0-beta-*",
-                "System.Net.Sockets": "4.0.10-beta-*",
-                "System.Net.Primitives": "4.0.10-beta-*",
-                "System.Threading.Tasks": "4.0.10-beta-*"
+                "System.Threading": "4.0.10-beta-*",
+                "System.Runtime": "4.0.10-beta-*",
+                "Microsoft.CSharp": "4.0.0-beta-*"
             }
         }
     }

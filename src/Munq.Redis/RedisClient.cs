@@ -30,6 +30,13 @@ namespace Munq.Redis
             };
         }
 
+        public RedisClient(Stream stream)
+        {
+            _stream         = stream;
+            _responseReader = new ResponseReader(_stream);
+            _commandWriter  = new CommandWriter(_stream);
+        }
+
         public void Close()
         {
 #if DNX451
@@ -46,7 +53,7 @@ namespace Munq.Redis
         /// <returns>A task to wait for the connection to be made.</returns>
         public async Task ConnectAsync()
         {
-            if (!_tcpClient.Connected)
+            if (_tcpClient != null && !_tcpClient.Connected)
             {
                 DisposeOfConnectionResources();
                 await _tcpClient.ConnectAsync(_config.Host, _config.Port).ConfigureAwait(false);
