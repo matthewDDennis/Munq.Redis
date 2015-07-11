@@ -22,7 +22,8 @@ namespace RedisAsync
         }
         static async Task DoIt()
         {
-            using (var client = new RedisClient())
+            var config = new RedisClientConfig();
+            using (var client = await RedisClientFactory.CreateAsync(config))
             {
                 try
                 {

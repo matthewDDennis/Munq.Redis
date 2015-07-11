@@ -48,6 +48,7 @@ namespace Munq.Redis
                 foreach (object obj in parameters)
                     await WriteObjectAsync(obj);
             }
+            await _stream.FlushAsync();
         }
 
         /// <summary>
