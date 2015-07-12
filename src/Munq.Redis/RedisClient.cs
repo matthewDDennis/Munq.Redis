@@ -9,15 +9,14 @@ namespace Munq.Redis
 {
     public class RedisClient : IDisposable
     {
-        Stream                     _stream;
-        ResponseReader             _responseReader;
-        CommandWriter              _commandWriter;
+        private readonly IRedisConnection _connection;
+        Stream                            _stream;
+        ResponseReader                    _responseReader;
+        CommandWriter                     _commandWriter;
 
-        public RedisClient(Stream stream)
+        public RedisClient(IRedisConnection connection)
         {
-            _stream         = stream;
-            _responseReader = new ResponseReader(_stream);
-            _commandWriter  = new CommandWriter(_stream);
+            _connection = connection;
         }
 
         /// <summary>
@@ -28,6 +27,7 @@ namespace Munq.Redis
         {
             try
             {
+                await EnsureConnected().ConfigureAwait(false);
                 return await _responseReader.ReadRedisResponseAsync();
             }
             catch (Exception ex)
@@ -55,12 +55,40 @@ namespace Munq.Redis
         /// <returns>The awaitable Task.</returns>
         public async Task SendAsync(string command, IEnumerable<object> parameters = null)
         {
+            await EnsureConnected().ConfigureAwait(false);
             await _commandWriter.WriteRedisCommandAsync(command, parameters).ConfigureAwait(false);
+        }
+
+        private async Task EnsureConnected()
+        {
+            if (!_connection.IsConnected)
+            {
+                await _connection.ConnectAsync().ConfigureAwait(false);
+                if (_stream != null)
+                {
+                    _stream.Dispose();
+                    _stream = null;
+                }
+            }
+
+            if (_stream == null)
+            {
+                _stream = _connection.GetStream();
+                _commandWriter = new CommandWriter(_stream);
+                _responseReader = new ResponseReader(_stream);
+
+                // Not the right place for this?
+                //if (_connection.Database != RedisClientConfig.DefaultDatabase)
+                //{
+                //    await SendAsync("Select", _connection.Database);
+                //    await ReadResponseAsync();
+                //}
+            }
         }
 
         public void Dispose()
         {
-            _stream.Dispose();
+            _connection.Dispose();
         }
     }
 }

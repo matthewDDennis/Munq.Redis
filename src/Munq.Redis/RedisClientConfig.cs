@@ -6,12 +6,14 @@ namespace Munq.Redis
 {
     public class RedisClientConfig
     {
-        public const string DefaultHost    = "localhost";
-        public const int    DefaultPort    = 6379;
-        public const int    DefaultTimeout = 1000;
+        public const string DefaultHost     = "localhost";
+        public const int    DefaultPort     = 6379;
+        public const int    DefaultTimeout  = 1000;
+        public const int    DefaultDatabase = 0;
 
         public string Host           { get; set; }
         public int    Port           { get; set; }
+        public int    Database       { get; set; }
         public int    ReceiveTimeout { get; set; }
         public int    SendTimeout    { get; set; }
 
@@ -21,6 +23,7 @@ namespace Munq.Redis
             Port           = DefaultPort;
             ReceiveTimeout = DefaultTimeout;
             SendTimeout    = DefaultTimeout;
+            Database       = DefaultDatabase;
         }
     }
 }
