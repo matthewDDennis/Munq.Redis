@@ -1,4 +1,4 @@
-﻿{
+{
     "version": "1.0.0-*",
     "description": "Munq.Redis.Tests Class Library",
     "authors": [ "Matthew Dennis" ],
@@ -7,8 +7,13 @@
     "licenseUrl": "",
 
     "dependencies": {
-        "xunit.runner.aspnet": "2.0.0-aspnet-beta6-*"
+        "xunit.runner.aspnet": "2.0.0-aspnet-*",
+        "Munq.Redis": "1.0.0-*"
     },
+
+    "commands": {
+        "test": "xunit.runner.aspnet"
+    }, 
 
     "frameworks": {
         "dnx451": { },
@@ -18,7 +23,7 @@
                 "System.Collections": "4.0.10-beta-*",
                 "System.Linq": "4.0.0-beta-*",
                 "System.Threading": "4.0.10-beta-*",
-                "System.Runtime": "4.0.10-beta-*",
+                "System.Runtime": "4.0.20-beta-*",
                 "Microsoft.CSharp": "4.0.0-beta-*"
             }
         }
