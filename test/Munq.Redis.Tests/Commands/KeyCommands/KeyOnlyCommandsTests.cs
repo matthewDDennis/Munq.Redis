@@ -10,7 +10,7 @@ using Munq.Redis.Commands;
 
 namespace Munq.Redis.Tests.Commands.KeyCommands
 {
-    public class KeyOnlyCommands
+    public class KeyOnlyCommandsTests
     {
         static readonly Encoding encoder = new UTF8Encoding();
 
