@@ -8,29 +8,43 @@ using Xunit;
 using Munq.Redis;
 using Munq.Redis.Commands;
 
-namespace Munq.Redis.Tests.Commands.KeyCommands
+namespace Munq.Redis.Tests.Commands
 {
     public class KeyOnlyCommandsTests
     {
         static readonly Encoding encoder = new UTF8Encoding();
 
         Func<RedisClient, string, Task>[] KeyMethods = {
+            // Key Commands
             Redis.Commands.KeyCommands.SendDumpAsync,
             Redis.Commands.KeyCommands.SendExistsAsync,
             Redis.Commands.KeyCommands.SendPersistAsync,
             Redis.Commands.KeyCommands.SendPTTLAsync,
             Redis.Commands.KeyCommands.SendTTLAsync,
-            Redis.Commands.KeyCommands.SendTypeAsync
+            Redis.Commands.KeyCommands.SendTypeAsync,
+
+            // String Commands
+            Redis.Commands.StringCommands.SendDecrAsync,
+            Redis.Commands.StringCommands.SendGetAsync,
+            Redis.Commands.StringCommands.SendIncrAsync,
+            Redis.Commands.StringCommands.SendStrLenAsync
         };
 
         public enum MethodName
         {
+            // Key Commands
             Dump,
             Exists,
             Persist,
             PTTL,
             TTL,
-            Type
+            Type,
+
+            // String Commands
+            Decr,
+            Get,
+            Incr,
+            StrLen
         }
 
         [Theory]
@@ -40,6 +54,10 @@ namespace Munq.Redis.Tests.Commands.KeyCommands
         [InlineData(MethodName.PTTL)]
         [InlineData(MethodName.TTL)]
         [InlineData(MethodName.Type)]
+        [InlineData(MethodName.Decr)]
+        [InlineData(MethodName.Get)]
+        [InlineData(MethodName.Incr)]
+        [InlineData(MethodName.StrLen)]
         public async Task OkWithAKey(MethodName methodName)
         {
             var stream = new MemoryStream();
@@ -65,6 +83,10 @@ namespace Munq.Redis.Tests.Commands.KeyCommands
         [InlineData(MethodName.PTTL)]
         [InlineData(MethodName.TTL)]
         [InlineData(MethodName.Type)]
+        [InlineData(MethodName.Decr)]
+        [InlineData(MethodName.Get)]
+        [InlineData(MethodName.Incr)]
+        [InlineData(MethodName.StrLen)]
         public async Task NoKeyThrows(MethodName methodName)
         {
             var stream = new MemoryStream();
@@ -81,6 +103,10 @@ namespace Munq.Redis.Tests.Commands.KeyCommands
         [InlineData(MethodName.PTTL)]
         [InlineData(MethodName.TTL)]
         [InlineData(MethodName.Type)]
+        [InlineData(MethodName.Decr)]
+        [InlineData(MethodName.Get)]
+        [InlineData(MethodName.Incr)]
+        [InlineData(MethodName.StrLen)]
         public async Task EmptyKeyThrows(MethodName methodName)
         {
             var stream = new MemoryStream();

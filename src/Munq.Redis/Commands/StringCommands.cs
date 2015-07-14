@@ -71,6 +71,9 @@ namespace Munq.Redis.Commands
         }
         public async static Task SendDecrAsync(this RedisClient client, string key)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
             await client.SendAsync("Decr", key).ConfigureAwait(false);
         }
         public async static Task SendDecrByAsync(this RedisClient client,
@@ -80,6 +83,9 @@ namespace Munq.Redis.Commands
         }
         public async static Task SendGetAsync(this RedisClient client, string key)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
             await client.SendAsync("Get", key).ConfigureAwait(false);
         }
         public async static Task SendGetBitAsync(this RedisClient client,
@@ -98,6 +104,9 @@ namespace Munq.Redis.Commands
         }
         public async static Task SendIncrAsync(this RedisClient client, string key)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
             await client.SendAsync("Incr", key).ConfigureAwait(false);
         }
         public async static Task SendIncrByAsync(this RedisClient client, string key,
@@ -212,6 +221,9 @@ namespace Munq.Redis.Commands
         }
         public async static Task SendStrLenAsync(this RedisClient client, string key)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
             await client.SendAsync("StrLen", key).ConfigureAwait(false);
         }
     }
