@@ -4,6 +4,7 @@ using Xunit;
 
 using Munq.Redis.Commands;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Munq.Redis.Tests.Commands.KeyCommands
 {
@@ -11,7 +12,7 @@ namespace Munq.Redis.Tests.Commands.KeyCommands
     {
         static readonly Encoding encoder = new UTF8Encoding();
         [Fact]
-        public void DelOneKey()
+        public async Task DelOneKey()
         {
             var stream = new MemoryStream();
             byte[] result;
@@ -19,7 +20,7 @@ namespace Munq.Redis.Tests.Commands.KeyCommands
 
             using (var client = new RedisClient(new RedisStreamConnection(stream)))
             {
-                client.SendDeleteAsync("Key1");
+                await client.SendDeleteAsync("Key1");
 
                 result = stream.ToArray();
             }
@@ -27,7 +28,7 @@ namespace Munq.Redis.Tests.Commands.KeyCommands
         }
 
         [Fact]
-        public void DelTwoKeys()
+        public async Task DelTwoKeys()
         {
             var stream = new MemoryStream();
             byte[] result;
@@ -35,14 +36,14 @@ namespace Munq.Redis.Tests.Commands.KeyCommands
 
             using (var client = new RedisClient(new RedisStreamConnection(stream)))
             {
-                client.SendDeleteAsync("Key1", "Key2");
+                await client.SendDeleteAsync("Key1", "Key2");
                 result = stream.ToArray();
             }
             Assert.Equal(expected, result);
         }
 
         [Fact]
-        public void DelArrayOfKeys()
+        public async Task DelArrayOfKeys()
         {
             var stream = new MemoryStream();
             byte[] result;
@@ -50,39 +51,39 @@ namespace Munq.Redis.Tests.Commands.KeyCommands
 
             using (var client = new RedisClient(new RedisStreamConnection(stream)))
             {
-                client.SendDeleteAsync(new string[] { "Key1", "Key2", "Key3" });
+                await client.SendDeleteAsync(new string[] { "Key1", "Key2", "Key3" });
                 result = stream.ToArray();
             }
             Assert.Equal(expected, result);
         }
 
         [Fact]
-        public void DelNoKeysThrows()
+        public async Task DelNoKeysThrows()
         {
             var stream = new MemoryStream();
             using (var client = new RedisClient(new RedisStreamConnection(stream)))
             {
-                Assert.ThrowsAsync<ArgumentNullException>(() => client.SendDeleteAsync());
+                await Assert.ThrowsAsync<ArgumentNullException>(() => client.SendDeleteAsync());
             }
         }
 
         [Fact]
-        public void DelEmptyArrayOfKeysThrows()
+        public async Task DelEmptyArrayOfKeysThrows()
         {
             var stream = new MemoryStream();
             using (var client = new RedisClient(new RedisStreamConnection(stream)))
             {
-                Assert.ThrowsAsync<ArgumentNullException>(() => client.SendDeleteAsync(new string[] { }));
+                await Assert.ThrowsAsync<ArgumentNullException>(() => client.SendDeleteAsync(new string[] { }));
             }
         }
 
         [Fact]
-        public void DelEmptyKeyThrows()
+        public async Task DelEmptyKeyThrows()
         {
             var stream = new MemoryStream();
             using (var client = new RedisClient(new RedisStreamConnection(stream)))
             {
-                Assert.ThrowsAsync<ArgumentNullException>(() => client.SendDeleteAsync(string.Empty));
+                await Assert.ThrowsAsync<ArgumentNullException>(() => client.SendDeleteAsync(string.Empty));
             }
         }
     }

@@ -244,7 +244,7 @@ namespace Munq.Redis.Commands
         }
 
         /// <summary>
-        /// Sends the PExpire command. http://redis.io/commands/pexpire
+        /// Sends the PExpire command. http://redis.io/commands/pttl
         /// </summary>
         /// <param name="client">The RedisClient.</param>
         /// <param name="key">The key string.</param>
