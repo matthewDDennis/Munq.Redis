@@ -12,6 +12,7 @@ namespace Munq.Redis.Commands
         {
             return client.SendSAddAsync(key, (IEnumerable<object>)values);
         }
+
         public static Task SendSAddAsync(this RedisClient client,
                                                string key, IEnumerable<object> values)
         {
@@ -22,23 +23,31 @@ namespace Munq.Redis.Commands
 
             return client.SendAsync("SAdd", parameters);
         }
+
         public static Task SendSCardAsync(this RedisClient client, string key)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
             return client.SendAsync("SCard", key);
         }
+
         public static Task SendSDiffAsync(this RedisClient client, params string[] keys)
         {
             return client.SendSDiffAsync((IEnumerable<string>) keys);
         }
+
         public static Task SendSDiffAsync(this RedisClient client, IEnumerable<string> keys)
         {
             return client.SendAsync("SDiff", keys);
         }
+
         public static Task SendSDiffStoreAsync(this RedisClient client,
                                                      string destKey, params string[] keys)
         {
             return client.SendSDiffStoreAsync(destKey, (IEnumerable<string>) keys);
         }
+
         public static Task SendSDiffStoreAsync(this RedisClient client,
                                                      string destKey, IEnumerable<string> keys)
         {
@@ -48,19 +57,23 @@ namespace Munq.Redis.Commands
                 parameters.AddRange(keys);
             return client.SendAsync("SDiffStore", parameters);
         }
+
         public static Task SendSInterAsync(this RedisClient client, params string[] keys)
         {
             return client.SendSInterAsync((IEnumerable<string>) keys);
         }
+
         public static Task SendSInterAsync(this RedisClient client, IEnumerable<string> keys)
         {
             return client.SendAsync("SInter", keys);
         }
+
         public static Task SendSInterStoreAsync(this RedisClient client,
                                                      string destKey, params string[] keys)
         {
             return client.SendSInterStoreAsync(destKey, (IEnumerable<string>) keys);
         }
+
         public static Task SendSInterStoreAsync(this RedisClient client,
                                                      string destKey, IEnumerable<string> keys)
         {
@@ -70,36 +83,53 @@ namespace Munq.Redis.Commands
                 parameters.AddRange(keys);
             return client.SendAsync("SInterStore", parameters);
         }
+
         public static Task SendSIsMemberAsync(this RedisClient client, string key, object member)
         {
             return client.SendAsync("SIsMember", key, member);
         }
+
         public static Task SendSMembersAsync(this RedisClient client, string key)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
             return client.SendAsync("SMembers", key);
         }
+
         public static Task SendSMovesAsync(this RedisClient client,
                                                  string source, string destination, object member)
         {
             return client.SendAsync("SMove", source, destination, member);
         }
+
         public static Task SendSPopAsync(this RedisClient client, string key)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
             return client.SendAsync("SPop", key);
         }
+
         public static Task SendSRandMemberAsync(this RedisClient client, string key, long count)
         {
             return client.SendAsync("SRandMember", key, count);
         }
+
         public static Task SendSRandMemberAsync(this RedisClient client, string key)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
             return client.SendAsync("SRandMember", key);
         }
+
         public static Task SendSRemAsync(this RedisClient client,
                                                string key, params object[] members)
         {
             return client.SendSRemAsync(key, (IEnumerable<object>) members);
         }
+
         public static Task SendSRemAsync(this RedisClient client,
                                                string key, IEnumerable<object> members)
         {
@@ -111,6 +141,7 @@ namespace Munq.Redis.Commands
             }
                         return client.SendAsync("SRem", parameters);
         }
+
         public static Task SendSScanAsync(this RedisClient client,
                                                 string key, long cursor, string pattern, long? count)
         {
@@ -137,15 +168,18 @@ namespace Munq.Redis.Commands
         {
             return client.SendSUnionAsync((IEnumerable<string>) keys);
         }
+
         public static Task SendSUnionAsync(this RedisClient client, IEnumerable<string> keys)
         {
             return client.SendAsync("SUnion", keys);
         }
+
         public static Task SendSUnionStoreAsync(this RedisClient client,
                                                      string destKey, params string[] keys)
         {
             return client.SendSUnionStoreAsync(destKey, (IEnumerable<string>) keys);
         }
+
         public static Task SendSUnionStoreAsync(this RedisClient client,
                                                      string destKey, IEnumerable<string> keys)
         {

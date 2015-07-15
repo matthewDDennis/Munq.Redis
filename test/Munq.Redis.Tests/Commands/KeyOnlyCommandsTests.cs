@@ -27,7 +27,30 @@ namespace Munq.Redis.Tests.Commands
             Redis.Commands.StringCommands.SendDecrAsync,
             Redis.Commands.StringCommands.SendGetAsync,
             Redis.Commands.StringCommands.SendIncrAsync,
-            Redis.Commands.StringCommands.SendStrLenAsync
+            Redis.Commands.StringCommands.SendStrLenAsync,
+
+            // List Commands
+            Redis.Commands.ListCommands.SendLLenAsync,
+            Redis.Commands.ListCommands.SendLPopAsync,
+            Redis.Commands.ListCommands.SendRPopAsync,
+
+            // Connection Commands
+            Redis.Commands.ConnectionCommands.SendAuthAsync,
+            Redis.Commands.ConnectionCommands.SendEchoAsync,
+
+            // Hash Commands
+            Redis.Commands.HashCommands.SendHGetAllAsync,
+            Redis.Commands.HashCommands.SendHKeysAsync,
+            Redis.Commands.HashCommands.SendHLenAsync,
+            Redis.Commands.HashCommands.SendHValsAsync,
+
+            // Set Commands
+            Redis.Commands.SetCommands.SendSCardAsync,
+            Redis.Commands.SetCommands.SendSMembersAsync,
+            Redis.Commands.SetCommands.SendSPopAsync,
+            Redis.Commands.SetCommands.SendSRandMemberAsync,
+
+
         };
 
         public enum MethodName
@@ -44,7 +67,29 @@ namespace Munq.Redis.Tests.Commands
             Decr,
             Get,
             Incr,
-            StrLen
+            StrLen,
+
+            // List Commands
+            LLen,
+            LPop,
+            RPop,
+
+            // Connection Commands
+            Auth,
+            Echo,
+
+            // Hash Commands
+            HGetAll,
+            HKeys,
+            HLen,
+            HVals,
+
+            // Set Commands
+            SCard,
+            SMembers,
+            SPop,
+            SRandMember,
+
         }
 
         [Theory]
@@ -58,18 +103,32 @@ namespace Munq.Redis.Tests.Commands
         [InlineData(MethodName.Get)]
         [InlineData(MethodName.Incr)]
         [InlineData(MethodName.StrLen)]
+        [InlineData(MethodName.LLen)]
+        [InlineData(MethodName.LPop)]
+        [InlineData(MethodName.RPop)]
+        [InlineData(MethodName.Auth)]
+        [InlineData(MethodName.Echo)]
+        [InlineData(MethodName.HGetAll)]
+        [InlineData(MethodName.HKeys)]
+        [InlineData(MethodName.HLen)]
+        [InlineData(MethodName.HVals)]
+        [InlineData(MethodName.SCard)]
+        [InlineData(MethodName.SMembers)]
+        [InlineData(MethodName.SPop)]
+        [InlineData(MethodName.SRandMember)]
         public async Task OkWithAKey(MethodName methodName)
         {
             var stream = new MemoryStream();
             byte[] result;
             string command = methodName.ToString();
 
-            byte[] expected = encoder.GetBytes($"*2\r\n${command.Length}\r\n{command}\r\n$4\r\nKey1\r\n");
+            string aString = Guid.NewGuid().ToString();
+            byte[] expected = encoder.GetBytes($"*2\r\n${command.Length}\r\n{command}\r\n${aString.Length}\r\n{aString}\r\n");
 
 
             using (var client = new RedisClient(new RedisStreamConnection(stream)))
             {
-                await KeyMethods[(int)methodName](client, "Key1");
+                await KeyMethods[(int)methodName](client, aString);
 
                 result = stream.ToArray();
             }
@@ -87,6 +146,19 @@ namespace Munq.Redis.Tests.Commands
         [InlineData(MethodName.Get)]
         [InlineData(MethodName.Incr)]
         [InlineData(MethodName.StrLen)]
+        [InlineData(MethodName.LLen)]
+        [InlineData(MethodName.LPop)]
+        [InlineData(MethodName.RPop)]
+        [InlineData(MethodName.Auth)]
+        [InlineData(MethodName.Echo)]
+        [InlineData(MethodName.HGetAll)]
+        [InlineData(MethodName.HKeys)]
+        [InlineData(MethodName.HLen)]
+        [InlineData(MethodName.HVals)]
+        [InlineData(MethodName.SCard)]
+        [InlineData(MethodName.SMembers)]
+        [InlineData(MethodName.SPop)]
+        [InlineData(MethodName.SRandMember)]
         public async Task NoKeyThrows(MethodName methodName)
         {
             var stream = new MemoryStream();
@@ -107,6 +179,19 @@ namespace Munq.Redis.Tests.Commands
         [InlineData(MethodName.Get)]
         [InlineData(MethodName.Incr)]
         [InlineData(MethodName.StrLen)]
+        [InlineData(MethodName.LLen)]
+        [InlineData(MethodName.LPop)]
+        [InlineData(MethodName.RPop)]
+        [InlineData(MethodName.Auth)]
+        [InlineData(MethodName.Echo)]
+        [InlineData(MethodName.HGetAll)]
+        [InlineData(MethodName.HKeys)]
+        [InlineData(MethodName.HLen)]
+        [InlineData(MethodName.HVals)]
+        [InlineData(MethodName.SCard)]
+        [InlineData(MethodName.SMembers)]
+        [InlineData(MethodName.SPop)]
+        [InlineData(MethodName.SRandMember)]
         public async Task EmptyKeyThrows(MethodName methodName)
         {
             var stream = new MemoryStream();
