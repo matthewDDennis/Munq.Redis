@@ -139,7 +139,7 @@ namespace Munq.Redis.Commands
 
         public static Task SendMGetAsync(this RedisClient client, IEnumerable<string> keys)
         {
-            if (keys == null || keys.Count() == 0 || keys.Any(s => string.IsNullOrEmpty(s)))
+            if (keys == null || keys.Count() == 0 || keys.Any(s => string.IsNullOrWhiteSpace(s)))
                 throw new ArgumentNullException(nameof(keys));
 
             return client.SendAsync("MGet", keys);

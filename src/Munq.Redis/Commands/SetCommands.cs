@@ -39,7 +39,7 @@ namespace Munq.Redis.Commands
 
         public static Task SendSDiffAsync(this RedisClient client, IEnumerable<string> keys)
         {
-            if (keys == null || keys.Count() == 0 || keys.Any(s => string.IsNullOrEmpty(s)))
+            if (keys == null || keys.Count() == 0 || keys.Any(s => string.IsNullOrWhiteSpace(s)))
                 throw new ArgumentNullException(nameof(keys));
 
             return client.SendAsync("SDiff", keys);
@@ -68,7 +68,7 @@ namespace Munq.Redis.Commands
 
         public static Task SendSInterAsync(this RedisClient client, IEnumerable<string> keys)
         {
-            if (keys == null || keys.Count() == 0 || keys.Any(s => string.IsNullOrEmpty(s)))
+            if (keys == null || keys.Count() == 0 || keys.Any(s => string.IsNullOrWhiteSpace(s)))
                 throw new ArgumentNullException(nameof(keys));
 
             return client.SendAsync("SInter", keys);
@@ -177,7 +177,7 @@ namespace Munq.Redis.Commands
 
         public static Task SendSUnionAsync(this RedisClient client, IEnumerable<string> keys)
         {
-            if (keys == null || keys.Count() == 0 || keys.Any(s => string.IsNullOrEmpty(s)))
+            if (keys == null || keys.Count() == 0 || keys.Any(s => string.IsNullOrWhiteSpace(s)))
                 throw new ArgumentNullException(nameof(keys));
 
             return client.SendAsync("SUnion", keys);

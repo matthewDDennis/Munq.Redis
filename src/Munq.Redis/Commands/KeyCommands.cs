@@ -39,7 +39,7 @@ namespace Munq.Redis.Commands
         /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendDeleteAsync(this RedisClient client, IEnumerable<string> keys)
         {
-            if (keys == null || keys.Count() == 0 || keys.Any(s => string.IsNullOrEmpty(s)))
+            if (keys == null || keys.Count() == 0 || keys.Any(s => string.IsNullOrWhiteSpace(s)))
                 throw new ArgumentNullException(nameof(keys));
 
             return client.SendAsync("Del", keys);
