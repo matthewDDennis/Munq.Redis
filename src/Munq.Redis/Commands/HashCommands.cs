@@ -14,7 +14,10 @@ namespace Munq.Redis.Commands
 
         public static Task SendHDelAsync(this RedisClient client, IEnumerable<string> keys)
         {
-            return client.SendAsync("HDel", (keys ?? new string[] { }));
+            if (keys == null || keys.Count() == 0 || keys.Any(s => string.IsNullOrEmpty(s)))
+                throw new ArgumentNullException(nameof(keys));
+
+            return client.SendAsync("HDel", keys);
         }
 
         public static Task SendHExistsAsync(this RedisClient client, string key, string field)
@@ -70,7 +73,10 @@ namespace Munq.Redis.Commands
 
         public static Task SendHMGetAsync(this RedisClient client, IEnumerable<string> keys)
         {
-            return client.SendAsync("HMGet", (keys ?? new string[] { }));
+            if (keys == null || keys.Count() == 0 || keys.Any(s => string.IsNullOrEmpty(s)))
+                throw new ArgumentNullException(nameof(keys));
+
+            return client.SendAsync("HMGet", keys);
         }
 
         public static Task SendHMSetAsync(this RedisClient client, string key,

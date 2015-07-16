@@ -31,6 +31,9 @@ namespace Munq.Redis.Commands
         }
         public static Task SendZCardAsync(this RedisClient client, string key)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
             return client.SendAsync("ZCard", key);
         }
 

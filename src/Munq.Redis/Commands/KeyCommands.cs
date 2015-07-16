@@ -39,10 +39,10 @@ namespace Munq.Redis.Commands
         /// <returns>The task which completes when the command is sent.</returns>
         public static Task SendDeleteAsync(this RedisClient client, IEnumerable<string> keys)
         {
-            if (keys == null)
+            if (keys == null || keys.Count() == 0 || keys.Any(s => string.IsNullOrEmpty(s)))
                 throw new ArgumentNullException(nameof(keys));
 
-            return client.SendAsync("Del", (keys ?? new string[] { }));
+            return client.SendAsync("Del", keys);
         }
 
         /// <summary>
@@ -80,8 +80,7 @@ namespace Munq.Redis.Commands
         /// <param name="key">The key string.</param>
         /// <param name="seconds">The number of seconds after which the Key expires.</param>
         /// <returns>The task which completes when the command is sent.</returns>
-        public static Task SendExpireAsync(this RedisClient client,
-                                                 string key, int seconds)
+        public static Task SendExpireAsync(this RedisClient client, string key, int seconds)
         {
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
@@ -96,8 +95,7 @@ namespace Munq.Redis.Commands
         /// <param name="key">The key string.</param>
         /// <param name="unixTimeStamp">The unix timestamp for the date/time to expire the Key.</param>
         /// <returns>The task which completes when the command is sent.</returns>
-        public static Task SendEpireAtAsync(this RedisClient client,
-                                                  string key, long unixTimeStamp)
+        public static Task SendEpireAtAsync(this RedisClient client, string key, long unixTimeStamp)
         {
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
@@ -218,8 +216,7 @@ namespace Munq.Redis.Commands
         /// <param name="key">The key string.</param>
         /// <param name="milliseconds">The time to live for the Key.</param>
         /// <returns>The task which completes when the command is sent.</returns>
-        public static Task SendPExpireAsync(this RedisClient client,
-                                                  string key, long milliseconds)
+        public static Task SendPExpireAsync(this RedisClient client, string key, long milliseconds)
         {
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
@@ -234,8 +231,7 @@ namespace Munq.Redis.Commands
         /// <param name="key">The key string.</param>
         /// <param name="millisecondsTimestamp">The unix timestamp of the date/time to expire the Key.</param>
         /// <returns>The task which completes when the command is sent.</returns>
-        public static Task SendPExpireAtAsync(this RedisClient client,
-                                                    string key, long millisecondsTimestamp)
+        public static Task SendPExpireAtAsync(this RedisClient client, string key, long millisecondsTimestamp)
         {
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
@@ -275,8 +271,7 @@ namespace Munq.Redis.Commands
         /// <param name="key">The key string.</param>
         /// <param name="newKey">The new Key name.</param>
         /// <returns>The task which completes when the command is sent.</returns>
-        public static Task SendRenameAsync(this RedisClient client,
-                                                 string key, string newKey)
+        public static Task SendRenameAsync(this RedisClient client, string key, string newKey)
         {
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
@@ -294,8 +289,7 @@ namespace Munq.Redis.Commands
         /// <param name="key">The key string.</param>
         /// <param name="newKey">The new Key name.</param>
         /// <returns>The task which completes when the command is sent.</returns>
-        public static Task SendRenameXAsync(this RedisClient client,
-                                                  string key, string newKey)
+        public static Task SendRenameXAsync(this RedisClient client, string key, string newKey)
         {
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
@@ -314,8 +308,7 @@ namespace Munq.Redis.Commands
         /// <param name="ttl">The expiry time in milliseconds.</param>
         /// <param name="serializeValue">The value to restore from a Dump command.</param>
         /// <returns>The task which completes when the command is sent.</returns>
-        public static Task SendRestoreAsync(this RedisClient client,
-                                                  string key, long ttl, byte[] serializeValue)
+        public static Task SendRestoreAsync(this RedisClient client, string key, long ttl, byte[] serializeValue)
         {
             if (string.IsNullOrWhiteSpace(key))
                 throw new ArgumentNullException(nameof(key));
