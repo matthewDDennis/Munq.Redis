@@ -5,9 +5,15 @@ using Xunit;
 using Munq.Redis.Commands;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Munq.Redis.Tests.Commands.KeyCommands
 {
+    /// <summary>
+    /// Tests the commands with the format COMMAND Key [Key2 [Key3 ...]] are
+    /// serialized correctly and handle error as expected.
+    /// </summary>
     public class CommandsWithMultiKeysParameters
     {
         static readonly Encoding encoder = new UTF8Encoding();
@@ -29,6 +35,8 @@ namespace Munq.Redis.Tests.Commands.KeyCommands
             // String Commands
             MGet,
 
+            // Transaction Commands
+            Watch
         }
 
         Func<RedisClient, string[], Task>[] Methods = {
@@ -45,17 +53,16 @@ namespace Munq.Redis.Tests.Commands.KeyCommands
             Redis.Commands.SetCommands.SendSUnionAsync,
 
             // String Commands
-            Redis.Commands.StringCommands.SendMGetAsync
+            Redis.Commands.StringCommands.SendMGetAsync,
+
+            // Transaction Commands
+            Redis.Commands.TransactionCommands.SendWatchKeysAsync
         };
 
-        [Theory]
-        [InlineData(Command.Del)]
-        [InlineData(Command.HDel)]
-        [InlineData(Command.HMGet)]
-        [InlineData(Command.SDiff)]
-        [InlineData(Command.SInter)]
-        [InlineData(Command.SUnion)]
-        [InlineData(Command.MGet)]
+        public static IEnumerable<object[]> Commands => ((int[])Enum.GetValues(typeof(Command)))
+                                                         .Select(x => new object[] { (Command)x });
+
+        [Theory, MemberData("Commands")]
         public async Task OneKey(Command command)
         {
             var stream = new MemoryStream();
@@ -74,15 +81,8 @@ namespace Munq.Redis.Tests.Commands.KeyCommands
             Assert.Equal(expected, result);
         }
 
-        [Theory]
-        [InlineData(Command.Del)]
-        [InlineData(Command.HDel)]
-        [InlineData(Command.HMGet)]
-        [InlineData(Command.SDiff)]
-        [InlineData(Command.SInter)]
-        [InlineData(Command.SUnion)]
-        [InlineData(Command.MGet)]
-        public async Task DelManyKeys(Command command)
+        [Theory, MemberData("Commands")]
+        public async Task ManyKeys(Command command)
         {
             var stream = new MemoryStream();
             byte[] result;
@@ -104,15 +104,8 @@ namespace Munq.Redis.Tests.Commands.KeyCommands
         }
 
 
-        [Theory]
-        [InlineData(Command.Del)]
-        [InlineData(Command.HDel)]
-        [InlineData(Command.HMGet)]
-        [InlineData(Command.SDiff)]
-        [InlineData(Command.SInter)]
-        [InlineData(Command.SUnion)]
-        [InlineData(Command.MGet)]
-        public async Task DelNullKeysThrows(Command command)
+        [Theory, MemberData("Commands")]
+        public async Task NullKeysThrows(Command command)
         {
             var stream = new MemoryStream();
             using (var client = new RedisClient(new RedisStreamConnection(stream)))
@@ -121,15 +114,8 @@ namespace Munq.Redis.Tests.Commands.KeyCommands
             }
         }
 
-        [Theory]
-        [InlineData(Command.Del)]
-        [InlineData(Command.HDel)]
-        [InlineData(Command.HMGet)]
-        [InlineData(Command.SDiff)]
-        [InlineData(Command.SInter)]
-        [InlineData(Command.SUnion)]
-        [InlineData(Command.MGet)]
-        public async Task DelEmptyArrayOfKeysThrows(Command command)
+        [Theory, MemberData("Commands")]
+        public async Task EmptyArrayOfKeysThrows(Command command)
         {
             var stream = new MemoryStream();
             using (var client = new RedisClient(new RedisStreamConnection(stream)))
@@ -138,15 +124,8 @@ namespace Munq.Redis.Tests.Commands.KeyCommands
             }
         }
 
-        [Theory]
-        [InlineData(Command.Del)]
-        [InlineData(Command.HDel)]
-        [InlineData(Command.HMGet)]
-        [InlineData(Command.SDiff)]
-        [InlineData(Command.SInter)]
-        [InlineData(Command.SUnion)]
-        [InlineData(Command.MGet)]
-        public async Task DelEmptyKeyThrows(Command command)
+        [Theory, MemberData("Commands")]
+        public async Task EmptyKeyThrows(Command command)
         {
             var stream = new MemoryStream();
             using (var client = new RedisClient(new RedisStreamConnection(stream)))

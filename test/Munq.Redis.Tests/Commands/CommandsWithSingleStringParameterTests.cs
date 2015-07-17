@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Munq.Redis;
 using Munq.Redis.Commands;
+using Xunit.Extensions;
 
 namespace Munq.Redis.Tests.Commands
 {
@@ -95,31 +96,10 @@ namespace Munq.Redis.Tests.Commands
             Redis.Commands.SortedSetCommands.SendZCardAsync
         };
 
-        [Theory]
-        [InlineData(Command.Dump)]
-        [InlineData(Command.Exists)]
-        [InlineData(Command.Persist)]
-        [InlineData(Command.PTTL)]
-        [InlineData(Command.TTL)]
-        [InlineData(Command.Type)]
-        [InlineData(Command.Decr)]
-        [InlineData(Command.Get)]
-        [InlineData(Command.Incr)]
-        [InlineData(Command.StrLen)]
-        [InlineData(Command.LLen)]
-        [InlineData(Command.LPop)]
-        [InlineData(Command.RPop)]
-        [InlineData(Command.Auth)]
-        [InlineData(Command.Echo)]
-        [InlineData(Command.HGetAll)]
-        [InlineData(Command.HKeys)]
-        [InlineData(Command.HLen)]
-        [InlineData(Command.HVals)]
-        [InlineData(Command.SCard)]
-        [InlineData(Command.SMembers)]
-        [InlineData(Command.SPop)]
-        [InlineData(Command.SRandMember)]
-        [InlineData(Command.ZCard)]
+        public static IEnumerable<object[]> Commands =>  ((int[])Enum.GetValues(typeof(Command)))
+                                                         .Select(x => new object[] { (Command)x }); 
+
+        [Theory, MemberData("Commands")]
         public async Task OkWithAKey(Command command)
         {
             var stream = new MemoryStream();
@@ -139,31 +119,7 @@ namespace Munq.Redis.Tests.Commands
             Assert.Equal(expected, result);
         }
 
-        [Theory]
-        [InlineData(Command.Dump)]
-        [InlineData(Command.Exists)]
-        [InlineData(Command.Persist)]
-        [InlineData(Command.PTTL)]
-        [InlineData(Command.TTL)]
-        [InlineData(Command.Type)]
-        [InlineData(Command.Decr)]
-        [InlineData(Command.Get)]
-        [InlineData(Command.Incr)]
-        [InlineData(Command.StrLen)]
-        [InlineData(Command.LLen)]
-        [InlineData(Command.LPop)]
-        [InlineData(Command.RPop)]
-        [InlineData(Command.Auth)]
-        [InlineData(Command.Echo)]
-        [InlineData(Command.HGetAll)]
-        [InlineData(Command.HKeys)]
-        [InlineData(Command.HLen)]
-        [InlineData(Command.HVals)]
-        [InlineData(Command.SCard)]
-        [InlineData(Command.SMembers)]
-        [InlineData(Command.SPop)]
-        [InlineData(Command.SRandMember)]
-        [InlineData(Command.ZCard)]
+        [Theory, MemberData("Commands")]
         public async Task NoKeyThrows(Command command)
         {
             var stream = new MemoryStream();
@@ -173,31 +129,7 @@ namespace Munq.Redis.Tests.Commands
             }
         }
 
-        [Theory]
-        [InlineData(Command.Dump)]
-        [InlineData(Command.Exists)]
-        [InlineData(Command.Persist)]
-        [InlineData(Command.PTTL)]
-        [InlineData(Command.TTL)]
-        [InlineData(Command.Type)]
-        [InlineData(Command.Decr)]
-        [InlineData(Command.Get)]
-        [InlineData(Command.Incr)]
-        [InlineData(Command.StrLen)]
-        [InlineData(Command.LLen)]
-        [InlineData(Command.LPop)]
-        [InlineData(Command.RPop)]
-        [InlineData(Command.Auth)]
-        [InlineData(Command.Echo)]
-        [InlineData(Command.HGetAll)]
-        [InlineData(Command.HKeys)]
-        [InlineData(Command.HLen)]
-        [InlineData(Command.HVals)]
-        [InlineData(Command.SCard)]
-        [InlineData(Command.SMembers)]
-        [InlineData(Command.SPop)]
-        [InlineData(Command.SRandMember)]
-        [InlineData(Command.ZCard)]
+        [Theory, MemberData("Commands")]
         public async Task EmptyKeyThrows(Command command)
         {
             var stream = new MemoryStream();
