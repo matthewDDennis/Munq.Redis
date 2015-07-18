@@ -80,7 +80,7 @@ namespace Munq.Redis.Tests.Commands
         }
 
         [Theory, MemberData("Commands")]
-        public async Task OkWithValidKeyAndNullString(Command command)
+        public async Task WithValidKeyAndNullString(Command command)
         {
             var stream      = new MemoryStream();
             byte[] result;
@@ -108,7 +108,7 @@ namespace Munq.Redis.Tests.Commands
         }   
 
         [Theory, MemberData("Commands")]
-        public async Task OkWithValidKeyAndEmptryString(Command command)
+        public async Task WithValidKeyAndEmptryString(Command command)
         {
             var stream      = new MemoryStream();
             byte[] result;
@@ -132,6 +132,34 @@ namespace Munq.Redis.Tests.Commands
                     result = stream.ToArray();
                     Assert.Equal(expected, result);
                 }
+            }
+        }
+
+        [Theory, MemberData("Commands")]
+        public async Task ThrowsWithNullKey(Command command)
+        {
+            var stream = new MemoryStream();
+
+            string key = null;
+            string aString = Guid.NewGuid().ToString(); 
+
+            using (var client = new RedisClient(new RedisStreamConnection(stream)))
+            {
+                    await Assert.ThrowsAsync<ArgumentNullException>(() => Methods[(int)command](client, key, aString));
+            }
+        }
+
+        [Theory, MemberData("Commands")]
+        public async Task ThrowsWithEmptyKey(Command command)
+        {
+            var stream = new MemoryStream();
+
+            string key = string.Empty;
+            string aString = Guid.NewGuid().ToString();
+
+            using (var client = new RedisClient(new RedisStreamConnection(stream)))
+            {
+                await Assert.ThrowsAsync<ArgumentNullException>(() => Methods[(int)command](client, key, aString));
             }
         }
     }

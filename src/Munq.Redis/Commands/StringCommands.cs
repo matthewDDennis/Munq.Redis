@@ -10,6 +10,9 @@ namespace Munq.Redis.Commands
         public static Task SendAppendAsync(this RedisClient client,
                                                  string key, string value)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
             return client.SendAsync("Append", key, value);
         }
 
@@ -109,6 +112,9 @@ namespace Munq.Redis.Commands
 
         public static Task SendGetSetAsync(this RedisClient client, string key, string value)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
             return client.SendAsync("GetSet", key, value);
         }
 
