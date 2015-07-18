@@ -15,7 +15,7 @@ namespace Munq.Redis
     public class CommandWriter
     {
         static readonly byte[]   CRLF = { (byte)'\r', (byte)'\n' };
-        static readonly byte[]   NullString = { (byte)'-', (byte)'1', (byte)'\r', (byte)'\n' };
+        static readonly byte[]   NullString = { (byte)'$', (byte)'-', (byte)'1', (byte)'\r', (byte)'\n' };
         static readonly Encoding encoder = new UTF8Encoding();
 
         readonly        Stream   _stream;
@@ -55,18 +55,21 @@ namespace Munq.Redis
         /// Adds an object to the command data.
         /// </summary>
         /// <param name="value">The object to add.</param>
-        async Task WriteObjectAsync(object value)
+        Task WriteObjectAsync(object value)
         {
+            if (value == null)
+                return WriteBytesToStreamAsync(NullString);
+
             var objType = value.GetType();
 
             if (objType == typeof(string))
-                await WriteRedisBulkStringAsync(value as string);
+                return WriteRedisBulkStringAsync(value as string);
             else if (objType == typeof(byte[]))
-                await WriteRedisBulkStringAsync(value as byte[]);
+                return WriteRedisBulkStringAsync(value as byte[]);
             else if (objType == typeof(bool))
-                await WriteRedisBulkStringAsync((bool)value ? "1" : "0");
+                return WriteRedisBulkStringAsync((bool)value ? "1" : "0");
             else
-                await WriteRedisBulkStringAsync(value.ToString());
+                return WriteRedisBulkStringAsync(value.ToString());
         }
 
         /// <summary>

@@ -138,6 +138,12 @@ namespace Munq.Redis.Commands
         public static Task SendRPopLPushAsync(this RedisClient client,
                                                     string source, string destination)
         {
+            if (string.IsNullOrWhiteSpace(source))
+                throw new ArgumentNullException(nameof(source));
+
+            if (string.IsNullOrWhiteSpace(destination))
+                throw new ArgumentNullException(nameof(destination));
+
             return client.SendAsync("RPopLPush", source, destination);
         }
 

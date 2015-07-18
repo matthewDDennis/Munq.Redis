@@ -35,6 +35,12 @@ namespace Munq.Redis.Commands
 
         public static Task SendHGetAsync(this RedisClient client, string key, string field)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
+            if (string.IsNullOrWhiteSpace(field))
+                throw new ArgumentNullException(nameof(field));
+
             return client.SendAsync("HGet", key, field);
         }
 
