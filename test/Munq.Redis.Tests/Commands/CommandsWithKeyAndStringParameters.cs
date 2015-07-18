@@ -18,9 +18,12 @@ namespace Munq.Redis.Tests.Commands
         {
             // Key Commands
             Rename,
+            RenameX,
 
             // Hash Commands
+            HExists,
             HGet,
+            HStrLen,
 
             // List Commands
             RPopLPush,
@@ -36,6 +39,9 @@ namespace Munq.Redis.Tests.Commands
             true,
             true,
             true,
+            true,
+            true,
+            true,
             false,
             false
         };
@@ -43,9 +49,12 @@ namespace Munq.Redis.Tests.Commands
         Func<RedisClient, string, string, Task>[] Methods = {
             // Key Commands
             (c, key, s) => c.SendRenameAsync(key, s),
+            (c, key, s) => c.SendRenameXAsync(key, s),
 
             // Hash Commands
+            (c, key, s) => c.SendHExistsAsync(key, s),
             (c, key, s) => c.SendHGetAsync(key, s),
+            (c, key, s) => c.SendHStrLenAsync(key, s),
 
             // List Commands
             (c, key, s) => c.SendRPopLPushAsync(key, s),

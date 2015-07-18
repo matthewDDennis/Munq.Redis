@@ -20,6 +20,7 @@ namespace Munq.Redis.Tests.Commands
             // Key Commands
             Dump,
             Exists,
+            Keys,
             Persist,
             PTTL,
             TTL,
@@ -60,6 +61,7 @@ namespace Munq.Redis.Tests.Commands
             // Key Commands
             Redis.Commands.KeyCommands.SendDumpAsync,
             Redis.Commands.KeyCommands.SendExistsAsync,
+            Redis.Commands.KeyCommands.SendKeysAsync,
             Redis.Commands.KeyCommands.SendPersistAsync,
             Redis.Commands.KeyCommands.SendPTTLAsync,
             Redis.Commands.KeyCommands.SendTTLAsync,

@@ -22,6 +22,12 @@ namespace Munq.Redis.Commands
 
         public static Task SendHExistsAsync(this RedisClient client, string key, string field)
         {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
+            if (string.IsNullOrWhiteSpace(field))
+                throw new ArgumentNullException(nameof(field));
+
             return client.SendAsync("HExists", key, field);
         }
 
@@ -135,6 +141,17 @@ namespace Munq.Redis.Commands
                                                  string key, string field, object value)
         {
             return client.SendAsync("HSetNX", key, field, value);
+        }
+
+        public static Task SendHStrLenAsync(this RedisClient client, string key, string field)
+        {
+            if (string.IsNullOrWhiteSpace(key))
+                throw new ArgumentNullException(nameof(key));
+
+            if (string.IsNullOrWhiteSpace(field))
+                throw new ArgumentNullException(nameof(field));
+
+            return client.SendAsync("HStrLen", key, field);
         }
 
         public static Task SendHValsAsync(this RedisClient client, string key)
