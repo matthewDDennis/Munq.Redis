@@ -46,6 +46,7 @@ namespace Munq.Redis.Commands
         {
             return client.SendAsync("Config", "Get", parameter);
         }
+
         public static Task SendConfigResetStatAsync(this RedisClient client)
         {
             return client.SendAsync("Config", "ResetStat");
@@ -114,6 +115,7 @@ namespace Munq.Redis.Commands
         {
             return client.SendAsync("SlaveOf", host, port);
         }
+
         public static Task SendSlowLogGetAsync(this RedisClient client, long numToGet)
         {
             return client.SendAsync("SlowLog", "Get", numToGet);
@@ -123,6 +125,7 @@ namespace Munq.Redis.Commands
         {
             return client.SendAsync("SlowLog", "Get");
         }
+
         public static Task SendSlowLogLenAsync(this RedisClient client)
         {
             return client.SendAsync("SlowLog", "Len");
