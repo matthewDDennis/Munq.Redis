@@ -58,8 +58,7 @@ namespace Munq.Redis.Tests.Commands.KeyCommands
             // Transaction Commands
             Redis.Commands.TransactionCommands.SendWatchKeysAsync
         };
-
-        Func<RedisClient, string, string, string, Task>[] ParamMethods = {
+        readonly Func<RedisClient, string, string, string, Task>[] ParamMethods = {
             // Key Commands
             (c, s1, s2, s3) => c.SendDeleteAsync(s1, s2, s3),
 

@@ -57,7 +57,7 @@ namespace Munq.Redis.Tests.Commands
             ZCard,
         }
 
-        Func<RedisClient, string, Task>[] Methods = {
+        readonly Func<RedisClient, string, Task>[] Methods = {
             // Key Commands
             Redis.Commands.KeyCommands.SendDumpAsync,
             Redis.Commands.KeyCommands.SendExistsAsync,

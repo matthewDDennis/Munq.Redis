@@ -8,7 +8,7 @@ namespace Munq.Redis.Tests.Commands
 {
     public class RedisStreamConnection : IRedisConnection
     {
-        Stream _stream;
+        readonly Stream _stream;
 
         public RedisStreamConnection(Stream stream, int database = 0)
         {

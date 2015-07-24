@@ -38,9 +38,9 @@ namespace RedisAsync
                     await client.SendSelectAsync(4);
                     Console.WriteLine((await client.ExpectOkAsync()) ? "Success" : "Failed");
 
-                    string data = new string('A', 10000);
-                    List<object> results = new List<object>(NumIterations);
-                    Stopwatch stopwatch = new Stopwatch();
+                    var data = new string('A', 10000);
+                    var results = new List<object>(NumIterations);
+                    var stopwatch = new Stopwatch();
                     Console.Write("Writing {0:N0} RedisStrings of {1:N0} chars - ", NumChars, NumIterations);
                     stopwatch.Start();
                     int errorCount = 0;
@@ -111,7 +111,7 @@ namespace RedisAsync
         {
             if (result is Array)
             {
-                object[] objArray = (object[])result;
+                var objArray = (object[])result;
                 Console.WriteLine("An Array of {0} objects:", objArray.Length);
                 foreach (object o in objArray)
                     Console.WriteLine("({0}) {1}", o.GetType().Name, o);

@@ -15,7 +15,7 @@ namespace Munq.Redis.Responses
                 return (long)response;
             else if (response is RedisErrorString)
             {
-                RedisErrorString errorString = response as RedisErrorString;
+                var errorString = response as RedisErrorString;
                 throw new RedisException(errorString.Message);
             }
             else

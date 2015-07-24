@@ -42,7 +42,7 @@ namespace Munq.Redis.Tests.Commands
             Unwatch,
         }
 
-        Func<RedisClient, Task>[] Methods = {
+        readonly Func<RedisClient, Task>[] Methods = {
             // Connection Commands
             Redis.Commands.ConnectionCommands.SendPingAsync,
             Redis.Commands.ConnectionCommands.SendQuitAsync,

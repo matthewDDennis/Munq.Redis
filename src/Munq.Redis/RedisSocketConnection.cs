@@ -9,8 +9,8 @@ namespace Munq.Redis
 {
     public class RedisSocketConnection : IRedisConnection
     {
-        private readonly RedisClientConfig _config;
-        private readonly TcpClient         _tcpClient = new TcpClient();
+        readonly RedisClientConfig _config;
+        readonly TcpClient _tcpClient = new TcpClient();
 
         public RedisSocketConnection(RedisClientConfig config)
         {

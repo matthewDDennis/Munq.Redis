@@ -9,7 +9,7 @@ namespace Munq.Redis
 {
     public class RedisClient : IDisposable
     {
-        private readonly IRedisConnection _connection;
+        readonly IRedisConnection _connection;
         Stream                            _stream;
         ResponseReader                    _responseReader;
         CommandWriter                     _commandWriter;
@@ -59,7 +59,7 @@ namespace Munq.Redis
             await _commandWriter.WriteRedisCommandAsync(command, parameters).ConfigureAwait(false);
         }
 
-        private async Task EnsureConnected()
+        async Task EnsureConnected()
         {
             if (!_connection.IsConnected)
             {

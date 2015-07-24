@@ -45,8 +45,7 @@ namespace Munq.Redis.Tests.Commands
             false,
             false
         };
-
-        Func<RedisClient, string, string, Task>[] Methods = {
+        readonly Func<RedisClient, string, string, Task>[] Methods = {
             // Key Commands
             (c, key, s) => c.SendRenameAsync(key, s),
             (c, key, s) => c.SendRenameXAsync(key, s),

@@ -69,7 +69,7 @@ namespace Munq.Redis.Commands
                                                  IEnumerable<long> weights, SetAggregate aggregate, 
                                                  string cmdStr)
         {
-            List<object> parameters = new List<object>();
+            var parameters = new List<object>();
             parameters.Add(destination);
             parameters.Add(numKeys);
             parameters.AddRange(keys);
