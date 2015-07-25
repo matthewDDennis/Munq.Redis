@@ -26,7 +26,7 @@ namespace Munq.Redis.Responses
         public static async Task<bool> ExpectConstStringAsync(this RedisClient client, string expected)
         {
             string response = await client.ExpectStringAsync().ConfigureAwait(false);
-            if (string.Compare(response, expected) != 0)
+            if (string.Compare(response, expected, StringComparison.Ordinal) != 0)
                 throw new RedisUnexpectedResponse(expected, response);
             else
                 return true;

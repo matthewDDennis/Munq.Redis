@@ -14,9 +14,9 @@ namespace Munq.Redis
     /// <remarks>This class is safe for concurrent, multi-thread access.</remarks>
     public class CommandWriter
     {
-        static readonly byte[]   CRLF = { (byte)'\r', (byte)'\n' };
+        static readonly byte[]   CRLF       = { (byte)'\r', (byte)'\n' };
         static readonly byte[]   NullString = { (byte)'$', (byte)'-', (byte)'1', (byte)'\r', (byte)'\n' };
-        static readonly Encoding encoder = new UTF8Encoding();
+        static readonly Encoding encoder    = new UTF8Encoding();
 
         readonly        Stream   _stream;
 
