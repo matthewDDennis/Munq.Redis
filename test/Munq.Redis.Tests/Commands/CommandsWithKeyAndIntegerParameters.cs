@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Munq.Redis;
 
 namespace Munq.Redis.Tests.Commands
 {
@@ -18,7 +19,9 @@ namespace Munq.Redis.Tests.Commands
 
         }
 
-        Func<RedisClient, string, string, Task>[] Methods = {
+        readonly Func<RedisClient, string, int, Task>[] Methods = {
+            Redis.Commands.KeyCommands.SendExpireAsync,
+            Redis.Commands.KeyCommands.SendMoveAsync
         };
     }
 }
