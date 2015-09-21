@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Munq.Redis.Commands
+namespace Munq.Redis.Strings
 {
-    public static class StringCommands
+    public static class Commands
     {
         public static Task SendAppendAsync(this RedisClient client,
                                                  string key, string value)

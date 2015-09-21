@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Munq.Redis.Commands
+namespace Munq.Redis.Transactions
 {
-    public static class TransactionCommands
+    public static class Commands
     {
         public static Task SendDiscardAsync(this RedisClient client)
         {

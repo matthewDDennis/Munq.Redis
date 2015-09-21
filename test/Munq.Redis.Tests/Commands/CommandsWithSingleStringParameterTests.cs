@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Munq.Redis;
-using Munq.Redis.Commands;
 using Xunit.Extensions;
 
 namespace Munq.Redis.Tests.Commands
@@ -59,43 +58,43 @@ namespace Munq.Redis.Tests.Commands
 
         readonly Func<RedisClient, string, Task>[] Methods = {
             // Key Commands
-            Redis.Commands.KeyCommands.SendDumpAsync,
-            Redis.Commands.KeyCommands.SendExistsAsync,
-            Redis.Commands.KeyCommands.SendKeysAsync,
-            Redis.Commands.KeyCommands.SendPersistAsync,
-            Redis.Commands.KeyCommands.SendPTTLAsync,
-            Redis.Commands.KeyCommands.SendTTLAsync,
-            Redis.Commands.KeyCommands.SendTypeAsync,
+            Keys.Commands.SendDumpAsync,
+            Keys.Commands.SendExistsAsync,
+            Keys.Commands.SendKeysAsync,
+            Keys.Commands.SendPersistAsync,
+            Keys.Commands.SendPTTLAsync,
+            Keys.Commands.SendTTLAsync,
+            Keys.Commands.SendTypeAsync,
 
             // String Commands
-            Redis.Commands.StringCommands.SendDecrAsync,
-            Redis.Commands.StringCommands.SendGetAsync,
-            Redis.Commands.StringCommands.SendIncrAsync,
-            Redis.Commands.StringCommands.SendStrLenAsync,
+            Strings.Commands.SendDecrAsync,
+            Strings.Commands.SendGetAsync,
+            Strings.Commands.SendIncrAsync,
+            Strings.Commands.SendStrLenAsync,
 
             // List Commands
-            Redis.Commands.ListCommands.SendLLenAsync,
-            Redis.Commands.ListCommands.SendLPopAsync,
-            Redis.Commands.ListCommands.SendRPopAsync,
+            Lists.Commands.SendLLenAsync,
+            Lists.Commands.SendLPopAsync,
+            Lists.Commands.SendRPopAsync,
 
             // Connection Commands
-            Redis.Commands.ConnectionCommands.SendAuthAsync,
-            Redis.Commands.ConnectionCommands.SendEchoAsync,
+            Redis.Connection.Commands.SendAuthAsync,
+            Redis.Connection.Commands.SendEchoAsync,
 
             // Hash Commands
-            Redis.Commands.HashCommands.SendHGetAllAsync,
-            Redis.Commands.HashCommands.SendHKeysAsync,
-            Redis.Commands.HashCommands.SendHLenAsync,
-            Redis.Commands.HashCommands.SendHValsAsync,
+            Hashes.Commands.SendHGetAllAsync,
+            Hashes.Commands.SendHKeysAsync,
+            Hashes.Commands.SendHLenAsync,
+            Hashes.Commands.SendHValsAsync,
 
             // Set Commands
-            Redis.Commands.SetCommands.SendSCardAsync,
-            Redis.Commands.SetCommands.SendSMembersAsync,
-            Redis.Commands.SetCommands.SendSPopAsync,
-            Redis.Commands.SetCommands.SendSRandMemberAsync,
+            Sets.Commands.SendSCardAsync,
+            Sets.Commands.SendSMembersAsync,
+            Sets.Commands.SendSPopAsync,
+            Sets.Commands.SendSRandMemberAsync,
 
             // Sorted Set Commands
-            Redis.Commands.SortedSetCommands.SendZCardAsync
+            SortedSets.Commands.SendZCardAsync
         };
 
         public static IEnumerable<object[]> Commands =>  ((int[])Enum.GetValues(typeof(Command)))

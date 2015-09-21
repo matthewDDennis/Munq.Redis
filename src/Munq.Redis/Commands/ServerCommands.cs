@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
-namespace Munq.Redis.Commands
+namespace Munq.Redis.Server
 {
-    public static class ServerCommands
+    public static class Commands
     {
         public static Task SendBackgroundRewriteAOFAsync(this RedisClient client)
         {

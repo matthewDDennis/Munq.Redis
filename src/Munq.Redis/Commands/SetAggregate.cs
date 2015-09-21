@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Munq.Redis.Commands
+namespace Munq.Redis.SortedSets
 {
     public enum SetAggregate
     {

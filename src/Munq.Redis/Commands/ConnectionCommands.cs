@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
-namespace Munq.Redis.Commands
+namespace Munq.Redis.Connection
 {
-    public static class ConnectionCommands
+    public static class Commands
     {
         public static Task SendAuthAsync(this RedisClient client, string password)
         {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Munq.Redis
+﻿namespace Munq.Redis.Strings
 {
     public enum StringSetCommandOptions
     {

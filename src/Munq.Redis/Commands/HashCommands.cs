@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Munq.Redis.Commands
+namespace Munq.Redis.Hashes
 {
-    public static class HashCommands
+    public static class Commands
     {
         public static Task SendHDelAsync(this RedisClient client, params string[] keys)
         {

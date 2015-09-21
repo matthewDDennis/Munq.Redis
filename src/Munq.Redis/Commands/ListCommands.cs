@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
-namespace Munq.Redis.Commands
+namespace Munq.Redis.Lists
 {
     /// <summary>
     /// This class is responsible for sending the Redis commands that are related to 
     /// the Redis List objects.  The commands are implemented as extension method to
     /// the RedisClient class.  Methods are in the form of SendAAAAAAsync.
     /// </summary>
-    public static class ListCommands
+    public static class Commands
     {
         public static Task SendBLPopAsync(this RedisClient client,
                                                 long timeout, params string[] keys)

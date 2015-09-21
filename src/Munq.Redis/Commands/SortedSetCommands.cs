@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Munq.Redis.Commands
+namespace Munq.Redis.SortedSets
 {
-    public static class SortedSetCommands
+    public static class Commands
     {
         public static Task SendZAddAsync(this RedisClient client, string key,
                                               long score, object value)

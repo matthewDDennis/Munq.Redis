@@ -7,7 +7,7 @@
     "licenseUrl": "",
 
     "dependencies": {
-        "xunit.runner.dnx": "2.1.0-zpatch0004",
+        "xunit.runner.dnx": "2.1.0-*",
         "xunit": "2.1.0-*",
         "Munq.Redis": "1.0.0-*"
     },
@@ -21,11 +21,6 @@
         "dnx46": { },
         "dnxcore50": {
             "dependencies": {
-                "System.Collections": "4.0.10-beta-*",
-                "System.Linq": "4.0.0-beta-*",
-                "System.Threading": "4.0.10-beta-*",
-                "System.Runtime": "4.0.20-beta-*",
-                "Microsoft.CSharp": "4.0.0-beta-*"
             }
         }
     }

@@ -2,11 +2,16 @@
 using System.IO;
 using Xunit;
 
-using Munq.Redis.Commands;
+using Munq.Redis;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using Munq.Redis.Hashes;
+using Munq.Redis.Keys;
+using Munq.Redis.Sets;
+using Munq.Redis.Strings;
+using Munq.Redis.Transactions;
 
 namespace Munq.Redis.Tests.Commands.KeyCommands
 {
@@ -41,22 +46,22 @@ namespace Munq.Redis.Tests.Commands.KeyCommands
 
         Func<RedisClient, string[], Task>[] Methods = {
             // Key Commands
-            Redis.Commands.KeyCommands.SendDeleteAsync,
+            Redis.Keys.Commands.SendDeleteAsync,
 
             // Hash Commands
-            Redis.Commands.HashCommands.SendHDelAsync,
-            Redis.Commands.HashCommands.SendHMGetAsync,
+            Hashes.Commands.SendHDelAsync,
+            Hashes.Commands.SendHMGetAsync,
 
             // Set Commands
-            Redis.Commands.SetCommands.SendSDiffAsync,
-            Redis.Commands.SetCommands.SendSInterAsync,
-            Redis.Commands.SetCommands.SendSUnionAsync,
+            Sets.Commands.SendSDiffAsync,
+            Sets.Commands.SendSInterAsync,
+            Sets.Commands.SendSUnionAsync,
 
             // String Commands
-            Redis.Commands.StringCommands.SendMGetAsync,
+            Strings.Commands.SendMGetAsync,
 
             // Transaction Commands
-            Redis.Commands.TransactionCommands.SendWatchKeysAsync
+            Transactions.Commands.SendWatchKeysAsync
         };
         readonly Func<RedisClient, string, string, string, Task>[] ParamMethods = {
             // Key Commands

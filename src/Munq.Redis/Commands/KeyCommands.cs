@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Munq.Redis.Commands
+namespace Munq.Redis.Keys
 {
     /// <summary>
     /// Sends the Redis Key Commands as documented at http://redis.io/commands#generic
@@ -11,7 +11,7 @@ namespace Munq.Redis.Commands
     /// <remarks>
     /// These methods do not handle the response, only send the commands asynchronously.
     /// </remarks>
-    public static class KeyCommands
+    public static class Commands
     {
         /// <summary>
         /// Sends the command to delete one or more Redis Keys. http://redis.io/commands/del

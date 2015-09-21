@@ -44,31 +44,31 @@ namespace Munq.Redis.Tests.Commands
 
         readonly Func<RedisClient, Task>[] Methods = {
             // Connection Commands
-            Redis.Commands.ConnectionCommands.SendPingAsync,
-            Redis.Commands.ConnectionCommands.SendQuitAsync,
+            Redis.Connection.Commands.SendPingAsync,
+            Redis.Connection.Commands.SendQuitAsync,
 
             // Key Commands
-            Redis.Commands.KeyCommands.SendRandomKeyAsync,
+            Redis.Keys.Commands.SendRandomKeyAsync,
 
             // Server Commands
-            Redis.Commands.ServerCommands.SendBackgroundRewriteAOFAsync,
-            Redis.Commands.ServerCommands.SendBackgroundSaveAsync,
-            Redis.Commands.ServerCommands.SendDbSizeAsync,
-            Redis.Commands.ServerCommands.SendFlushAllAsync,
-            Redis.Commands.ServerCommands.SendFlushDbAsync,
-            Redis.Commands.ServerCommands.SendInfoAsync,
-            Redis.Commands.ServerCommands.SendLastSaveAsync,
-            Redis.Commands.ServerCommands.SendMonitorAsync,
-            Redis.Commands.ServerCommands.SendSaveAsync,
-            Redis.Commands.ServerCommands.SendShutdownAsync,
-            Redis.Commands.ServerCommands.SendSyncAsync,
-            Redis.Commands.ServerCommands.SendTimeAsync,
+            Server.Commands.SendBackgroundRewriteAOFAsync,
+            Server.Commands.SendBackgroundSaveAsync,
+            Server.Commands.SendDbSizeAsync,
+            Server.Commands.SendFlushAllAsync,
+            Server.Commands.SendFlushDbAsync,
+            Server.Commands.SendInfoAsync,
+            Server.Commands.SendLastSaveAsync,
+            Server.Commands.SendMonitorAsync,
+            Server.Commands.SendSaveAsync,
+            Server.Commands.SendShutdownAsync,
+            Server.Commands.SendSyncAsync,
+            Server.Commands.SendTimeAsync,
 
             // Transaction Commands
-            Redis.Commands.TransactionCommands.SendDiscardAsync,
-            Redis.Commands.TransactionCommands.SendExecAsync,
-            Redis.Commands.TransactionCommands.SendMultiAsync,
-            Redis.Commands.TransactionCommands.SendUnWatchAsync
+            Transactions.Commands.SendDiscardAsync,
+            Transactions.Commands.SendExecAsync,
+            Transactions.Commands.SendMultiAsync,
+            Transactions.Commands.SendUnWatchAsync
         };
 
         public static IEnumerable<object[]> Commands => ((int[])Enum.GetValues(typeof(Command)))

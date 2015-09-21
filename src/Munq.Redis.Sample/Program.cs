@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 
 using Munq.Redis;
-using Munq.Redis.Commands;
 using Munq.Redis.Responses;
+using Munq.Redis.Connection;
+using Munq.Redis.Strings;
+using Munq.Redis.Server;
+using Munq.Redis.Keys;
 
 namespace RedisAsync
 {
@@ -23,7 +26,8 @@ namespace RedisAsync
         static async Task DoIt()
         {
             var config = new RedisClientConfig();
-            using (var client = RedisClientFactory.Create(config))
+            var clientFactory = new RedisClientFactory();
+            using (var client = clientFactory.Create(config))
             {
                 try
                 {
@@ -47,10 +51,13 @@ namespace RedisAsync
                     for (int i = 0; i < NumIterations; i++)
                     {
                         await client.SendSetAsync("String" + i, data);
+                    }
+                    stopwatch.Stop();
+                    for (int i = 0; i < NumIterations; i++)
+                    {
                         if (!await client.ExpectOkAsync())
                             errorCount++;
                     }
-                    stopwatch.Stop();
                     Console.WriteLine("with {0} errors", errorCount);
                     Console.WriteLine("{0:N0} Sets of {1:N0} chars took {2}.", NumIterations, NumChars, stopwatch.Elapsed);
                     results.Clear();

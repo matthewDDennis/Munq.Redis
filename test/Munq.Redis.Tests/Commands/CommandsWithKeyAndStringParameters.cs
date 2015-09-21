@@ -5,7 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Munq.Redis;
-using Munq.Redis.Commands;
+using Munq.Redis.Hashes;
+using Munq.Redis.Keys;
+using Munq.Redis.Lists;
+using Munq.Redis.Strings;
 using Xunit;
 
 namespace Munq.Redis.Tests.Commands
