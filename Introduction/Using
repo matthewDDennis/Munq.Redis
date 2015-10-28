@@ -1,0 +1,14 @@
+It is very easy to use `Munq.Redis`:
+```c#
+    using (var client = new RedisClient())
+    {
+        try
+        {
+            Console.Write("Sending Ping - ");
+            await client.SendPingAsync();
+            if (await client.ExpectConstStringAsync("PONG"))
+                Console.WriteLine("Pong response received.");
+            else
+                Console.WriteLine("Unexpected string returned.");
+```
+
