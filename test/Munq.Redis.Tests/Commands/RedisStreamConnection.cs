@@ -38,5 +38,10 @@ namespace Munq.Redis.Tests.Commands
         {
             return _stream;
         }
+
+        public Task ReconnectAsync()
+        {
+            return ConnectAsync();
+        }
     }
 }

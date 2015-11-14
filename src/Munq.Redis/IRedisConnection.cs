@@ -10,6 +10,7 @@ namespace Munq.Redis
         int Database { get; }
 
         Task ConnectAsync();
+        Task ReconnectAsync();
         void Close();
 
         Stream GetStream();

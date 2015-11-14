@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
@@ -7,7 +8,7 @@ namespace Munq.Redis
     public class RedisSocketConnection : IRedisConnection
     {
         readonly RedisClientConfig _config;
-        readonly TcpClient _tcpClient = new TcpClient();
+        private TcpClient _tcpClient = new TcpClient();
 
         public RedisSocketConnection(RedisClientConfig config)
         {
@@ -20,7 +21,7 @@ namespace Munq.Redis
 
         public bool IsConnected => _tcpClient.Connected;
 
-        public int Database { get; }
+        public int Database { get; internal set; }
 
         public void Close()
         {
@@ -35,12 +36,17 @@ namespace Munq.Redis
         {
             if (!IsConnected)
             {
-                await _tcpClient.ConnectAsync(_config.Host, _config.Port);
-                if (Database != 0)
-                {
-                    // TODO: Select the correct Database
-                }
+                await _tcpClient.ConnectAsync(_config.Host, _config.Port).ConfigureAwait(false);
+                Database = 0;
             }
+        }
+
+        public Task ReconnectAsync()
+        {
+            Close();
+            _tcpClient = new TcpClient();
+            return ConnectAsync();
+
         }
 
         public Stream GetStream()
@@ -52,5 +58,6 @@ namespace Munq.Redis
         {
             Close();
         }
+
     }
 }

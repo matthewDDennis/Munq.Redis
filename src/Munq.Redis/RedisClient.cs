@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
+using Munq.Redis.Responses;
+
 namespace Munq.Redis
 {
     public class RedisClient : IDisposable
     {
         readonly IRedisConnection _connection;
-        Stream                            _stream;
-        ResponseReader                    _responseReader;
-        CommandWriter                     _commandWriter;
+        Stream                    _stream;
+        ResponseReader            _responseReader;
+        CommandWriter             _commandWriter;
 
         public RedisClient(IRedisConnection connection)
         {
@@ -26,7 +28,8 @@ namespace Munq.Redis
             try
             {
                 await EnsureConnected().ConfigureAwait(false);
-                return await _responseReader.ReadRedisResponseAsync();
+                _responseReader = new ResponseReader(_connection.GetStream());
+                return await _responseReader.ReadRedisResponseAsync().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -54,6 +57,7 @@ namespace Munq.Redis
         public async Task SendAsync(string command, IEnumerable<object> parameters = null)
         {
             await EnsureConnected().ConfigureAwait(false);
+            _commandWriter = new CommandWriter(_connection.GetStream());
             await _commandWriter.WriteRedisCommandAsync(command, parameters).ConfigureAwait(false);
         }
 
@@ -61,28 +65,23 @@ namespace Munq.Redis
         {
             if (!_connection.IsConnected)
             {
-                await _connection.ConnectAsync().ConfigureAwait(false);
-                if (_stream != null)
-                {
-                    _stream.Dispose();
-                    _stream = null;
-                }
-            }
-
-            if (_stream == null)
-            {
-                _stream         = _connection.GetStream();
-                _commandWriter  = new CommandWriter(_stream);
-                _responseReader = new ResponseReader(_stream);
-
-                // Not the right place for this?
-                //if (_connection.Database != RedisClientConfig.DefaultDatabase)
-                //{
-                //    await SendAsync("Select", _connection.Database);
-                //    await ReadResponseAsync();
-                //}
+                await _connection.ReconnectAsync().ConfigureAwait(false);
+                // TODO: need to set Database
             }
         }
+
+        // Need the Select command to set the database if connection db does not match client db.
+        public Task SendSelectAsync(int db)
+        {
+            return SendAsync("Select", db);
+        }
+
+        public async Task<bool> Select(int db)
+        {
+            await SendSelectAsync(db);
+            return await this.ExpectOkAsync();
+        }
+
 
         public void Dispose()
         {

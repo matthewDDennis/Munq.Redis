@@ -30,10 +30,5 @@ namespace Munq.Redis.Connection
         {
             return client.SendAsync("Quit");
         }
-
-        public static Task SendSelectAsync(this RedisClient client, int db)
-        {
-           return client.SendAsync("Select", db);
-        }
     }
 }
