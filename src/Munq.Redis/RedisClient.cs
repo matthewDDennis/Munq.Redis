@@ -71,8 +71,8 @@ namespace Munq.Redis
 
             if (_stream == null)
             {
-                _stream = _connection.GetStream();
-                _commandWriter = new CommandWriter(_stream);
+                _stream         = _connection.GetStream();
+                _commandWriter  = new CommandWriter(_stream);
                 _responseReader = new ResponseReader(_stream);
 
                 // Not the right place for this?

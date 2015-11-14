@@ -17,7 +17,7 @@ namespace RedisAsync
     class Program
     {
         const int NumIterations = 10000;
-        const int NumChars = 10000;
+        const int NumChars      = 10000;
         static void Main(string[] args)
         {
             DoIt().Wait();
@@ -25,7 +25,7 @@ namespace RedisAsync
         }
         static async Task DoIt()
         {
-            var config = new RedisClientConfig();
+            var config        = new RedisClientConfig();
             var clientFactory = new RedisClientFactory();
             using (var client = clientFactory.Create(config))
             {
@@ -42,8 +42,8 @@ namespace RedisAsync
                     await client.SendSelectAsync(4);
                     Console.WriteLine((await client.ExpectOkAsync()) ? "Success" : "Failed");
 
-                    var data = new string('A', 10000);
-                    var results = new List<object>(NumIterations);
+                    var data      = new string('A', 10000);
+                    var results   = new List<object>(NumIterations);
                     var stopwatch = new Stopwatch();
                     Console.Write("Writing {0:N0} RedisStrings of {1:N0} chars - ", NumChars, NumIterations);
                     stopwatch.Start();
