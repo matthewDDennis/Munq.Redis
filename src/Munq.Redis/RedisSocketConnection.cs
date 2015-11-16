@@ -9,6 +9,7 @@ namespace Munq.Redis
     {
         readonly RedisClientConfig _config;
         private TcpClient _tcpClient = new TcpClient();
+        private NetworkStream _stream = null;
 
         public RedisSocketConnection(RedisClientConfig config)
         {
@@ -27,9 +28,14 @@ namespace Munq.Redis
         {
 #if DNXCORE50
             _tcpClient.Dispose();
+            if (_stream != null)
+                _stream.Dispose();
 #else
             _tcpClient.Close();
+            if (_stream != null)
+                _stream.Close();
 #endif
+            _stream = null;
         }
 
         public async Task ConnectAsync()
@@ -37,6 +43,7 @@ namespace Munq.Redis
             if (!IsConnected)
             {
                 await _tcpClient.ConnectAsync(_config.Host, _config.Port).ConfigureAwait(false);
+                _stream = _tcpClient.GetStream();
                 Database = 0;
             }
         }
@@ -51,7 +58,7 @@ namespace Munq.Redis
 
         public Stream GetStream()
         {
-            return _tcpClient.GetStream();
+            return _stream;
         }
 
         public void Dispose()

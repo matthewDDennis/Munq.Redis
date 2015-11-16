@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Munq.Redis.Responses;
 
 namespace Munq.Redis.Connection
 {
@@ -30,5 +31,17 @@ namespace Munq.Redis.Connection
         {
             return client.SendAsync("Quit");
         }
+
+        public static Task SendSelectAsync(this RedisClient client, int db)
+        {
+           return client.SendAsync("Select", db);
+        }
+
+        public static async Task<bool> SelectAsync(this RedisClient client, int db)
+        {
+            await client.SendSelectAsync(db);
+            return await client.ExpectOkAsync();
+        }
+
     }
 }

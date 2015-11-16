@@ -28,7 +28,8 @@ namespace Munq.Redis
             try
             {
                 await EnsureConnected().ConfigureAwait(false);
-                _responseReader = new ResponseReader(_connection.GetStream());
+                _responseReader = new ResponseReader(_stream);
+
                 return await _responseReader.ReadRedisResponseAsync().ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -57,7 +58,7 @@ namespace Munq.Redis
         public async Task SendAsync(string command, IEnumerable<object> parameters = null)
         {
             await EnsureConnected().ConfigureAwait(false);
-            _commandWriter = new CommandWriter(_connection.GetStream());
+            _commandWriter = new CommandWriter(_stream);
             await _commandWriter.WriteRedisCommandAsync(command, parameters).ConfigureAwait(false);
         }
 
@@ -66,22 +67,11 @@ namespace Munq.Redis
             if (!_connection.IsConnected)
             {
                 await _connection.ReconnectAsync().ConfigureAwait(false);
+                _stream = _connection.GetStream();
+
                 // TODO: need to set Database
             }
         }
-
-        // Need the Select command to set the database if connection db does not match client db.
-        public Task SendSelectAsync(int db)
-        {
-            return SendAsync("Select", db);
-        }
-
-        public async Task<bool> Select(int db)
-        {
-            await SendSelectAsync(db);
-            return await this.ExpectOkAsync();
-        }
-
 
         public void Dispose()
         {

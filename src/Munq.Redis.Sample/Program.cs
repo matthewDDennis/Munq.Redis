@@ -48,33 +48,59 @@ namespace RedisAsync
                     Console.Write("Writing {0:N0} RedisStrings of {1:N0} chars - ", NumChars, NumIterations);
                     stopwatch.Start();
                     int errorCount = 0;
-                    for (int i = 0; i < NumIterations; i++)
+                    var t1 = Task.Run(async () =>
                     {
-                        await client.SendSetAsync("String" + i, data);
-                    }
+                        for (int i = 0; i < NumIterations; i++)
+                        {
+                            await client.SendSetAsync("String" + i, data).ConfigureAwait(false);
+                            //await client.ExpectOkAsync().ConfigureAwait(false);
+                        }
+                    });
+                    await t1;
+                    var t2 = Task.Run(async () =>
+                    {
+                        for (int i = 0; i < NumIterations; i++)
+                        {
+                            if (!await client.ExpectOkAsync().ConfigureAwait(false))
+                                errorCount++;
+                        }
+                    });
+
+                    //await t2;
+                    await Task.WhenAll(new Task[] { t1, t2 });
+
                     stopwatch.Stop();
-                    for (int i = 0; i < NumIterations; i++)
-                    {
-                        if (!await client.ExpectOkAsync())
-                            errorCount++;
-                    }
+
                     Console.WriteLine("with {0} errors", errorCount);
                     Console.WriteLine("{0:N0} Sets of {1:N0} chars took {2}.", NumIterations, NumChars, stopwatch.Elapsed);
                     results.Clear();
                     Console.Write("Reading {0:N0} RedisStrings of {1:N0} chars - ", NumChars, NumIterations);
 
                     stopwatch.Start();
-                    for (int i = 0; i < NumIterations; i++)
+                    string bulkString;
+                    var t3 = Task.Run(async () =>
                     {
-                        await client.SendGetAsync("String" + i);
-                        string bulkString = await client.ExpectBulkStringAsync();
+                        for (int i = 0; i < NumIterations; i++)
+                        {
+                            await client.SendGetAsync("String" + i).ConfigureAwait(false);
+                        }
+                    });
 
-                        string resultString = "OK";
-                        if (bulkString == null || bulkString.Length != NumChars)
-                            resultString = bulkString;
-                        // Console.Write("\r{0} - {1}", i + 1, resultString);
-                        results.Add(resultString);
-                    }
+                    var t4 = Task.Run(async () =>
+                    {
+                        for (int i = 0; i < NumIterations; i++)
+                        {
+                            bulkString = await client.ExpectBulkStringAsync().ConfigureAwait(false);
+
+                            string resultString = "OK";
+                            if (bulkString == null || bulkString.Length != NumChars)
+                                resultString = "ERROR";
+                            // Console.Write("\r{0} - {1}", i + 1, resultString);
+                            results.Add(resultString);
+                        }
+                    });
+                    await Task.WhenAll(new Task[]{t3, t4});
+
                     stopwatch.Stop();
                     Console.WriteLine("with {0} errors", results.Count(rs => (string)rs != "OK"));
                     Console.WriteLine("{0:N0} Gets of {1:N0} chars took {2}.", NumIterations, NumChars, stopwatch.Elapsed);
