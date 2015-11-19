@@ -25,6 +25,7 @@ namespace RedisAsync
             var config = new RedisClientConfig();
             using (var client = RedisClientFactory.Create(config))
             {
+                var rnd = new Random();
                 try
                 {
                     Console.Write("Sending Ping - ");
@@ -38,7 +39,11 @@ namespace RedisAsync
                     await client.SendSelectAsync(4);
                     Console.WriteLine((await client.ExpectOkAsync()) ? "Success" : "Failed");
 
-                    var data = new string('A', 10000);
+                    var sampleData = new byte[NumChars];
+                    for (int i = 0; i < NumChars; i++)
+                        sampleData[i] = (byte)(rnd.Next(64) + 32);
+                    var data = Encoding.UTF8.GetString(sampleData);
+
                     var results = new List<object>(NumIterations);
                     var stopwatch = new Stopwatch();
                     Console.Write("Writing {0:N0} RedisStrings of {1:N0} chars - ", NumChars, NumIterations);
