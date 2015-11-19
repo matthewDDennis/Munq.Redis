@@ -94,8 +94,14 @@ namespace Munq.Redis
                 {
                     var data = new byte[strSize];
                     int charsRead = 0;
+                    int bufferIndex = 0;
                     if (strSize > 0)
-                        charsRead = await _stream.ReadAsync(data, 0, (int)strSize).ConfigureAwait(false);
+                        do
+                        {
+                            charsRead = await _stream.ReadAsync(data, bufferIndex, (int)strSize).ConfigureAwait(false);
+                            bufferIndex += charsRead;
+                            strSize -= charsRead;
+                        } while (charsRead != 0);
 
                     // swallow the CR LF.
                     string remainingCharacters = await ReadLineAsync().ConfigureAwait(false);

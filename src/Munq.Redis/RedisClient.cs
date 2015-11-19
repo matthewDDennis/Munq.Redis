@@ -73,7 +73,12 @@ namespace Munq.Redis
 
             if (_stream == null)
             {
+#if DNXCORE50
                 _stream = _connection.GetStream();
+#else
+                Stream networkStream = _connection.GetStream();
+                _stream = new BufferedStream(networkStream);
+#endif
                 _commandWriter = new CommandWriter(_stream);
                 _responseReader = new ResponseReader(_stream);
 
