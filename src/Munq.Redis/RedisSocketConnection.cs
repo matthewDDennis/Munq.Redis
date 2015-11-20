@@ -38,7 +38,7 @@ namespace Munq.Redis
         {
             if (!IsConnected)
             {
-                await _tcpClient.ConnectAsync(_config.Host, _config.Port);
+                await _tcpClient.ConnectAsync(_config.Host, _config.Port).ConfigureAwait(false);
                 if (Database != 0)
                 {
                     // TODO: Select the correct Database

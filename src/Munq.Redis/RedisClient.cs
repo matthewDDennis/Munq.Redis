@@ -10,9 +10,9 @@ namespace Munq.Redis
     public class RedisClient : IDisposable
     {
         readonly IRedisConnection _connection;
-        Stream                            _stream;
-        ResponseReader                    _responseReader;
-        CommandWriter                     _commandWriter;
+        Stream                    _stream;
+        ResponseReader            _responseReader;
+        CommandWriter             _commandWriter;
 
         public RedisClient(IRedisConnection connection)
         {
@@ -28,7 +28,7 @@ namespace Munq.Redis
             try
             {
                 await EnsureConnected().ConfigureAwait(false);
-                return await _responseReader.ReadRedisResponseAsync();
+                return await _responseReader.ReadRedisResponseAsync().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -77,9 +77,9 @@ namespace Munq.Redis
                 _stream = _connection.GetStream();
 #else
                 Stream networkStream = _connection.GetStream();
-                _stream = new BufferedStream(networkStream);
+                _stream              = new BufferedStream(networkStream);
 #endif
-                _commandWriter = new CommandWriter(_stream);
+                _commandWriter  = new CommandWriter(_stream);
                 _responseReader = new ResponseReader(_stream);
 
                 // Not the right place for this?

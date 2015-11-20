@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Munq.Redis.Sample": {
+      "commandName": "Munq.Redis.Sample",
+      "sdkVersion": "dnx-clr-win-x86.1.0.0-rc1-final"
+    }
+  }
+}

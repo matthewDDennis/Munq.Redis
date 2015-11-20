@@ -37,18 +37,16 @@ namespace Munq.Redis
                 throw new ArgumentNullException(nameof(command));
 
             var sizeOfCommandArray = 1 + (parameters?.Count() ?? 0);
-            var redisString        = $"*{sizeOfCommandArray}\r\n";
-            byte[] bytes           = encoder.GetBytes(redisString);
-            await _stream.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
+            await WriteStringToStreamAsync($"*{sizeOfCommandArray}\r\n").ConfigureAwait(false);
 
-            await WriteRedisBulkStringAsync(command);
+            await WriteRedisBulkStringAsync(command).ConfigureAwait(false);
 
             if (sizeOfCommandArray > 1)
             {
                 foreach (object obj in parameters)
-                    await WriteObjectAsync(obj);
+                    await WriteObjectAsync(obj).ConfigureAwait(false);
             }
-            // await _stream.FlushAsync();
+            await _stream.FlushAsync().ConfigureAwait(false);
         }
 
         /// <summary>
