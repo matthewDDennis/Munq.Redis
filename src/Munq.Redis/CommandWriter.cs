@@ -14,11 +14,11 @@ namespace Munq.Redis
     /// <remarks>This class is safe for concurrent, multi-thread access.</remarks>
     public class CommandWriter
     {
-        static readonly byte[]   CRLF = { (byte)'\r', (byte)'\n' };
-        static readonly byte[]   NullString = { (byte)'$', (byte)'-', (byte)'1', (byte)'\r', (byte)'\n' };
-        static readonly Encoding encoder = new UTF8Encoding();
+        static readonly byte[] CRLF       = { (byte)'\r', (byte)'\n' };
+        static readonly byte[] NullString = { (byte)'$', (byte)'-', (byte)'1', (byte)'\r', (byte)'\n' };
 
-        readonly        Stream   _stream;
+        readonly Encoding      _encoder   = new UTF8Encoding();
+        readonly Stream        _stream;
 
         public CommandWriter(Stream stream)
         {
@@ -26,7 +26,7 @@ namespace Munq.Redis
         }
 
         /// <summary>
-        /// Builds an array of bytes to send to the Redis Server for the command and it's parameters.
+        /// Sends a command and it's parameters to the Stream.
         /// </summary>
         /// <param name="command">The command.</param>
         /// <param name="parameters">The paramaters for the command.</param>
@@ -50,9 +50,10 @@ namespace Munq.Redis
         }
 
         /// <summary>
-        /// Adds an object to the command data.
+        /// Writes an object to the Stream.
         /// </summary>
         /// <param name="value">The object to add.</param>
+        /// <returns>An awaitable task that completes when the object has been written to the stream.</returns>
         Task WriteObjectAsync(object value)
         {
             if (value == null)
@@ -74,18 +75,18 @@ namespace Munq.Redis
         /// Writes a string as a RedisBulkString to the Stream.
         /// </summary>
         /// <param name="str">The string to write.</param>
+        /// <returns>An awaitable task that completes when the string has been written to the stream.</returns>
         Task WriteRedisBulkStringAsync(string str)
         {
-            if (str != null)
-                return WriteStringToStreamAsync($"${str.Length}\r\n{str}\r\n");
-            else
-                return WriteBytesToStreamAsync(NullString);
+            byte[] data = (str != null) ? _encoder.GetBytes(str) : null;
+            return WriteRedisBulkStringAsync(data);
         }
 
         /// <summary>
         /// Writes an array of bytes as a RedisBulkString to the Stream.
         /// </summary>
         /// <param name="data">The bytes to write.</param>
+        /// <returns>An awaitable task that completes when the byte[] has been written to the stream.</returns>
         async Task WriteRedisBulkStringAsync(byte[] data)
         {
             if (data != null)
@@ -96,7 +97,7 @@ namespace Munq.Redis
             }
             else
             {
-                await WriteBytesToStreamAsync(NullString).ConfigureAwait(false);
+                await WriteNullToStreamAsync();
             }
         }
 
@@ -104,18 +105,27 @@ namespace Munq.Redis
         /// Converts the string to a byte[] and writes it to the stream.
         /// </summary>
         /// <param name="redisString">The string to wriet.</param>
-        /// <returns>The Task.</returns>
+        /// <returns>An awaitable task that completes when the string has been written to the stream.</returns>
         Task WriteStringToStreamAsync(string redisString)
         {
-            byte[] data = encoder.GetBytes(redisString);
+            byte[] data = _encoder.GetBytes(redisString);
             return WriteBytesToStreamAsync(data);
+        }
+
+        /// <summary>
+        /// Writes the NullString to the stream.
+        /// </summary>
+        /// <returns>An awaitable task that completes when the Null string has been written to the stream.</returns>
+        Task WriteNullToStreamAsync()
+        {
+            return WriteBytesToStreamAsync(NullString);
         }
 
         /// <summary>
         /// Writes a byte array to the stream.
         /// </summary>
         /// <param name="data">The byte array.</param>
-        /// <returns></returns>
+        /// <returns>An awaitable task that completes when the byte[] has been written to the stream.</returns>
         Task WriteBytesToStreamAsync(byte[] data)
         {
             return _stream.WriteAsync(data, 0, data.Length);

@@ -27,7 +27,6 @@ namespace Munq.Redis
         {
             try
             {
-                await EnsureConnected().ConfigureAwait(false);
                 return await _responseReader.ReadRedisResponseAsync().ConfigureAwait(false);
             }
             catch (Exception ex)
