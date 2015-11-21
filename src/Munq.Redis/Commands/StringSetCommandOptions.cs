@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Munq.Redis
+namespace Munq.Redis.Commands
 {
     public enum StringSetCommandOptions
     {
