@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Munq.Redis.Tests.Commands
+namespace Munq.Redis.Tests.Requests
 {
     public class RedisStreamConnection : IRedisConnection
     {

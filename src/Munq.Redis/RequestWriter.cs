@@ -12,7 +12,7 @@ namespace Munq.Redis
     /// name and a collection of parameters.
     /// </summary>
     /// <remarks>This class is safe for concurrent, multi-thread access.</remarks>
-    public class CommandWriter
+    public class RequestWriter
     {
         static readonly byte[] CRLF       = { (byte)'\r', (byte)'\n' };
         static readonly byte[] NullString = { (byte)'$', (byte)'-', (byte)'1', (byte)'\r', (byte)'\n' };
@@ -20,7 +20,7 @@ namespace Munq.Redis
         readonly Encoding      _encoder   = new UTF8Encoding();
         readonly Stream        _stream;
 
-        public CommandWriter(Stream stream)
+        public RequestWriter(Stream stream)
         {
             _stream = stream;
         }

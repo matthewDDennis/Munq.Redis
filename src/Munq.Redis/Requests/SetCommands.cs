@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Munq.Redis.Commands
+namespace Munq.Redis.Requests
 {
     public static class SetCommands
     {

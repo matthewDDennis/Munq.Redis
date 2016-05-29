@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 
 using Munq.Redis;
-using Munq.Redis.Commands;
+using Munq.Redis.Requests;
 using Munq.Redis.Responses;
 
 namespace RedisAsync

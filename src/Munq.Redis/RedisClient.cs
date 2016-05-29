@@ -12,7 +12,7 @@ namespace Munq.Redis
         readonly IRedisConnection _connection;
         Stream                    _stream;
         ResponseReader            _responseReader;
-        CommandWriter             _commandWriter;
+        RequestWriter             _commandWriter;
 
         public RedisClient(IRedisConnection connection)
         {
@@ -77,7 +77,7 @@ namespace Munq.Redis
                 if (_stream.GetType() != typeof(MemoryStream))
                     _stream = new BufferedStream(_stream);
 
-                _commandWriter  = new CommandWriter(_stream);
+                _commandWriter  = new RequestWriter(_stream);
                 _responseReader = new ResponseReader(_stream);
 
                 // Not the right place for this?

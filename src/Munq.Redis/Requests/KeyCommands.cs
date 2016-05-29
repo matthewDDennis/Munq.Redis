@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Munq.Redis.Commands
+namespace Munq.Redis.Requests
 {
     /// <summary>
     /// Sends the Redis Key Commands as documented at http://redis.io/commands#generic
