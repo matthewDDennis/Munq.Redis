@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24627.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4AC09F72-B4CD-4C29-9BDE-02FE1A4571DC}"
 EndProject
@@ -18,7 +18,7 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Munq.Redis.Sample", "src\Mu
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{BB79E7BE-24C1-46CF-B942-EFF528DB5811}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Munq.Redis.Tests", "test\Munq.Redis.Tests\Munq.Redis.Tests.xproj", "{8CAA17CB-5282-4F8B-AB3B-4EF532311389}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Munq.Redis.Tests", "test\Munq.Redis.Tests\Munq.Redis.Tests.xproj", "{EFCA5197-98C6-4C7D-AC28-A0FE31E6D95F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,10 +34,10 @@ Global
 		{8D7CED60-16F1-4EF9-8B53-6CFD0351961D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D7CED60-16F1-4EF9-8B53-6CFD0351961D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D7CED60-16F1-4EF9-8B53-6CFD0351961D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8CAA17CB-5282-4F8B-AB3B-4EF532311389}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8CAA17CB-5282-4F8B-AB3B-4EF532311389}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8CAA17CB-5282-4F8B-AB3B-4EF532311389}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8CAA17CB-5282-4F8B-AB3B-4EF532311389}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFCA5197-98C6-4C7D-AC28-A0FE31E6D95F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFCA5197-98C6-4C7D-AC28-A0FE31E6D95F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFCA5197-98C6-4C7D-AC28-A0FE31E6D95F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFCA5197-98C6-4C7D-AC28-A0FE31E6D95F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -45,6 +45,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{22D95732-203F-44C8-8852-58053762690B} = {4AC09F72-B4CD-4C29-9BDE-02FE1A4571DC}
 		{8D7CED60-16F1-4EF9-8B53-6CFD0351961D} = {4AC09F72-B4CD-4C29-9BDE-02FE1A4571DC}
-		{8CAA17CB-5282-4F8B-AB3B-4EF532311389} = {BB79E7BE-24C1-46CF-B942-EFF528DB5811}
+		{EFCA5197-98C6-4C7D-AC28-A0FE31E6D95F} = {BB79E7BE-24C1-46CF-B942-EFF528DB5811}
 	EndGlobalSection
 EndGlobal
