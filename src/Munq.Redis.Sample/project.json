@@ -2,25 +2,30 @@
     "version": "1.0.0-*",
     "description": "Munq.Redis.Sample Console Application",
     "authors": [ "matth_000" ],
-    "tags": [ "" ],
-    "projectUrl": "",
-    "licenseUrl": "",
+    "buildOptions": {
+        "emitEntryPoint": true
+    },
 
     "dependencies": {
         "Munq.Redis": "1.0.0-*"
     },
 
-    "commands": {
-        "Munq.Redis.Sample": "Munq.Redis.Sample"
+    "frameworks": {
+        "netcoreapp1.0": {
+            "dependencies": {
+                "Microsoft.NETCore.App": {
+                    "type": "platform",
+                    "version": "1.0.0-rc2-3002702"
+                }
+            },
+            "imports": "dnxcore50"
+        },
+        "net452": { }
     },
 
-    "frameworks": {
-        "dnx451": { },
-        "dnx46": { },
-        "dnxcore50": {
-            "dependencies": {
-                "System.Console": "4.0.0-beta-*"
-            }
-        }
+    "commands": {
+        "Munq.Redis.Sample": "Munq.Redis.Sample"
     }
+
+
 }

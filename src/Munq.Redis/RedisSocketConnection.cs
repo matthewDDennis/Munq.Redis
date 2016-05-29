@@ -27,10 +27,10 @@ namespace Munq.Redis
 
         public void Close()
         {
-#if DNXCORE50
-            _tcpClient.Dispose();
-#else
+#if NET452
             _tcpClient.Close();
+#else
+            _tcpClient.Dispose();
 #endif
         }
 
